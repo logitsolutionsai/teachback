@@ -1,0 +1,667 @@
+{
+  "schema": "teachback/items@1",
+  "items": [
+    {
+      "id": "mem-cost",
+      "concept": "membership",
+      "type": "mcq",
+      "difficulty": 1,
+      "prompt": "What does a Bloom filter give up to answer membership questions in a few bits per item?",
+      "options": [
+        {
+          "text": "Speed: queries get slower as it fills",
+          "rationale": "A query always checks exactly k bits, so its cost does not grow."
+        },
+        {
+          "text": "Exactness: it can sometimes say yes to an item it never saw",
+          "rationale": "Correct. It trades a small rate of false positives for fixed, small memory (Section 1)."
+        },
+        {
+          "text": "The ability to say no",
+          "rationale": "It says no with certainty; that is its strong answer."
+        },
+        {
+          "text": "Nothing; it is an exact set in fewer bits",
+          "rationale": "No structure can store arbitrary items exactly in a few bits each."
+        }
+      ],
+      "answer": 1,
+      "source": "1"
+    },
+    {
+      "id": "mem-items",
+      "concept": "membership",
+      "type": "short",
+      "difficulty": 1,
+      "prompt": "Why does an exact set use more memory as items get longer, while a Bloom filter does not?",
+      "rubric": {
+        "required": [
+          {
+            "id": "stores",
+            "idea": "An exact set stores the items themselves",
+            "synonyms": [
+              "stores the items",
+              "stores every item",
+              "keeps the items",
+              "store each item",
+              "the whole item",
+              "keep every item",
+              "keeps every item",
+              "store every item",
+              "stores the item"
+            ]
+          },
+          {
+            "id": "bits",
+            "idea": "A Bloom filter stores only bits set by hashes",
+            "synonyms": [
+              "only bits",
+              "just bits",
+              "bit array",
+              "few bits",
+              "bits per item",
+              "hash"
+            ]
+          }
+        ],
+        "misconceptions": [
+          {
+            "id": "stores-items",
+            "description": "Thinks a Bloom filter stores the items",
+            "synonyms": [
+              "filter stores the items",
+              "filter keeps the items"
+            ]
+          }
+        ]
+      },
+      "modelAnswer": "An exact set has to keep every item, so long items cost more. A Bloom filter keeps only a fixed array of bits that hashes point into, so the length of an item does not matter.",
+      "source": "1"
+    },
+    {
+      "id": "mem-teachback",
+      "concept": "membership",
+      "type": "teachback",
+      "difficulty": 2,
+      "prompt": "Explain to a friend what problem a Bloom filter solves and what it trades away.",
+      "rubric": {
+        "required": [
+          {
+            "id": "seen",
+            "idea": "It answers whether an item has been seen before",
+            "synonyms": [
+              "seen before",
+              "seen it",
+              "membership",
+              "in the set",
+              "already have",
+              "is it there",
+              "seen this before",
+              "have i seen",
+              "seen it before"
+            ]
+          },
+          {
+            "id": "memory",
+            "idea": "It uses little, fixed memory",
+            "synonyms": [
+              "memory",
+              "space",
+              "few bits",
+              "small",
+              "compact"
+            ]
+          },
+          {
+            "id": "trade",
+            "idea": "It can give false positives",
+            "synonyms": [
+              "false positive",
+              "probably",
+              "sometimes wrong",
+              "not exact",
+              "might say yes",
+              "say yes to something",
+              "wrongly say yes",
+              "occasionally say yes"
+            ]
+          }
+        ],
+        "minRequired": 2
+      },
+      "modelAnswer": "It answers 'have I seen this before?' using a few bits per item instead of storing the items. The price is that it can occasionally say yes to something it never saw.",
+      "source": "1"
+    },
+    {
+      "id": "hash-same",
+      "concept": "hashing",
+      "type": "mcq",
+      "difficulty": 1,
+      "prompt": "You hash the string \"apple\" twice with the same function. What do you get?",
+      "options": [
+        {
+          "text": "The same number both times",
+          "rationale": "Correct. Hash functions are deterministic, which is why a query finds the bits an insert set."
+        },
+        {
+          "text": "Two different random numbers",
+          "rationale": "Then a query could never find the bits the insert set."
+        },
+        {
+          "text": "It depends on the time of day",
+          "rationale": "Hashes do not depend on time."
+        },
+        {
+          "text": "The string itself",
+          "rationale": "A hash is a number derived from the input, not the input."
+        }
+      ],
+      "answer": 0,
+      "source": "2"
+    },
+    {
+      "id": "hash-double",
+      "concept": "hashing",
+      "type": "numeric",
+      "difficulty": 2,
+      "prompt": "With double hashing, h1 = 10, h2 = 7 and m = 16. What is the position for i = 3, that is (h1 + 3 * h2) mod 16?",
+      "answer": 15,
+      "tolerance": 0,
+      "explanation": "10 + 21 = 31, and 31 mod 16 = 15.",
+      "source": "2"
+    },
+    {
+      "id": "hash-teachback",
+      "concept": "hashing",
+      "type": "teachback",
+      "difficulty": 2,
+      "prompt": "Explain to a friend what a Bloom filter needs from its hash functions, and how double hashing gets k positions from two hashes.",
+      "rubric": {
+        "required": [
+          {
+            "id": "deterministic",
+            "idea": "The same input always gives the same output",
+            "synonyms": [
+              "same input",
+              "same output",
+              "same number",
+              "deterministic",
+              "always gives"
+            ]
+          },
+          {
+            "id": "uniform",
+            "idea": "Outputs spread evenly",
+            "synonyms": [
+              "evenly",
+              "uniform",
+              "spread",
+              "scatter",
+              "random looking"
+            ]
+          },
+          {
+            "id": "double",
+            "idea": "Position i is (h1 + i * h2) mod m",
+            "synonyms": [
+              "h1 + i",
+              "h1 plus i",
+              "two hashes",
+              "two base hashes",
+              "double hashing"
+            ]
+          }
+        ],
+        "minRequired": 2
+      },
+      "modelAnswer": "Each hash must give the same number for the same input and spread different inputs evenly. Instead of k separate functions, compute two hashes h1 and h2 and use (h1 + i * h2) mod m for i from 0 to k - 1.",
+      "source": "2"
+    },
+    {
+      "id": "iq-negatives",
+      "concept": "insert-query",
+      "type": "mcq",
+      "difficulty": 2,
+      "prompt": "A query finds one of the item's k bits set to 0. What can you conclude?",
+      "options": [
+        {
+          "text": "The item was definitely never inserted",
+          "rationale": "Correct. Inserting it would have set that bit to 1, and bits are never cleared."
+        },
+        {
+          "text": "The item was probably inserted",
+          "rationale": "That is the answer when all k bits are 1."
+        },
+        {
+          "text": "Nothing; you need to check the other bits",
+          "rationale": "One zero is enough: an inserted item has all k bits set."
+        },
+        {
+          "text": "The filter is corrupted",
+          "rationale": "Most queries for absent items find a zero; that is normal."
+        }
+      ],
+      "answer": 0,
+      "source": "3"
+    },
+    {
+      "id": "iq-bits",
+      "concept": "insert-query",
+      "type": "numeric",
+      "difficulty": 1,
+      "prompt": "A new filter has m = 64 bits and k = 3. You insert one item whose three positions are all different. How many bits are now 1?",
+      "answer": 3,
+      "tolerance": 0,
+      "explanation": "One insert sets k bits; with no overlaps that is 3.",
+      "source": "3"
+    },
+    {
+      "id": "iq-teachback",
+      "concept": "insert-query",
+      "type": "teachback",
+      "difficulty": 2,
+      "prompt": "Explain to a friend how insert and query work, and why a Bloom filter never gives a false negative.",
+      "rubric": {
+        "required": [
+          {
+            "id": "insert",
+            "idea": "Insert sets the item's k bits to 1",
+            "synonyms": [
+              "set the bits",
+              "sets the bits",
+              "set k bits",
+              "sets k bits",
+              "turn the bits on",
+              "set them to 1",
+              "set those bits",
+              "sets those bits",
+              "set those k bits"
+            ]
+          },
+          {
+            "id": "query",
+            "idea": "Query checks the same k bits",
+            "synonyms": [
+              "check the bits",
+              "checks the bits",
+              "check the same",
+              "checks the same",
+              "look at the bits",
+              "all k bits",
+              "check those bits",
+              "checks those bits",
+              "check those k bits"
+            ]
+          },
+          {
+            "id": "no-fn",
+            "idea": "Inserted items always find their bits set, so no false negatives",
+            "polarity": "negative",
+            "synonyms": [
+              "no false negative",
+              "never a false negative",
+              "never miss",
+              "always find",
+              "never cleared",
+              "always 1"
+            ]
+          }
+        ],
+        "misconceptions": [
+          {
+            "id": "false-negatives",
+            "description": "Thinks the filter can miss an inserted item",
+            "synonyms": [
+              "false negatives can happen",
+              "might miss an item",
+              "can miss items"
+            ]
+          }
+        ],
+        "minRequired": 2
+      },
+      "modelAnswer": "To insert, hash the item k times and set those bits to 1. To query, hash it the same way and check those bits: any 0 means definitely not inserted, all 1 means probably inserted. Bits are never cleared, so an inserted item always finds its bits set: no false negatives.",
+      "source": "3"
+    },
+    {
+      "id": "iq-code-bits",
+      "concept": "insert-query",
+      "type": "code",
+      "difficulty": 2,
+      "prompt": "Rebuild the bit array (exercise 01-bit-array).",
+      "exercise": "01-bit-array"
+    },
+    {
+      "id": "iq-code-filter",
+      "concept": "insert-query",
+      "type": "code",
+      "difficulty": 3,
+      "prompt": "Rebuild insert and query (exercise 02-bloom-filter).",
+      "exercise": "02-bloom-filter"
+    },
+    {
+      "id": "fp-rate",
+      "concept": "false-positives",
+      "type": "numeric",
+      "difficulty": 3,
+      "prompt": "m = 1000 bits, n = 100 items, k = 7. Using p = (1 - e^(-kn/m))^k, what is the false-positive rate? Give a decimal to 4 places.",
+      "answer": 0.0082,
+      "tolerance": 0.0002,
+      "explanation": "kn/m = 0.7, e^-0.7 = 0.4966, 1 - 0.4966 = 0.5034, and 0.5034^7 = 0.0082.",
+      "source": "4"
+    },
+    {
+      "id": "fp-fill",
+      "concept": "false-positives",
+      "type": "mcq",
+      "difficulty": 2,
+      "prompt": "You keep inserting items into a fixed-size filter. What happens to the false-positive rate?",
+      "options": [
+        {
+          "text": "It stays the same",
+          "rationale": "More inserts set more bits, so absent items find all their bits set more often."
+        },
+        {
+          "text": "It rises",
+          "rationale": "Correct. The rate depends on kn/m, which grows with n."
+        },
+        {
+          "text": "It falls",
+          "rationale": "Fuller filters make accidental matches more likely, not less."
+        },
+        {
+          "text": "It rises until half full, then falls",
+          "rationale": "It keeps rising; a full filter says yes to everything."
+        }
+      ],
+      "answer": 1,
+      "source": "4"
+    },
+    {
+      "id": "fp-teachback",
+      "concept": "false-positives",
+      "type": "teachback",
+      "difficulty": 3,
+      "prompt": "Explain to a friend where false positives come from and why they get more common as the filter fills.",
+      "rubric": {
+        "required": [
+          {
+            "id": "others-set",
+            "idea": "Other items set all k bits by chance",
+            "synonyms": [
+              "other items",
+              "by chance",
+              "happened to set",
+              "already set by",
+              "collide",
+              "collision",
+              "overlap"
+            ]
+          },
+          {
+            "id": "fills",
+            "idea": "More inserts mean more bits set to 1",
+            "synonyms": [
+              "more items",
+              "more bits",
+              "fills up",
+              "filled",
+              "fuller",
+              "more ones"
+            ]
+          }
+        ],
+        "misconceptions": [
+          {
+            "id": "fp-constant",
+            "description": "Thinks the rate is fixed",
+            "synonyms": [
+              "rate is fixed",
+              "rate stays the same",
+              "constant rate"
+            ]
+          }
+        ]
+      },
+      "modelAnswer": "A false positive happens when other items have, between them, set every one of the k bits a new item checks. Each insert sets more bits to 1, so the fuller the filter, the more likely that is.",
+      "source": "4"
+    },
+    {
+      "id": "fp-code",
+      "concept": "false-positives",
+      "type": "code",
+      "difficulty": 3,
+      "prompt": "Capstone: compute and measure false-positive rates (exercise 03-sizing).",
+      "exercise": "03-sizing"
+    },
+    {
+      "id": "size-k",
+      "concept": "sizing",
+      "type": "numeric",
+      "difficulty": 2,
+      "prompt": "m = 1000 bits and n = 100 items. What whole number k minimises the false-positive rate, using k = (m/n) ln 2?",
+      "answer": 7,
+      "tolerance": 0,
+      "explanation": "(1000/100) x 0.693 = 6.93, which rounds to 7.",
+      "source": "5"
+    },
+    {
+      "id": "size-more-k",
+      "concept": "sizing",
+      "type": "mcq",
+      "difficulty": 3,
+      "prompt": "Why does adding more hash functions eventually make the false-positive rate worse?",
+      "options": [
+        {
+          "text": "Hashing gets slower",
+          "rationale": "Speed is a separate cost; the question is about the rate."
+        },
+        {
+          "text": "Each insert sets more bits, so the filter fills faster",
+          "rationale": "Correct. Past k = (m/n) ln 2 the extra bits set outweigh the extra bits checked."
+        },
+        {
+          "text": "Hash functions start to collide with each other",
+          "rationale": "Collisions are part of the model already; the problem is the filling."
+        },
+        {
+          "text": "It does not; more hashes always help",
+          "rationale": "The rate has a minimum at k = (m/n) ln 2."
+        }
+      ],
+      "answer": 1,
+      "source": "5"
+    },
+    {
+      "id": "size-teachback",
+      "concept": "sizing",
+      "type": "teachback",
+      "difficulty": 3,
+      "prompt": "Explain to a friend how to size a Bloom filter for a target false-positive rate, including the 1% rule of thumb.",
+      "rubric": {
+        "required": [
+          {
+            "id": "bits-formula",
+            "idea": "m = -n ln p / (ln 2)^2",
+            "synonyms": [
+              "ln p",
+              "log of p",
+              "ln 2 squared",
+              "n ln p",
+              "bits for"
+            ]
+          },
+          {
+            "id": "per-item",
+            "idea": "About 9.6 bits per item for 1%",
+            "synonyms": [
+              "9.6",
+              "ten bits",
+              "10 bits",
+              "about 10"
+            ]
+          },
+          {
+            "id": "best-k",
+            "idea": "Then k = (m/n) ln 2",
+            "synonyms": [
+              "ln 2",
+              "0.69",
+              "half the bits",
+              "optimal k",
+              "best k"
+            ]
+          }
+        ],
+        "misconceptions": [
+          {
+            "id": "more-k-better",
+            "description": "Thinks more hash functions always help",
+            "synonyms": [
+              "more hashes always",
+              "as many hashes as possible",
+              "more hash functions is always better"
+            ]
+          }
+        ],
+        "minRequired": 2
+      },
+      "modelAnswer": "Pick n and the rate p you can live with, then use m = -n ln p / (ln 2)^2 bits: about 9.6 bits per item for 1%. Then choose k = (m/n) ln 2, which leaves about half the bits set.",
+      "source": "5"
+    },
+    {
+      "id": "size-code",
+      "concept": "sizing",
+      "type": "code",
+      "difficulty": 3,
+      "prompt": "Capstone: size a filter and check it against a real one (exercise 03-sizing).",
+      "exercise": "03-sizing"
+    },
+    {
+      "id": "del-why",
+      "concept": "deletion",
+      "type": "mcq",
+      "difficulty": 2,
+      "prompt": "Why can you not delete an item from a plain Bloom filter by clearing its k bits?",
+      "options": [
+        {
+          "text": "Clearing bits is slow",
+          "rationale": "Clearing a bit is as fast as setting one."
+        },
+        {
+          "text": "Other items may share those bits, and would then be missed",
+          "rationale": "Correct. That would create false negatives, which the filter promises never to give (Section 6)."
+        },
+        {
+          "text": "Bits can only be set once by hardware",
+          "rationale": "The array is ordinary memory."
+        },
+        {
+          "text": "You can; it works fine",
+          "rationale": "It breaks other items that share a bit."
+        }
+      ],
+      "answer": 1,
+      "source": "6"
+    },
+    {
+      "id": "del-counting",
+      "concept": "deletion",
+      "type": "short",
+      "difficulty": 2,
+      "prompt": "How does a counting Bloom filter support deletion, and what does it cost?",
+      "rubric": {
+        "required": [
+          {
+            "id": "counters",
+            "idea": "Each position holds a counter instead of a bit",
+            "synonyms": [
+              "counter",
+              "count",
+              "number instead of a bit"
+            ]
+          },
+          {
+            "id": "inc-dec",
+            "idea": "Insert increments and delete decrements",
+            "synonyms": [
+              "increment",
+              "decrement",
+              "add one",
+              "subtract one",
+              "goes up",
+              "goes down"
+            ]
+          },
+          {
+            "id": "cost",
+            "idea": "It needs more memory",
+            "synonyms": [
+              "more memory",
+              "more space",
+              "bigger",
+              "several times"
+            ]
+          }
+        ],
+        "minRequired": 2
+      },
+      "modelAnswer": "It stores a small counter at each position. Inserting increments the k counters and deleting decrements them, so shared positions stay non-zero. It costs several times more memory.",
+      "source": "6"
+    },
+    {
+      "id": "del-teachback",
+      "concept": "deletion",
+      "type": "teachback",
+      "difficulty": 2,
+      "prompt": "Explain to a friend why deleting from a Bloom filter is a problem and how counting filters fix it.",
+      "rubric": {
+        "required": [
+          {
+            "id": "shared",
+            "idea": "Bits are shared between items",
+            "synonyms": [
+              "shared",
+              "share",
+              "other items",
+              "overlap"
+            ]
+          },
+          {
+            "id": "fn",
+            "idea": "Clearing them would cause false negatives",
+            "synonyms": [
+              "false negative",
+              "miss",
+              "would say no",
+              "definitely not"
+            ]
+          },
+          {
+            "id": "counting",
+            "idea": "Counters instead of bits allow decrementing",
+            "synonyms": [
+              "counter",
+              "counting",
+              "decrement"
+            ]
+          }
+        ],
+        "misconceptions": [
+          {
+            "id": "clear-bits",
+            "description": "Thinks deleting means clearing the bits",
+            "synonyms": [
+              "just clear the bits",
+              "set the bits back to 0",
+              "clear its bits"
+            ]
+          }
+        ],
+        "minRequired": 2
+      },
+      "modelAnswer": "Several items can share a bit, so clearing one item's bits can wipe out bits other items need, and they would start getting 'definitely not': false negatives. A counting filter keeps a counter per position, so delete can decrement without erasing other items.",
+      "source": "6"
+    }
+  ]
+}

@@ -1,0 +1,11 @@
+{
+  "id": "03-sizing",
+  "title": "Capstone: size a filter",
+  "language": "javascript",
+  "concepts": ["false-positives", "sizing"],
+  "starter": "sizing.mjs",
+  "tests": "sizing.test.mjs",
+  "support": ["bit-array.mjs", "hash.mjs", "bloom.mjs"],
+  "capstone": true,
+  "timeoutMs": 20000
+}

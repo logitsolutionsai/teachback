@@ -1,0 +1,95 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/logitsolutionsai/teachback/schema/learner.schema.json",
+  "title": "teachback learner.json",
+  "description": "The learner record. events is the source of truth; mastery, reviews, exercises, history and rebuiltAt are recomputed from it on every write.",
+  "type": "object",
+  "required": ["schema", "createdAt", "settings", "events"],
+  "properties": {
+    "schema": { "const": "teachback/learner@1" },
+    "course": { "type": "string" },
+    "createdAt": { "type": "string" },
+    "updatedAt": { "type": "string" },
+    "settings": {
+      "type": "object",
+      "required": ["utcOffsetMinutes"],
+      "properties": {
+        "utcOffsetMinutes": { "type": "integer", "minimum": -840, "maximum": 840, "description": "Fixed offset used to turn timestamps into calendar days for reviews." },
+        "model": { "type": "object" }
+      }
+    },
+    "mastery": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "required": ["pL", "mastered", "attempts"],
+        "properties": {
+          "pL": { "type": "number", "minimum": 0, "maximum": 1 },
+          "mastered": { "type": "boolean" },
+          "attempts": { "type": "integer", "minimum": 0 },
+          "correct": { "type": "integer", "minimum": 0 },
+          "partial": { "type": "integer", "minimum": 0 },
+          "wrong": { "type": "integer", "minimum": 0 },
+          "lastSeen": { "type": ["string", "null"] },
+          "firstMasteredAt": { "type": ["string", "null"] },
+          "teachbackPassed": { "type": "boolean" }
+        }
+      }
+    },
+    "reviews": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "properties": {
+          "attempts": { "type": "integer" },
+          "lastResult": { "enum": ["correct", "partial", "wrong", null] },
+          "lastSeen": { "type": ["string", "null"] },
+          "reps": { "type": "integer", "minimum": 0 },
+          "ease": { "type": "number" },
+          "interval": { "type": "integer", "minimum": 0 },
+          "lapses": { "type": "integer", "minimum": 0 },
+          "dueDay": { "type": ["string", "null"] },
+          "lastDay": { "type": ["string", "null"] }
+        }
+      }
+    },
+    "exercises": { "type": "object" },
+    "history": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["day", "mastered", "meanMastery"],
+        "properties": {
+          "day": { "type": "string" },
+          "mastered": { "type": "integer" },
+          "meanMastery": { "type": "number" }
+        }
+      }
+    },
+    "rebuiltAt": { "type": ["string", "null"] },
+    "events": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["t", "type"],
+        "properties": {
+          "t": { "type": "string" },
+          "type": { "enum": ["answer", "run"] },
+          "item": { "type": "string" },
+          "concept": { "type": "string" },
+          "result": { "enum": ["correct", "partial", "wrong"] },
+          "confidence": { "type": "integer", "minimum": 1, "maximum": 4 },
+          "mode": { "enum": ["learn", "review", "pretest"] },
+          "note": { "type": "string" },
+          "answer": { "type": "string" },
+          "exercise": { "type": "string" },
+          "status": { "enum": ["passed", "failed", "timeout", "error"] },
+          "passed": { "type": "integer" },
+          "failed": { "type": "integer" },
+          "total": { "type": "integer" },
+          "file": { "type": "string" }
+        }
+      }
+    }
+  }
+}

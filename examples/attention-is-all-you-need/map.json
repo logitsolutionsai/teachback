@@ -1,0 +1,184 @@
+{
+  "schema": "teachback/map@1",
+  "concepts": [
+    {
+      "id": "softmax",
+      "name": "Softmax: scores to weights",
+      "summary": "Softmax turns a list of real-valued scores into a probability distribution: exponentiate each score, then divide by the sum of the exponentials. Every weight is positive, the weights sum to 1, and a larger score always gets a larger weight. The Transformer uses softmax in two places: inside attention, to turn query-key scores into weights over the values (Section 3.2.1), and at the output, to turn the decoder's final linear projection into next-token probabilities (Section 3.4). Adding the same constant to every score leaves the result unchanged, while multiplying every score by a factor above 1 makes the distribution more peaked. Implementations subtract the largest score before exponentiating to avoid overflow; that is standard practice rather than something the paper discusses.",
+      "sources": [
+        { "section": "3.2.1", "label": "Scaled Dot-Product Attention" },
+        { "section": "3.4", "label": "Embeddings and Softmax" }
+      ],
+      "prerequisites": [],
+      "difficulty": 1,
+      "misconceptions": [
+        { "id": "softmax-linear", "description": "Thinks softmax divides each raw score by the sum of the scores; it exponentiates first." },
+        { "id": "softmax-scale-invariant", "description": "Thinks multiplying every score by a constant leaves softmax unchanged; only adding a constant does." }
+      ]
+    },
+    {
+      "id": "qkv-attention",
+      "name": "Attention: queries, keys, values",
+      "summary": "The paper defines an attention function as a mapping from a query and a set of key-value pairs to an output. The output is a weighted sum of the values, and each value's weight comes from a compatibility function between the query and that value's key. A useful picture is a soft dictionary lookup: instead of returning the one value whose key matches exactly, attention returns a blend of all the values, weighted by how well each key matches the query. Queries, keys and values are all vectors; in self-attention they are all computed from the same sequence.",
+      "sources": [{ "section": "3.2", "label": "Attention" }],
+      "prerequisites": ["softmax"],
+      "difficulty": 2,
+      "misconceptions": [
+        { "id": "values-are-weights", "description": "Thinks the values are the attention weights; the weights come from queries and keys, and the values are what gets mixed." },
+        { "id": "hard-lookup", "description": "Thinks attention returns only the best-matching value; it returns a weighted blend of all values." }
+      ]
+    },
+    {
+      "id": "scaled-dot-product",
+      "name": "Scaled dot-product attention",
+      "summary": "The Transformer computes Attention(Q, K, V) = softmax(QKᵀ / √d_k) V: the dot product of each query with every key, divided by √d_k, passed through softmax to get weights, which then average the values. Dot-product attention is faster and more space-efficient in practice than additive attention because it is plain matrix multiplication. The scaling matters: the authors suspect that for large d_k the dot products grow large in magnitude and push the softmax into regions where it has extremely small gradients. If the components of a query and a key are independent with mean 0 and variance 1, their dot product has mean 0 and variance d_k, so dividing by √d_k brings the variance back to 1.",
+      "sources": [
+        { "section": "3.2.1", "label": "Scaled Dot-Product Attention, Equation 1" },
+        { "section": "3.2.1 footnote 4", "label": "Variance of the dot product" }
+      ],
+      "prerequisites": ["qkv-attention"],
+      "difficulty": 3,
+      "misconceptions": [
+        { "id": "scale-by-dk", "description": "Divides the scores by d_k instead of by its square root." },
+        { "id": "scale-for-speed", "description": "Thinks the scaling makes attention faster; it keeps softmax out of its saturated, small-gradient regime." },
+        { "id": "scale-after-softmax", "description": "Applies the scaling after softmax; it is applied to the scores before softmax." }
+      ]
+    },
+    {
+      "id": "masking",
+      "name": "Masking future positions",
+      "summary": "The decoder generates its output one token at a time, so during training position i must not see the positions after it. The paper preserves this auto-regressive property inside scaled dot-product attention by masking: every score that corresponds to an illegal connection (a query attending to a later key) is set to minus infinity before the softmax, so its weight becomes exactly 0 and the remaining weights still sum to 1. Together with offsetting the output embeddings by one position, this ensures that the prediction for position i depends only on the known outputs at positions before i. Encoder self-attention is not masked this way: every encoder position may attend to every other.",
+      "sources": [
+        { "section": "3.1", "label": "Decoder" },
+        { "section": "3.2.3", "label": "Applications of Attention in our Model" }
+      ],
+      "prerequisites": ["scaled-dot-product"],
+      "difficulty": 2,
+      "misconceptions": [
+        { "id": "mask-after-softmax", "description": "Zeroes weights after the softmax; the paper sets scores to minus infinity before it, so the remaining weights still sum to 1." },
+        { "id": "mask-zero-score", "description": "Sets masked scores to 0; a score of 0 still receives weight, so it must be minus infinity." },
+        { "id": "mask-in-encoder", "description": "Thinks the encoder uses the same mask; only decoder self-attention does." }
+      ]
+    },
+    {
+      "id": "multi-head",
+      "name": "Multi-head attention",
+      "summary": "Instead of one attention function over d_model-dimensional vectors, the Transformer projects the queries, keys and values h times with different learned linear projections (to d_k, d_k and d_v dimensions), runs attention on each projection in parallel, concatenates the h outputs and projects them once more with W^O. The base model uses h = 8 heads with d_k = d_v = d_model / h = 64. Because each head works in a smaller dimension, the total computational cost is similar to single-head attention with full dimensionality. The paper's motivation is that multiple heads let the model jointly attend to information from different representation subspaces at different positions, which averaging in a single head inhibits.",
+      "sources": [{ "section": "3.2.2", "label": "Multi-Head Attention" }],
+      "prerequisites": ["scaled-dot-product"],
+      "difficulty": 3,
+      "misconceptions": [
+        { "id": "heads-share-weights", "description": "Thinks all heads use the same projection; each head has its own learned projection matrices." },
+        { "id": "heads-cost-h-times", "description": "Thinks h heads cost h times as much as one head; each head is d_model / h wide, so the total is similar." },
+        { "id": "heads-split-sequence", "description": "Thinks each head looks at a different part of the sequence; every head sees all positions, in its own projected subspace." }
+      ]
+    },
+    {
+      "id": "why-self-attention",
+      "name": "Why self-attention",
+      "summary": "Recurrent networks compute hidden states one position after another, which rules out parallelisation within a training example (Section 1). Section 4 compares layer types on three criteria: total computation per layer, the minimum number of sequential operations, and the maximum path length between any two positions. Per Table 1, a self-attention layer connects all positions with O(1) sequential operations and O(1) path length at O(n²·d) cost per layer, while a recurrent layer needs O(n) sequential operations and has O(n) path length at O(n·d²) cost. A single convolutional layer with kernel width k < n does not connect all pairs of positions, so it needs a stack of O(n/k) layers, or O(log_k n) with dilated convolutions. Self-attention is cheaper than recurrence when the sequence length n is smaller than the representation size d, and shorter paths make long-range dependencies easier to learn.",
+      "sources": [
+        { "section": "4", "label": "Why Self-Attention" },
+        { "section": "Table 1", "label": "Complexity, sequential operations and path length" },
+        { "section": "1", "label": "Introduction" }
+      ],
+      "prerequisites": ["qkv-attention"],
+      "difficulty": 3,
+      "misconceptions": [
+        { "id": "attention-linear-cost", "description": "Thinks self-attention cost grows linearly with sequence length; it is quadratic in n per layer." },
+        { "id": "rnn-parallel", "description": "Thinks recurrent layers process all positions in parallel during training; each step waits for the previous hidden state." }
+      ]
+    },
+    {
+      "id": "embeddings",
+      "name": "Embeddings and output softmax",
+      "summary": "Input and output tokens are turned into vectors of dimension d_model by learned embeddings, and the decoder's final output passes through a learned linear transformation and a softmax to give next-token probabilities. The paper shares one weight matrix between the two embedding layers and the pre-softmax linear transformation, and in the embedding layers multiplies those weights by √d_model. All sub-layers and the embedding layers produce outputs of the same dimension, d_model = 512 in the base model, which keeps the residual connections simple.",
+      "sources": [
+        { "section": "3.4", "label": "Embeddings and Softmax" },
+        { "section": "3.1", "label": "d_model = 512" }
+      ],
+      "prerequisites": ["softmax"],
+      "difficulty": 2,
+      "misconceptions": [
+        { "id": "embedding-fixed", "description": "Thinks token vectors are fixed codes such as one-hot vectors; the embeddings are learned." },
+        { "id": "separate-output-matrix", "description": "Assumes the output projection has its own weights; the paper shares it with the embedding layers." }
+      ]
+    },
+    {
+      "id": "positional-encoding",
+      "name": "Sinusoidal positional encoding",
+      "summary": "Attention by itself ignores order: shuffle the input positions and each output is shuffled the same way. Since the model has no recurrence and no convolution, the paper adds positional encodings to the input embeddings at the bottom of the encoder and decoder stacks, with the same dimension d_model so the two can be summed. It uses sines and cosines of different frequencies: PE(pos, 2i) = sin(pos / 10000^(2i/d_model)) and PE(pos, 2i+1) = cos(pos / 10000^(2i/d_model)), so the wavelengths form a geometric progression from 2π to 10000·2π. The authors chose this because, for any fixed offset k, PE(pos+k) is a linear function of PE(pos), which they hypothesised would make attending by relative position easy. Learned positional embeddings gave nearly identical results; sinusoids were kept because they may let the model extrapolate to sequences longer than those seen in training.",
+      "sources": [
+        { "section": "3.5", "label": "Positional Encoding" },
+        { "section": "Table 3 row (E)", "label": "Learned positional embeddings" }
+      ],
+      "prerequisites": ["embeddings", "scaled-dot-product"],
+      "difficulty": 3,
+      "misconceptions": [
+        { "id": "pe-concatenated", "description": "Thinks positional encodings are concatenated to the embeddings; they are added, which is why they share d_model." },
+        { "id": "pe-learned-better", "description": "Thinks learned positional embeddings clearly beat sinusoids in the paper; the results were nearly identical." },
+        { "id": "pe-single-frequency", "description": "Thinks every dimension uses the same frequency; each pair of dimensions has its own wavelength." }
+      ]
+    },
+    {
+      "id": "ffn",
+      "name": "Position-wise feed-forward network",
+      "summary": "Each encoder and decoder layer contains a fully connected feed-forward network that is applied to each position separately and identically: FFN(x) = max(0, xW₁ + b₁)W₂ + b₂, two linear transformations with a ReLU in between. The same weights are used at every position within a layer, but each layer has its own parameters. Another way to describe it is as two convolutions with kernel size 1. The input and output have dimension d_model = 512 and the inner layer has dimension d_ff = 2048. Only attention moves information between positions; the feed-forward network works on each position on its own.",
+      "sources": [{ "section": "3.3", "label": "Position-wise Feed-Forward Networks" }],
+      "prerequisites": ["embeddings"],
+      "difficulty": 2,
+      "misconceptions": [
+        { "id": "ffn-mixes-positions", "description": "Thinks the feed-forward network mixes information across positions; it treats each position independently." },
+        { "id": "ffn-shared-across-layers", "description": "Thinks all layers share one feed-forward network; each layer has its own parameters." }
+      ]
+    },
+    {
+      "id": "residual-norm",
+      "name": "Residuals, layer norm, dropout",
+      "summary": "Every sub-layer, whether self-attention or feed-forward, is wrapped as LayerNorm(x + Sublayer(x)): the sub-layer's output is added to its input (a residual connection) and the sum is layer-normalised. To make these additions possible, all sub-layers and embedding layers output vectors of the same size, d_model = 512. For regularisation, the paper applies dropout to the output of each sub-layer before it is added to the sub-layer input and normalised, and also to the sums of the embeddings and positional encodings, with P_drop = 0.1 in the base model.",
+      "sources": [
+        { "section": "3.1", "label": "Encoder and Decoder Stacks" },
+        { "section": "5.4", "label": "Regularization: Residual Dropout" }
+      ],
+      "prerequisites": ["ffn"],
+      "difficulty": 2,
+      "misconceptions": [
+        { "id": "norm-before-add", "description": "Normalises the sub-layer input before the sub-layer (a later variant); this paper normalises after the residual addition." },
+        { "id": "residual-replaces", "description": "Thinks the residual connection replaces x with Sublayer(x); it adds the two." }
+      ]
+    },
+    {
+      "id": "encoder-decoder",
+      "name": "Encoder and decoder stacks",
+      "summary": "The encoder is a stack of N = 6 identical layers, each with two sub-layers: multi-head self-attention and a position-wise feed-forward network. The decoder is also a stack of N = 6 layers, and it inserts a third sub-layer, encoder-decoder attention, in which the queries come from the previous decoder layer and the keys and values come from the output of the encoder, so every decoder position can attend over all input positions. The model therefore uses attention in three ways: encoder self-attention, masked decoder self-attention, and encoder-decoder attention. The decoder is auto-regressive: when generating the next symbol, it consumes the symbols it has already generated as additional input.",
+      "sources": [
+        { "section": "3.1", "label": "Encoder and Decoder Stacks" },
+        { "section": "3.2.3", "label": "Applications of Attention in our Model" },
+        { "section": "Figure 1", "label": "The Transformer model architecture" }
+      ],
+      "prerequisites": ["multi-head", "masking", "residual-norm", "positional-encoding"],
+      "difficulty": 4,
+      "misconceptions": [
+        { "id": "encdec-queries-from-encoder", "description": "Thinks the queries in encoder-decoder attention come from the encoder; they come from the decoder, and the keys and values from the encoder." },
+        { "id": "decoder-sees-future", "description": "Thinks the decoder sees the whole target sentence during training; masking blocks the later positions." },
+        { "id": "two-sublayers-decoder", "description": "Thinks decoder layers have the same two sub-layers as encoder layers; they have a third, encoder-decoder attention." }
+      ]
+    },
+    {
+      "id": "training",
+      "name": "Training: warmup, label smoothing",
+      "summary": "The models were trained with the Adam optimiser (β₁ = 0.9, β₂ = 0.98, ε = 10⁻⁹) and a learning rate that rises linearly for the first warmup_steps = 4000 steps and then falls in proportion to the inverse square root of the step number: lrate = d_model^-0.5 · min(step^-0.5, step · warmup_steps^-1.5). Regularisation uses residual dropout (P_drop = 0.1 for the base model) and label smoothing with ε_ls = 0.1, which hurts perplexity, because the model learns to be more unsure, but improves accuracy and BLEU score. The base model trained for 100,000 steps, about 12 hours, on one machine with 8 NVIDIA P100 GPUs.",
+      "sources": [
+        { "section": "5.3", "label": "Optimizer" },
+        { "section": "5.4", "label": "Regularization" },
+        { "section": "5.2", "label": "Hardware and Schedule" }
+      ],
+      "prerequisites": ["encoder-decoder"],
+      "difficulty": 3,
+      "misconceptions": [
+        { "id": "ls-improves-perplexity", "description": "Thinks label smoothing improves perplexity; it hurts perplexity but improves accuracy and BLEU." },
+        { "id": "lr-constant", "description": "Thinks the learning rate is constant or only decays; it warms up linearly first." }
+      ]
+    }
+  ]
+}

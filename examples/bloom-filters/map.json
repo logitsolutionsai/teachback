@@ -1,0 +1,59 @@
+{
+  "schema": "teachback/map@1",
+  "concepts": [
+    {
+      "id": "membership",
+      "name": "The membership question",
+      "summary": "Programs often need to know whether they have seen an item before. An exact set answers this but stores every item, so its memory grows with the items themselves. A Bloom filter trades a little exactness for a fixed, small cost of a few bits per item, however long each item is.",
+      "sources": [{ "section": "1", "label": "The Membership Question" }],
+      "prerequisites": [],
+      "difficulty": 1,
+      "misconceptions": [{ "id": "stores-items", "description": "Thinks a Bloom filter stores the items; it only stores bits." }]
+    },
+    {
+      "id": "hashing",
+      "name": "Hash functions as scatter",
+      "summary": "A hash function maps any input to a number: the same input always gives the same number, and different inputs spread evenly over the range. A Bloom filter needs k positions per item. Double hashing derives them from two base hashes as (h1 + i * h2) mod m, which in practice works almost as well as k independent hash functions.",
+      "sources": [{ "section": "2", "label": "Hash Functions As Scatter" }],
+      "prerequisites": [],
+      "difficulty": 2,
+      "misconceptions": [{ "id": "random-hash", "description": "Thinks a hash can give a different answer for the same input; it is deterministic." }]
+    },
+    {
+      "id": "insert-query",
+      "name": "Insert and query",
+      "summary": "A Bloom filter is m bits, all 0 at first, and k hash functions. Inserting an item sets its k bits to 1. A query checks the same k bits: if any is 0 the item was definitely never inserted; if all are 1 it was probably inserted. There are no false negatives, because inserting an item sets every bit a later query for it will check.",
+      "sources": [{ "section": "3", "label": "Insert And Query" }],
+      "prerequisites": ["membership", "hashing"],
+      "difficulty": 2,
+      "misconceptions": [{ "id": "false-negatives", "description": "Thinks a Bloom filter can miss an item that was inserted; it cannot." }]
+    },
+    {
+      "id": "false-positives",
+      "name": "False positives",
+      "summary": "A query answers probably yes wrongly when other items happened to set all k of its bits. After n inserts into m bits with k hashes, a given bit is still 0 with probability about e^(-kn/m), so the false-positive rate is about (1 - e^(-kn/m))^k. The rate rises as the filter fills.",
+      "sources": [{ "section": "4", "label": "False Positives" }],
+      "prerequisites": ["insert-query"],
+      "difficulty": 3,
+      "misconceptions": [{ "id": "fp-constant", "description": "Thinks the false-positive rate is fixed; it rises as more items are added." }]
+    },
+    {
+      "id": "sizing",
+      "name": "Choosing k and m",
+      "summary": "More hash functions check more bits per query but also set more bits per insert. For given m and n the rate is lowest at k = (m/n) ln 2, which leaves about half the bits set, and the rate is then about 0.6185^(m/n). To hold n items at rate p you need about m = -n ln p / (ln 2)^2 bits: roughly 9.6 bits per item for 1%.",
+      "sources": [{ "section": "5", "label": "Choosing The Number Of Hashes And Bits" }],
+      "prerequisites": ["false-positives"],
+      "difficulty": 3,
+      "misconceptions": [{ "id": "more-k-better", "description": "Thinks more hash functions always lower the rate; past the optimum they raise it." }]
+    },
+    {
+      "id": "deletion",
+      "name": "Deletion and counting filters",
+      "summary": "Clearing an item's bits could clear bits that other items rely on, which would create false negatives, so a plain Bloom filter cannot delete. A counting Bloom filter keeps a small counter per position instead of a bit: insert increments, delete decrements. It supports deletion at the cost of several times more memory.",
+      "sources": [{ "section": "6", "label": "Deletion" }],
+      "prerequisites": ["insert-query"],
+      "difficulty": 2,
+      "misconceptions": [{ "id": "clear-bits", "description": "Thinks you can delete by clearing the item's k bits." }]
+    }
+  ]
+}

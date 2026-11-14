@@ -1,0 +1,1547 @@
+{
+  "schema": "teachback/items@1",
+  "items": [
+    {
+      "id": "softmax-weights",
+      "concept": "softmax",
+      "type": "numeric",
+      "difficulty": 1,
+      "prompt": "Apply softmax to the two scores [0, ln 3]. What is the larger of the two weights? Give a decimal.",
+      "answer": 0.75,
+      "tolerance": 0.005,
+      "explanation": "exp(0) = 1 and exp(ln 3) = 3, so the weights are 1/4 and 3/4.",
+      "source": "3.2.1"
+    },
+    {
+      "id": "softmax-scale",
+      "concept": "softmax",
+      "type": "mcq",
+      "difficulty": 2,
+      "prompt": "Every score is multiplied by 10 before softmax. What happens to the weights?",
+      "options": [
+        {
+          "text": "Nothing; softmax ignores scaling",
+          "rationale": "Adding a constant changes nothing, but multiplying does: it stretches the gaps between scores."
+        },
+        {
+          "text": "The largest score's weight moves toward 1; the distribution gets more peaked",
+          "rationale": "Correct. Bigger gaps between scores become exponentially bigger gaps between weights. This is why large dot products push softmax toward a one-hot output."
+        },
+        {
+          "text": "The distribution gets flatter",
+          "rationale": "That happens when you divide the scores by a large number, which is what the 1/√d_k scaling does."
+        },
+        {
+          "text": "Every weight is multiplied by 10",
+          "rationale": "The weights always sum to 1, so they cannot all grow."
+        }
+      ],
+      "answer": 1,
+      "source": "3.2.1"
+    },
+    {
+      "id": "softmax-teachback",
+      "concept": "softmax",
+      "type": "teachback",
+      "difficulty": 2,
+      "prompt": "Explain to a friend what softmax does to a list of scores, and why attention uses it to turn scores into weights.",
+      "rubric": {
+        "required": [
+          {
+            "id": "exponentiate",
+            "idea": "Exponentiates each score",
+            "synonyms": [
+              "exponentiate",
+              "exponential",
+              "exponent",
+              "exp of",
+              "e to the",
+              "e to the power"
+            ]
+          },
+          {
+            "id": "normalise",
+            "idea": "Divides by the sum so the weights add up to 1",
+            "synonyms": [
+              "sum to 1",
+              "sum to one",
+              "add up to 1",
+              "add up to one",
+              "divide by the sum",
+              "divided by the sum",
+              "normalise",
+              "normalize",
+              "probability distribution",
+              "probabilities"
+            ]
+          },
+          {
+            "id": "positive-ordered",
+            "idea": "Weights are positive and bigger scores get bigger weights",
+            "synonyms": [
+              "positive",
+              "bigger score",
+              "larger score",
+              "higher score",
+              "highest score",
+              "more weight",
+              "keeps the order",
+              "preserves the order"
+            ]
+          }
+        ],
+        "misconceptions": [
+          {
+            "id": "softmax-linear",
+            "description": "Thinks softmax divides the raw scores by their sum",
+            "synonyms": [
+              "divide each score by the sum of the scores",
+              "divides the scores by their sum",
+              "score divided by the total score"
+            ]
+          }
+        ],
+        "minRequired": 2
+      },
+      "modelAnswer": "Softmax exponentiates every score and divides by the sum of the exponentials. The results are all positive, add up to 1 and keep the order of the scores, so attention can use them as mixing weights over the values.",
+      "source": "3.2.1"
+    },
+    {
+      "id": "softmax-code",
+      "concept": "softmax",
+      "type": "code",
+      "difficulty": 2,
+      "prompt": "Rebuild softmax in plain Python (exercise 01-softmax).",
+      "exercise": "01-softmax"
+    },
+    {
+      "id": "qkv-output",
+      "concept": "qkv-attention",
+      "type": "mcq",
+      "difficulty": 1,
+      "prompt": "In the paper's description of attention, what is the output for one query?",
+      "options": [
+        {
+          "text": "The value whose key best matches the query",
+          "rationale": "That would be a hard lookup. Attention blends all the values."
+        },
+        {
+          "text": "A weighted sum of the values, with weights from how well each key matches the query",
+          "rationale": "Correct. Section 3.2: the output is a weighted sum of the values, with weights from a compatibility function of the query and each key."
+        },
+        {
+          "text": "A weighted sum of the keys, with weights from the values",
+          "rationale": "The roles are swapped: keys decide the weights, values get mixed."
+        },
+        {
+          "text": "The dot product of the query with each key",
+          "rationale": "Those are the scores, an intermediate step before softmax and the weighted sum."
+        }
+      ],
+      "answer": 1,
+      "source": "3.2"
+    },
+    {
+      "id": "qkv-roles",
+      "concept": "qkv-attention",
+      "type": "short",
+      "difficulty": 2,
+      "prompt": "In attention, what is the job of the keys, and what is the job of the values?",
+      "rubric": {
+        "required": [
+          {
+            "id": "keys-match",
+            "idea": "Keys are compared with the query to decide the weights",
+            "synonyms": [
+              "compared with the query",
+              "compare with the query",
+              "compared to the query",
+              "match the query",
+              "matched against the query",
+              "compatibility",
+              "similarity",
+              "decide the weights",
+              "determine the weights",
+              "how relevant"
+            ]
+          },
+          {
+            "id": "values-content",
+            "idea": "Values are what gets mixed into the output",
+            "synonyms": [
+              "weighted sum of the values",
+              "weighted average of the values",
+              "values are mixed",
+              "values are averaged",
+              "values are combined",
+              "values get mixed",
+              "blend of the values",
+              "what gets returned",
+              "content",
+              "the actual information"
+            ]
+          }
+        ],
+        "misconceptions": [
+          {
+            "id": "values-are-weights",
+            "description": "Treats the values as the weights",
+            "synonyms": [
+              "values are the weights",
+              "values decide the weights",
+              "values give the weights"
+            ]
+          }
+        ]
+      },
+      "modelAnswer": "Each key is compared with the query to produce a score, so the keys decide how much weight each position gets. The values are the content that is mixed together with those weights to form the output.",
+      "source": "3.2"
+    },
+    {
+      "id": "qkv-teachback",
+      "concept": "qkv-attention",
+      "type": "teachback",
+      "difficulty": 2,
+      "prompt": "Explain attention as a soft dictionary lookup to a friend who knows Python dictionaries.",
+      "rubric": {
+        "required": [
+          {
+            "id": "match",
+            "idea": "The query is compared with every key",
+            "synonyms": [
+              "every key",
+              "all the keys",
+              "each key",
+              "all keys",
+              "compare the query",
+              "compared with the query",
+              "similarity",
+              "how well each key matches",
+              "how well it matches"
+            ]
+          },
+          {
+            "id": "blend",
+            "idea": "It returns a weighted mix of all values instead of one value",
+            "synonyms": [
+              "weighted sum",
+              "weighted average",
+              "weighted mix",
+              "blend",
+              "mixture",
+              "mix of all",
+              "combination of the values",
+              "a bit of every value"
+            ]
+          },
+          {
+            "id": "weights",
+            "idea": "The weights come from softmax and sum to 1",
+            "synonyms": [
+              "softmax",
+              "sum to 1",
+              "sum to one",
+              "add up to 1",
+              "add up to one",
+              "probabilities"
+            ]
+          }
+        ],
+        "misconceptions": [
+          {
+            "id": "hard-lookup",
+            "description": "Says attention returns only the best-matching value",
+            "synonyms": [
+              "returns the best match",
+              "returns only the best",
+              "picks the single",
+              "picks one value",
+              "returns one value",
+              "only the closest"
+            ]
+          }
+        ],
+        "minRequired": 2
+      },
+      "modelAnswer": "A dictionary returns the value whose key equals your lookup key. Attention compares the query with every key, turns the match scores into weights with softmax, and returns a weighted blend of all the values, so close matches contribute most.",
+      "source": "3.2"
+    },
+    {
+      "id": "sdpa-formula",
+      "concept": "scaled-dot-product",
+      "type": "mcq",
+      "difficulty": 2,
+      "prompt": "Which expression is the paper's scaled dot-product attention?",
+      "options": [
+        {
+          "text": "softmax(QKᵀ) V / √d_k",
+          "rationale": "The scaling goes inside the softmax, on the scores. Scaling the output afterwards does nothing for the softmax gradients."
+        },
+        {
+          "text": "softmax(QKᵀ / √d_k) V",
+          "rationale": "Correct. Equation 1 in Section 3.2.1."
+        },
+        {
+          "text": "softmax(QKᵀ / d_k) V",
+          "rationale": "Close, but the paper divides by the square root of d_k, which brings the variance of the scores back to 1."
+        },
+        {
+          "text": "softmax(QVᵀ / √d_k) K",
+          "rationale": "Queries are compared with keys, not values, and the weights then mix the values."
+        }
+      ],
+      "answer": 1,
+      "source": "3.2.1"
+    },
+    {
+      "id": "sdpa-variance",
+      "concept": "scaled-dot-product",
+      "type": "numeric",
+      "difficulty": 3,
+      "prompt": "The components of q and k are independent, with mean 0 and variance 1, and d_k = 64. What is the variance of the dot product q·k before scaling?",
+      "answer": 64,
+      "tolerance": 0,
+      "explanation": "q·k is a sum of 64 products, each with mean 0 and variance 1, and the variances add: 64. Dividing by √64 = 8 brings it back to 1.",
+      "source": "3.2.1 footnote 4"
+    },
+    {
+      "id": "sdpa-why-scale",
+      "concept": "scaled-dot-product",
+      "type": "short",
+      "difficulty": 3,
+      "prompt": "Why does the paper divide the dot products by √d_k?",
+      "rubric": {
+        "required": [
+          {
+            "id": "grow-large",
+            "idea": "Without scaling, dot products grow large as d_k grows",
+            "synonyms": [
+              "grow large",
+              "large in magnitude",
+              "get large",
+              "get bigger",
+              "grow with dk",
+              "variance dk",
+              "variance of dk",
+              "variance grows",
+              "magnitude grows",
+              "very large",
+              "too large",
+              "too big"
+            ]
+          },
+          {
+            "id": "small-gradients",
+            "idea": "Large scores push softmax into regions with tiny gradients",
+            "synonyms": [
+              "small gradient",
+              "tiny gradient",
+              "vanishing gradient",
+              "gradients vanish",
+              "saturate",
+              "saturated",
+              "saturation",
+              "one-hot",
+              "very peaked",
+              "extremely small gradients",
+              "gradients are extremely small",
+              "gradients are tiny",
+              "gradients are small",
+              "gradients become tiny",
+              "gradients become small"
+            ]
+          }
+        ],
+        "misconceptions": [
+          {
+            "id": "scale-for-speed",
+            "description": "Thinks the scaling is there for speed",
+            "synonyms": [
+              "faster",
+              "speed up",
+              "for speed",
+              "computational cost",
+              "cheaper"
+            ]
+          },
+          {
+            "id": "scale-by-dk",
+            "description": "Thinks the scores are divided by d_k itself",
+            "synonyms": [
+              "divide by dk",
+              "divided by dk",
+              "dividing by dk"
+            ]
+          }
+        ]
+      },
+      "modelAnswer": "For large d_k the dot products grow large in magnitude (their variance is d_k), which pushes the softmax into regions where its gradients are extremely small. Dividing by √d_k keeps the scores at unit variance.",
+      "source": "3.2.1"
+    },
+    {
+      "id": "sdpa-teachback",
+      "concept": "scaled-dot-product",
+      "type": "teachback",
+      "difficulty": 3,
+      "prompt": "Explain to a friend why we divide by √d_k in scaled dot-product attention. Use the variance argument.",
+      "rubric": {
+        "required": [
+          {
+            "id": "variance-dk",
+            "idea": "A dot product of d_k unit-variance components has variance d_k",
+            "synonyms": [
+              "variance dk",
+              "variance of dk",
+              "variance is dk",
+              "variance grows",
+              "grows with dk",
+              "sum of dk",
+              "variances add",
+              "adds up"
+            ]
+          },
+          {
+            "id": "rescale",
+            "idea": "Dividing by √d_k brings the variance back to 1",
+            "synonyms": [
+              "variance 1",
+              "variance of 1",
+              "variance one",
+              "unit variance",
+              "back to 1",
+              "back to one",
+              "standard deviation 1",
+              "variance back"
+            ]
+          },
+          {
+            "id": "softmax-gradients",
+            "idea": "Otherwise softmax saturates and gradients become tiny",
+            "synonyms": [
+              "small gradient",
+              "tiny gradient",
+              "vanishing gradient",
+              "gradients vanish",
+              "saturate",
+              "saturated",
+              "one-hot",
+              "very peaked",
+              "too peaked",
+              "gradients are extremely small",
+              "gradients are tiny",
+              "gradients are small",
+              "gradients become tiny",
+              "gradients become small"
+            ]
+          }
+        ],
+        "misconceptions": [
+          {
+            "id": "scale-for-speed",
+            "description": "Thinks the scaling is there for speed",
+            "synonyms": [
+              "faster",
+              "speed up",
+              "for speed",
+              "cheaper"
+            ]
+          },
+          {
+            "id": "scale-by-dk",
+            "description": "Thinks the scores are divided by d_k itself",
+            "synonyms": [
+              "divide by dk",
+              "divided by dk",
+              "dividing by dk"
+            ]
+          }
+        ],
+        "minRequired": 2
+      },
+      "modelAnswer": "A dot product adds up d_k products; if each has variance 1, the sum has variance d_k, so scores get bigger as d_k grows. Big scores make softmax nearly one-hot, where its gradients are tiny and learning stalls. Dividing by √d_k brings the variance back to 1.",
+      "source": "3.2.1"
+    },
+    {
+      "id": "sdpa-code",
+      "concept": "scaled-dot-product",
+      "type": "code",
+      "difficulty": 3,
+      "prompt": "Rebuild scaled dot-product attention on small matrices (exercise 02-scaled-dot-product).",
+      "exercise": "02-scaled-dot-product"
+    },
+    {
+      "id": "mask-how",
+      "concept": "masking",
+      "type": "mcq",
+      "difficulty": 2,
+      "prompt": "To stop position 2 from attending to position 4 in decoder self-attention, what does the paper do?",
+      "options": [
+        {
+          "text": "Set that weight to 0 after the softmax",
+          "rationale": "The remaining weights would no longer sum to 1. The paper masks the score before the softmax instead."
+        },
+        {
+          "text": "Set that score to minus infinity before the softmax",
+          "rationale": "Correct. exp(minus infinity) = 0, so the weight is exactly 0 and the other weights still sum to 1 (Section 3.2.3)."
+        },
+        {
+          "text": "Set that score to 0 before the softmax",
+          "rationale": "A score of 0 still gets weight exp(0) = 1 before normalising, so information would leak."
+        },
+        {
+          "text": "Delete position 4 from the input",
+          "rationale": "Position 4 is still needed as a query and as a key for later positions."
+        }
+      ],
+      "answer": 1,
+      "source": "3.2.3"
+    },
+    {
+      "id": "mask-count",
+      "concept": "masking",
+      "type": "numeric",
+      "difficulty": 2,
+      "prompt": "A decoder sequence has 4 positions. With the causal mask, how many of the 16 query-key pairs are allowed (not masked)?",
+      "answer": 10,
+      "tolerance": 0,
+      "explanation": "Position i may attend to positions 1 to i: 1 + 2 + 3 + 4 = 10.",
+      "source": "3.2.3"
+    },
+    {
+      "id": "mask-teachback",
+      "concept": "masking",
+      "type": "teachback",
+      "difficulty": 3,
+      "prompt": "Explain to a friend why the decoder needs masking during training, and how setting scores to minus infinity does the job.",
+      "rubric": {
+        "required": [
+          {
+            "id": "no-future",
+            "idea": "Position i must not see later positions",
+            "polarity": "negative",
+            "synonyms": [
+              "future",
+              "later positions",
+              "later tokens",
+              "later words",
+              "subsequent",
+              "positions after",
+              "tokens after",
+              "words after",
+              "ahead",
+              "cheat",
+              "peek",
+              "cannot see the future",
+              "cannot see later",
+              "must not see",
+              "must not attend",
+              "should not see",
+              "not attend to later"
+            ]
+          },
+          {
+            "id": "auto-regressive",
+            "idea": "Generation happens one token at a time",
+            "synonyms": [
+              "auto-regressive",
+              "autoregressive",
+              "one token at a time",
+              "one word at a time",
+              "one at a time",
+              "left to right",
+              "already generated",
+              "previously generated"
+            ]
+          },
+          {
+            "id": "neg-inf",
+            "idea": "Minus infinity before softmax gives a weight of exactly 0",
+            "synonyms": [
+              "minus infinity",
+              "negative infinity",
+              "infinity",
+              "weight of 0",
+              "weight of zero",
+              "zero weight",
+              "weight 0",
+              "becomes 0",
+              "becomes zero"
+            ]
+          }
+        ],
+        "misconceptions": [
+          {
+            "id": "mask-after-softmax",
+            "description": "Zeroes weights after the softmax",
+            "synonyms": [
+              "zero the weights after the softmax",
+              "set the weights to 0 after",
+              "mask after the softmax",
+              "masked after the softmax"
+            ]
+          },
+          {
+            "id": "mask-zero-score",
+            "description": "Sets masked scores to 0",
+            "synonyms": [
+              "set the score to 0",
+              "set the scores to 0",
+              "score to zero",
+              "scores to zero"
+            ]
+          }
+        ],
+        "minRequired": 2
+      },
+      "modelAnswer": "At inference the decoder writes one token at a time and cannot see the future, so in training position i must not attend to later positions either, or it would learn to copy the answer. Setting those scores to minus infinity before the softmax makes their weights exactly 0 while the rest still sum to 1.",
+      "source": "3.2.3"
+    },
+    {
+      "id": "mask-code",
+      "concept": "masking",
+      "type": "code",
+      "difficulty": 2,
+      "prompt": "Rebuild the causal mask and masked attention (exercise 03-masking).",
+      "exercise": "03-masking"
+    },
+    {
+      "id": "mh-dk",
+      "concept": "multi-head",
+      "type": "numeric",
+      "difficulty": 1,
+      "prompt": "In the base model, d_model = 512 and there are h = 8 heads. What is d_k for each head?",
+      "answer": 64,
+      "tolerance": 0,
+      "explanation": "d_k = d_v = d_model / h = 512 / 8 = 64 (Section 3.2.2).",
+      "source": "3.2.2"
+    },
+    {
+      "id": "mh-why",
+      "concept": "multi-head",
+      "type": "mcq",
+      "difficulty": 3,
+      "prompt": "What reason does the paper give for using several attention heads?",
+      "options": [
+        {
+          "text": "Several heads are much faster than one",
+          "rationale": "Total cost is similar to one full-width head, because each head is narrower."
+        },
+        {
+          "text": "They let the model attend to information from different representation subspaces at different positions",
+          "rationale": "Correct. Section 3.2.2: with a single head, averaging inhibits this."
+        },
+        {
+          "text": "Each head can process a different part of the sequence",
+          "rationale": "Every head sees every position; heads differ in their learned projections, not in which positions they see."
+        },
+        {
+          "text": "They reduce the number of parameters",
+          "rationale": "The paper does not claim this; the projections add up to about the same size as one full-width head."
+        }
+      ],
+      "answer": 1,
+      "source": "3.2.2"
+    },
+    {
+      "id": "mh-teachback",
+      "concept": "multi-head",
+      "type": "teachback",
+      "difficulty": 3,
+      "prompt": "Explain multi-head attention to a friend: what each head computes, how the heads are combined, and why bother.",
+      "rubric": {
+        "required": [
+          {
+            "id": "own-projections",
+            "idea": "Each head has its own learned projections of Q, K and V",
+            "synonyms": [
+              "own projection",
+              "own projections",
+              "different projection",
+              "different projections",
+              "separate projection",
+              "different learned",
+              "own weights",
+              "separate weights",
+              "projected differently",
+              "linear projection",
+              "own learned",
+              "own matrices"
+            ]
+          },
+          {
+            "id": "concat-project",
+            "idea": "Head outputs are concatenated and projected with W^O",
+            "synonyms": [
+              "concatenate",
+              "concatenated",
+              "concat",
+              "stacked side by side",
+              "joined",
+              "w o",
+              "wo",
+              "output projection",
+              "projected again",
+              "project again"
+            ]
+          },
+          {
+            "id": "subspaces",
+            "idea": "Heads can attend to different representation subspaces",
+            "synonyms": [
+              "subspace",
+              "subspaces",
+              "different aspects",
+              "different relationships",
+              "different kinds of relationship",
+              "different features",
+              "different patterns",
+              "different things"
+            ]
+          }
+        ],
+        "misconceptions": [
+          {
+            "id": "heads-share-weights",
+            "description": "Thinks the heads share one projection",
+            "synonyms": [
+              "same projection",
+              "same weights",
+              "share the weights",
+              "share weights"
+            ]
+          },
+          {
+            "id": "heads-split-sequence",
+            "description": "Thinks each head sees a different part of the sequence",
+            "synonyms": [
+              "different part of the sequence",
+              "different parts of the sequence",
+              "split the sentence",
+              "each head gets some of the words"
+            ]
+          }
+        ],
+        "minRequired": 2
+      },
+      "modelAnswer": "Each head projects the queries, keys and values with its own learned matrices into a smaller space (64 dimensions in the base model) and runs attention there. The heads' outputs are concatenated and projected back with W^O. Different heads can pick up different kinds of relationship, which one averaged head would blur together, at about the same total cost.",
+      "source": "3.2.2"
+    },
+    {
+      "id": "mh-code",
+      "concept": "multi-head",
+      "type": "code",
+      "difficulty": 3,
+      "prompt": "Rebuild multi-head attention with per-head projections (exercise 04-multi-head).",
+      "exercise": "04-multi-head"
+    },
+    {
+      "id": "why-path",
+      "concept": "why-self-attention",
+      "type": "mcq",
+      "difficulty": 2,
+      "prompt": "According to Table 1, what is the maximum path length between two positions in a self-attention layer?",
+      "options": [
+        {
+          "text": "O(1)",
+          "rationale": "Correct. Every position attends to every other position directly."
+        },
+        {
+          "text": "O(log_k n)",
+          "rationale": "That is a stack of dilated convolutions."
+        },
+        {
+          "text": "O(n)",
+          "rationale": "That is a recurrent layer, where information passes step by step."
+        },
+        {
+          "text": "O(n²)",
+          "rationale": "n² appears in the cost of self-attention, not in its path length."
+        }
+      ],
+      "answer": 0,
+      "source": "Table 1"
+    },
+    {
+      "id": "why-ratio",
+      "concept": "why-self-attention",
+      "type": "numeric",
+      "difficulty": 3,
+      "prompt": "Table 1 puts self-attention at O(n²·d) per layer and recurrence at O(n·d²). For n = 50 tokens and d = 512, what is the ratio of self-attention cost to recurrent cost, ignoring constants? Give a decimal.",
+      "answer": 0.09765625,
+      "tolerance": 0.001,
+      "explanation": "n²·d / (n·d²) = n / d = 50 / 512 ≈ 0.098. Self-attention is cheaper whenever n < d.",
+      "source": "4"
+    },
+    {
+      "id": "why-teachback",
+      "concept": "why-self-attention",
+      "type": "teachback",
+      "difficulty": 3,
+      "prompt": "Explain to a friend the three criteria Section 4 uses to compare self-attention with recurrence, and how self-attention does on each.",
+      "rubric": {
+        "required": [
+          {
+            "id": "compute",
+            "idea": "Computation per layer: cheaper when n is smaller than d",
+            "synonyms": [
+              "computational complexity",
+              "complexity per layer",
+              "computation per layer",
+              "cost per layer",
+              "total computation",
+              "cheaper",
+              "n smaller than d",
+              "n less than d",
+              "quadratic"
+            ]
+          },
+          {
+            "id": "parallel",
+            "idea": "Parallelisable: O(1) sequential operations",
+            "synonyms": [
+              "parallel",
+              "parallelize",
+              "parallelise",
+              "parallelization",
+              "parallelisation",
+              "sequential operations",
+              "all at once",
+              "simultaneously"
+            ]
+          },
+          {
+            "id": "path",
+            "idea": "Short paths for long-range dependencies",
+            "synonyms": [
+              "path length",
+              "long-range",
+              "long range",
+              "distant",
+              "far apart",
+              "shorter path",
+              "short path",
+              "constant path"
+            ]
+          }
+        ],
+        "misconceptions": [
+          {
+            "id": "attention-linear-cost",
+            "description": "Thinks self-attention cost grows linearly with sequence length",
+            "synonyms": [
+              "linear in the sequence length",
+              "linear cost",
+              "linear in n",
+              "grows linearly"
+            ]
+          }
+        ],
+        "minRequired": 3
+      },
+      "modelAnswer": "Section 4 compares the computation per layer, how much can run in parallel (minimum sequential operations) and the longest path a signal travels between two positions. Self-attention costs O(n²·d), which is cheaper than recurrence's O(n·d²) when n < d; it needs O(1) sequential steps instead of O(n); and any two positions are one step apart, which makes long-range dependencies easier to learn.",
+      "source": "4"
+    },
+    {
+      "id": "emb-dmodel",
+      "concept": "embeddings",
+      "type": "numeric",
+      "difficulty": 1,
+      "prompt": "What is d_model, the size of every embedding and every sub-layer output, in the base model?",
+      "answer": 512,
+      "tolerance": 0,
+      "explanation": "Section 3.1: all sub-layers and the embedding layers produce outputs of dimension d_model = 512.",
+      "source": "3.1"
+    },
+    {
+      "id": "emb-shared",
+      "concept": "embeddings",
+      "type": "mcq",
+      "difficulty": 3,
+      "prompt": "Which weights does the paper share?",
+      "options": [
+        {
+          "text": "The query projections of the encoder and the decoder",
+          "rationale": "Attention projections are not shared in the paper."
+        },
+        {
+          "text": "The two embedding layers and the pre-softmax linear transformation",
+          "rationale": "Correct. Section 3.4, which also multiplies the embedding weights by √d_model."
+        },
+        {
+          "text": "The feed-forward networks of all layers",
+          "rationale": "Each layer has its own feed-forward parameters (Section 3.3)."
+        },
+        {
+          "text": "None; every layer has its own weights",
+          "rationale": "The embedding and output layers do share one matrix."
+        }
+      ],
+      "answer": 1,
+      "source": "3.4"
+    },
+    {
+      "id": "emb-teachback",
+      "concept": "embeddings",
+      "type": "teachback",
+      "difficulty": 2,
+      "prompt": "Explain to a friend how tokens enter the Transformer and how it turns its final vectors back into a next-token prediction.",
+      "rubric": {
+        "required": [
+          {
+            "id": "learned-embedding",
+            "idea": "Tokens become learned vectors of size d_model",
+            "synonyms": [
+              "embedding",
+              "embeddings",
+              "embedded",
+              "learned vector",
+              "lookup table",
+              "vector of size",
+              "512"
+            ]
+          },
+          {
+            "id": "output-softmax",
+            "idea": "A linear layer then softmax gives next-token probabilities",
+            "synonyms": [
+              "softmax",
+              "probabilities",
+              "probability distribution",
+              "linear layer",
+              "linear transformation",
+              "projection"
+            ]
+          },
+          {
+            "id": "shared",
+            "idea": "The embedding and output weights are shared",
+            "synonyms": [
+              "shared",
+              "share",
+              "same weight matrix",
+              "same matrix",
+              "tied",
+              "tie the weights"
+            ]
+          }
+        ],
+        "misconceptions": [
+          {
+            "id": "embedding-fixed",
+            "description": "Thinks the token vectors are fixed codes",
+            "synonyms": [
+              "fixed embedding",
+              "fixed embeddings",
+              "not learned",
+              "hand-coded",
+              "hand coded"
+            ]
+          }
+        ],
+        "minRequired": 2
+      },
+      "modelAnswer": "Each token is looked up in a learned embedding table that gives a 512-dimensional vector (scaled by √d_model). At the top, the decoder's vector goes through a linear layer and a softmax to give a probability for every token in the vocabulary. The paper uses the same weight matrix for both embedding tables and that output layer.",
+      "source": "3.4"
+    },
+    {
+      "id": "pe-why",
+      "concept": "positional-encoding",
+      "type": "mcq",
+      "difficulty": 2,
+      "prompt": "Why does the Transformer need positional encodings at all?",
+      "options": [
+        {
+          "text": "Attention alone ignores token order, and there is no recurrence or convolution to supply it",
+          "rationale": "Correct. Shuffle the inputs and attention's outputs are just shuffled the same way (Section 3.5)."
+        },
+        {
+          "text": "To make the embeddings larger",
+          "rationale": "The encodings have the same size as the embeddings and are added, so nothing gets larger."
+        },
+        {
+          "text": "To mask future positions",
+          "rationale": "Masking is a separate mechanism inside decoder self-attention."
+        },
+        {
+          "text": "To shrink the vocabulary",
+          "rationale": "Positional encodings carry position, not token identity."
+        }
+      ],
+      "answer": 0,
+      "source": "3.5"
+    },
+    {
+      "id": "pe-value",
+      "concept": "positional-encoding",
+      "type": "numeric",
+      "difficulty": 3,
+      "prompt": "With d_model = 4, compute PE(pos = 1, dimension 2) = sin(1 / 10000^(2/4)). Give 4 decimal places.",
+      "answer": 0.01,
+      "tolerance": 0.0001,
+      "explanation": "10000^(2/4) = 100, so the value is sin(0.01) ≈ 0.0100.",
+      "source": "3.5"
+    },
+    {
+      "id": "pe-learned",
+      "concept": "positional-encoding",
+      "type": "mcq",
+      "difficulty": 2,
+      "prompt": "What did the authors find when they swapped the sinusoids for learned positional embeddings?",
+      "options": [
+        {
+          "text": "Learned embeddings were clearly better",
+          "rationale": "Table 3 row (E) shows nearly identical results."
+        },
+        {
+          "text": "Nearly identical results",
+          "rationale": "Correct. They kept sinusoids because they may extrapolate to longer sequences than those seen in training."
+        },
+        {
+          "text": "Training failed to converge",
+          "rationale": "Nothing like this is reported."
+        },
+        {
+          "text": "They did not try it",
+          "rationale": "They did: Section 3.5 and Table 3 row (E)."
+        }
+      ],
+      "answer": 1,
+      "source": "3.5"
+    },
+    {
+      "id": "pe-teachback",
+      "concept": "positional-encoding",
+      "type": "teachback",
+      "difficulty": 3,
+      "prompt": "Explain to a friend why the Transformer adds sinusoidal positional encodings, and one reason the authors preferred sinusoids over learned embeddings.",
+      "rubric": {
+        "required": [
+          {
+            "id": "order-blind",
+            "idea": "Attention alone has no sense of order; no recurrence or convolution",
+            "polarity": "negative",
+            "synonyms": [
+              "order",
+              "no recurrence",
+              "no convolution",
+              "permutation",
+              "shuffle",
+              "shuffled",
+              "position information",
+              "where each token is",
+              "as a set",
+              "cannot tell word order",
+              "cannot tell the order",
+              "no sense of order",
+              "ignores order",
+              "ignores the order",
+              "ignores word order"
+            ]
+          },
+          {
+            "id": "added",
+            "idea": "The encodings are added to the embeddings",
+            "synonyms": [
+              "added",
+              "add",
+              "sum",
+              "summed",
+              "plus"
+            ]
+          },
+          {
+            "id": "why-sinusoid",
+            "idea": "Relative offsets are a linear function, and sinusoids may extrapolate to longer sequences",
+            "synonyms": [
+              "relative position",
+              "relative positions",
+              "linear function",
+              "rotation",
+              "extrapolate",
+              "longer sequences",
+              "longer than",
+              "unseen lengths"
+            ]
+          }
+        ],
+        "misconceptions": [
+          {
+            "id": "pe-concatenated",
+            "description": "Thinks the encodings are concatenated to the embeddings",
+            "synonyms": [
+              "concatenate",
+              "concatenated",
+              "appended"
+            ]
+          }
+        ],
+        "minRequired": 2
+      },
+      "modelAnswer": "Attention treats its inputs as a set, so without extra information the model cannot tell word order. The paper adds a vector of sines and cosines at different frequencies to each embedding. Sinusoids make an offset of k positions a linear function of the encoding, which should help attend by relative position, and they may extrapolate to longer sequences, while learned embeddings gave nearly the same results.",
+      "source": "3.5"
+    },
+    {
+      "id": "pe-code",
+      "concept": "positional-encoding",
+      "type": "code",
+      "difficulty": 2,
+      "prompt": "Rebuild the sinusoidal positional encoding (exercise 05-positional-encoding).",
+      "exercise": "05-positional-encoding"
+    },
+    {
+      "id": "ffn-dff",
+      "concept": "ffn",
+      "type": "numeric",
+      "difficulty": 1,
+      "prompt": "What is the inner dimension d_ff of the feed-forward network in the base model?",
+      "answer": 2048,
+      "tolerance": 0,
+      "explanation": "Section 3.3: input and output have dimension 512 and the inner layer 2048.",
+      "source": "3.3"
+    },
+    {
+      "id": "ffn-positions",
+      "concept": "ffn",
+      "type": "mcq",
+      "difficulty": 2,
+      "prompt": "Does the feed-forward sub-layer mix information between positions?",
+      "options": [
+        {
+          "text": "Yes; it is fully connected across the whole sequence",
+          "rationale": "It is fully connected across the features of one position, not across positions."
+        },
+        {
+          "text": "No; it is applied to each position separately, with the same weights",
+          "rationale": "Correct. Section 3.3: 'applied to each position separately and identically'. Only attention moves information between positions."
+        },
+        {
+          "text": "Only in the decoder",
+          "rationale": "The feed-forward network works the same way in the encoder and decoder."
+        },
+        {
+          "text": "Only during training",
+          "rationale": "The computation is the same at training and inference time."
+        }
+      ],
+      "answer": 1,
+      "source": "3.3"
+    },
+    {
+      "id": "ffn-teachback",
+      "concept": "ffn",
+      "type": "teachback",
+      "difficulty": 2,
+      "prompt": "Explain to a friend what the position-wise feed-forward network does, and how it differs from attention.",
+      "rubric": {
+        "required": [
+          {
+            "id": "each-position",
+            "idea": "Applied to each position separately and identically",
+            "synonyms": [
+              "each position",
+              "every position",
+              "separately",
+              "independently",
+              "same weights",
+              "per position",
+              "per token",
+              "each token",
+              "each word"
+            ]
+          },
+          {
+            "id": "two-linear-relu",
+            "idea": "Two linear layers with a ReLU between",
+            "synonyms": [
+              "relu",
+              "max(0",
+              "max 0",
+              "two linear",
+              "two layers",
+              "two transformations",
+              "non-linearity",
+              "nonlinearity"
+            ]
+          },
+          {
+            "id": "attention-mixes",
+            "idea": "Only attention moves information between positions",
+            "polarity": "negative",
+            "synonyms": [
+              "attention mixes",
+              "between positions",
+              "across positions",
+              "between tokens",
+              "across tokens",
+              "between words",
+              "communicate",
+              "exchange information",
+              "positions exchange"
+            ]
+          }
+        ],
+        "misconceptions": [
+          {
+            "id": "ffn-mixes-positions",
+            "description": "Thinks the feed-forward network mixes positions",
+            "synonyms": [
+              "mixes positions",
+              "mixes information across positions",
+              "mixes the tokens",
+              "combines the tokens"
+            ]
+          }
+        ],
+        "minRequired": 2
+      },
+      "modelAnswer": "After attention, every position goes through the same small two-layer network on its own: a linear map up to 2048 dimensions, a ReLU, and a linear map back to 512. Attention is where positions exchange information; the feed-forward network processes each position separately.",
+      "source": "3.3"
+    },
+    {
+      "id": "ffn-code",
+      "concept": "ffn",
+      "type": "code",
+      "difficulty": 3,
+      "prompt": "Write the feed-forward network inside the capstone encoder layer (exercise 06-encoder-layer).",
+      "exercise": "06-encoder-layer"
+    },
+    {
+      "id": "res-formula",
+      "concept": "residual-norm",
+      "type": "mcq",
+      "difficulty": 2,
+      "prompt": "How does the paper write the output of each sub-layer?",
+      "options": [
+        {
+          "text": "LayerNorm(x + Sublayer(x))",
+          "rationale": "Correct. Section 3.1: residual addition first, then layer normalisation."
+        },
+        {
+          "text": "x + Sublayer(LayerNorm(x))",
+          "rationale": "That is the pre-norm variant many later models use. This paper normalises after the addition."
+        },
+        {
+          "text": "LayerNorm(Sublayer(x))",
+          "rationale": "This drops the residual connection."
+        },
+        {
+          "text": "Sublayer(x) + LayerNorm(x)",
+          "rationale": "The input is added unnormalised and the sum is normalised."
+        }
+      ],
+      "answer": 0,
+      "source": "3.1"
+    },
+    {
+      "id": "res-dropout",
+      "concept": "residual-norm",
+      "type": "numeric",
+      "difficulty": 1,
+      "prompt": "What dropout rate P_drop does the base model use?",
+      "answer": 0.1,
+      "tolerance": 0,
+      "explanation": "Section 5.4: P_drop = 0.1 for the base model.",
+      "source": "5.4"
+    },
+    {
+      "id": "res-teachback",
+      "concept": "residual-norm",
+      "type": "teachback",
+      "difficulty": 3,
+      "prompt": "Explain to a friend what one 'Add & Norm' step does, in the order the paper applies it, and where dropout goes.",
+      "rubric": {
+        "required": [
+          {
+            "id": "add-residual",
+            "idea": "Add the sub-layer's output to its input",
+            "synonyms": [
+              "add",
+              "added",
+              "residual",
+              "skip connection",
+              "plus the input",
+              "x +"
+            ]
+          },
+          {
+            "id": "normalise-after",
+            "idea": "Layer-normalise the sum",
+            "synonyms": [
+              "layer norm",
+              "layernorm",
+              "layer normalization",
+              "layer normalisation",
+              "normalize the sum",
+              "normalise the sum",
+              "normalized",
+              "normalised"
+            ]
+          },
+          {
+            "id": "dropout",
+            "idea": "Dropout on the sub-layer output, before the addition",
+            "synonyms": [
+              "dropout"
+            ]
+          }
+        ],
+        "misconceptions": [
+          {
+            "id": "norm-before-add",
+            "description": "Normalises the input before the sub-layer",
+            "synonyms": [
+              "normalize the input first",
+              "normalise the input first",
+              "normalize before the sublayer",
+              "normalise before the sublayer",
+              "pre-norm",
+              "prenorm",
+              "pre-ln"
+            ]
+          },
+          {
+            "id": "residual-replaces",
+            "description": "Thinks the sub-layer output replaces the input",
+            "synonyms": [
+              "replaces x",
+              "replaces the input",
+              "instead of the input"
+            ]
+          }
+        ],
+        "minRequired": 2
+      },
+      "modelAnswer": "Take the sub-layer's output, apply dropout to it, add it to the sub-layer's input, then layer-normalise the sum: LayerNorm(x + Dropout(Sublayer(x))). The residual addition only works because every sub-layer keeps the size d_model = 512.",
+      "source": "3.1"
+    },
+    {
+      "id": "res-code",
+      "concept": "residual-norm",
+      "type": "code",
+      "difficulty": 3,
+      "prompt": "Write layer normalisation and the residual wrapping inside the capstone (exercise 06-encoder-layer).",
+      "exercise": "06-encoder-layer"
+    },
+    {
+      "id": "ed-qkv",
+      "concept": "encoder-decoder",
+      "type": "mcq",
+      "difficulty": 3,
+      "prompt": "In encoder-decoder attention, where do the queries, keys and values come from?",
+      "options": [
+        {
+          "text": "All from the encoder output",
+          "rationale": "Then the decoder's own state would never steer what it reads."
+        },
+        {
+          "text": "Queries from the previous decoder layer; keys and values from the encoder output",
+          "rationale": "Correct. Section 3.2.3: every decoder position can attend over all input positions."
+        },
+        {
+          "text": "Queries from the encoder; keys and values from the decoder",
+          "rationale": "The roles are reversed: the decoder asks, the encoder output answers."
+        },
+        {
+          "text": "All from the previous decoder layer",
+          "rationale": "That describes decoder self-attention, a different sub-layer."
+        }
+      ],
+      "answer": 1,
+      "source": "3.2.3"
+    },
+    {
+      "id": "ed-sublayers",
+      "concept": "encoder-decoder",
+      "type": "numeric",
+      "difficulty": 2,
+      "prompt": "How many sub-layers does each decoder layer have?",
+      "answer": 3,
+      "tolerance": 0,
+      "explanation": "Masked self-attention, encoder-decoder attention and the feed-forward network (Section 3.1).",
+      "source": "3.1"
+    },
+    {
+      "id": "ed-teachback",
+      "concept": "encoder-decoder",
+      "type": "teachback",
+      "difficulty": 4,
+      "prompt": "Explain to a friend how a sentence flows through the Transformer during translation, naming the three ways attention is used.",
+      "rubric": {
+        "required": [
+          {
+            "id": "enc-self",
+            "idea": "Encoder self-attention over the input",
+            "synonyms": [
+              "encoder self-attention",
+              "encoder self attention",
+              "self-attention in the encoder",
+              "self attention in the encoder",
+              "encoder attends",
+              "encoder layers of self-attention",
+              "self-attention in each encoder layer"
+            ]
+          },
+          {
+            "id": "dec-masked",
+            "idea": "Masked decoder self-attention",
+            "synonyms": [
+              "masked",
+              "mask",
+              "decoder self-attention",
+              "decoder self attention"
+            ]
+          },
+          {
+            "id": "cross",
+            "idea": "Encoder-decoder attention: decoder queries, encoder keys and values",
+            "synonyms": [
+              "encoder-decoder attention",
+              "encoder decoder attention",
+              "cross-attention",
+              "cross attention",
+              "keys and values from the encoder",
+              "attends to the encoder",
+              "attend to the encoder"
+            ]
+          },
+          {
+            "id": "autoregressive",
+            "idea": "The decoder generates one token at a time",
+            "synonyms": [
+              "one token at a time",
+              "one word at a time",
+              "one at a time",
+              "auto-regressive",
+              "autoregressive",
+              "previously generated",
+              "already generated"
+            ]
+          }
+        ],
+        "misconceptions": [
+          {
+            "id": "encdec-queries-from-encoder",
+            "description": "Thinks the queries in encoder-decoder attention come from the encoder",
+            "synonyms": [
+              "queries from the encoder",
+              "queries come from the encoder"
+            ]
+          }
+        ],
+        "minRequired": 3
+      },
+      "modelAnswer": "The source sentence is embedded, given positional encodings and passed through 6 encoder layers of self-attention plus feed-forward. The decoder writes the translation one token at a time; in each of its 6 layers, masked self-attention looks at the tokens written so far, encoder-decoder attention lets those positions query the encoder's output, and a feed-forward network follows. A linear layer and softmax pick the next token.",
+      "source": "3.2.3"
+    },
+    {
+      "id": "ed-code",
+      "concept": "encoder-decoder",
+      "type": "code",
+      "difficulty": 4,
+      "prompt": "Capstone: rebuild one complete encoder layer, forward pass (exercise 06-encoder-layer).",
+      "exercise": "06-encoder-layer"
+    },
+    {
+      "id": "train-ls",
+      "concept": "training",
+      "type": "mcq",
+      "difficulty": 2,
+      "prompt": "What effect of label smoothing (ε_ls = 0.1) does the paper report?",
+      "options": [
+        {
+          "text": "It improves both perplexity and BLEU",
+          "rationale": "Perplexity gets worse, because the model learns to be more unsure."
+        },
+        {
+          "text": "It hurts perplexity but improves accuracy and BLEU",
+          "rationale": "Correct. Section 5.4."
+        },
+        {
+          "text": "It has no measurable effect",
+          "rationale": "The paper reports a clear trade-off."
+        },
+        {
+          "text": "It speeds up training",
+          "rationale": "Label smoothing changes the targets, not the speed."
+        }
+      ],
+      "answer": 1,
+      "source": "5.4"
+    },
+    {
+      "id": "train-peak",
+      "concept": "training",
+      "type": "numeric",
+      "difficulty": 3,
+      "prompt": "With lrate = d_model^-0.5 · min(step^-0.5, step · warmup_steps^-1.5) and warmup_steps = 4000, at which step is the learning rate highest?",
+      "answer": 4000,
+      "tolerance": 0,
+      "explanation": "Before step 4000 the second term is the smaller one and grows linearly; after it, the first term is smaller and shrinks. They meet at step = warmup_steps.",
+      "source": "5.3"
+    },
+    {
+      "id": "train-teachback",
+      "concept": "training",
+      "type": "teachback",
+      "difficulty": 3,
+      "prompt": "Explain to a friend the learning-rate schedule and the label smoothing used to train the Transformer, and what each is for.",
+      "rubric": {
+        "required": [
+          {
+            "id": "warmup",
+            "idea": "The learning rate rises linearly during warmup (4000 steps)",
+            "synonyms": [
+              "warmup",
+              "warm-up",
+              "warm up",
+              "increase linearly",
+              "increases linearly",
+              "rises linearly",
+              "ramp up",
+              "4000"
+            ]
+          },
+          {
+            "id": "decay",
+            "idea": "Then it decays with the inverse square root of the step",
+            "synonyms": [
+              "inverse square root",
+              "decreases",
+              "decays",
+              "decay",
+              "goes down",
+              "falls"
+            ]
+          },
+          {
+            "id": "ls",
+            "idea": "Label smoothing makes the model less certain: worse perplexity, better BLEU and accuracy",
+            "synonyms": [
+              "label smoothing",
+              "smooth the labels",
+              "smoothed labels",
+              "less confident",
+              "less certain",
+              "more unsure",
+              "soft targets"
+            ]
+          }
+        ],
+        "misconceptions": [
+          {
+            "id": "ls-improves-perplexity",
+            "description": "Thinks label smoothing improves perplexity",
+            "synonyms": [
+              "improves perplexity",
+              "lower perplexity",
+              "better perplexity"
+            ]
+          }
+        ],
+        "minRequired": 2
+      },
+      "modelAnswer": "The learning rate climbs linearly for the first 4000 steps, then decays with one over the square root of the step number, which avoids large unstable updates early on. Label smoothing (0.1) trains against slightly softened targets so the model is less overconfident: perplexity gets worse, but accuracy and BLEU improve.",
+      "source": "5.3"
+    }
+  ]
+}

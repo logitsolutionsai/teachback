@@ -1,0 +1,10 @@
+{
+  "id": "01-bit-array",
+  "title": "A bit array",
+  "language": "javascript",
+  "concepts": ["insert-query"],
+  "starter": "bit-array.mjs",
+  "tests": "bit-array.test.mjs",
+  "capstone": false,
+  "timeoutMs": 15000
+}

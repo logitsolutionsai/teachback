@@ -1,0 +1,18 @@
+{
+  "schema": "teachback/course@1",
+  "slug": "attention-is-all-you-need",
+  "title": "Attention Is All You Need",
+  "description": "Learn the Transformer from the paper that introduced it, then rebuild one encoder layer from scratch in plain Python.",
+  "source": {
+    "title": "Attention Is All You Need",
+    "authors": ["Ashish Vaswani", "Noam Shazeer", "Niki Parmar", "Jakob Uszkoreit", "Llion Jones", "Aidan N. Gomez", "Lukasz Kaiser", "Illia Polosukhin"],
+    "year": 2017,
+    "venue": "NeurIPS 2017",
+    "url": "https://arxiv.org/abs/1706.03762",
+    "citation": "Vaswani et al. (2017). Attention Is All You Need. NeurIPS 2017. arXiv:1706.03762."
+  },
+  "licence": "The paper is not included. Read it at https://arxiv.org/abs/1706.03762. Concept summaries, questions and exercises in this course are original writing that cite the paper by section; they quote no more than formulas and short phrases. Course content is MIT licensed with the rest of teachback.",
+  "language": "python",
+  "track": ["01-softmax", "02-scaled-dot-product", "03-masking", "04-multi-head", "05-positional-encoding", "06-encoder-layer"],
+  "createdAt": "2026-11-14T00:00:00.000Z"
+}

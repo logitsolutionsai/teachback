@@ -1,0 +1,8 @@
+{
+  "schema": "teachback/map@1",
+  "concepts": [
+    { "id": "a", "name": "Concept A", "summary": "The first idea.", "sources": [{ "section": "1" }], "prerequisites": [], "difficulty": 1, "misconceptions": [{ "id": "a-wrong", "description": "A common mistake about A." }] },
+    { "id": "b", "name": "Concept B", "summary": "Builds on A.", "sources": [{ "section": "2" }], "prerequisites": ["a"], "difficulty": 2, "misconceptions": [{ "id": "b-wrong", "description": "A common mistake about B." }] },
+    { "id": "c", "name": "Concept C", "summary": "Builds on B.", "sources": [{ "section": "3" }], "prerequisites": ["b"], "difficulty": 3, "misconceptions": [{ "id": "c-wrong", "description": "A common mistake about C." }] }
+  ]
+}

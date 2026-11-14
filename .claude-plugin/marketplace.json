@@ -1,0 +1,17 @@
+{
+  "name": "teachback",
+  "description": "teachback: a Socratic paper tutor with a learner model, spaced review and a rebuild track.",
+  "owner": {
+    "name": "Logit Solutions AI",
+    "url": "https://github.com/logitsolutionsai"
+  },
+  "plugins": [
+    {
+      "name": "teachback",
+      "source": "./",
+      "description": "Give it a paper. It tutors you Socratically, tracks what you actually know, and finishes when you can teach it back and rebuild it, with tests that prove it.",
+      "category": "learning",
+      "tags": ["tutor", "socratic", "papers", "spaced-repetition"]
+    }
+  ]
+}

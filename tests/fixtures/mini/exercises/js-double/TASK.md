@@ -1,0 +1,3 @@
+# Double
+
+Export `double(x)`.

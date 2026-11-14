@@ -1,0 +1,1 @@
+{ "id": "py-double", "title": "Double in Python", "language": "python", "concepts": ["b"], "starter": "double.py", "tests": "test_double.py", "timeoutMs": 10000 }

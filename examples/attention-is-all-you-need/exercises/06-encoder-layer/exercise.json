@@ -1,0 +1,11 @@
+{
+  "id": "06-encoder-layer",
+  "title": "Capstone: one encoder layer",
+  "language": "python",
+  "concepts": ["ffn", "residual-norm", "encoder-decoder"],
+  "starter": "encoder_layer.py",
+  "tests": "test_encoder_layer.py",
+  "support": ["linalg.py", "fixture_params.py"],
+  "capstone": true,
+  "timeoutMs": 20000
+}

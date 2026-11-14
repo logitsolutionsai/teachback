@@ -1,0 +1,24 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/logitsolutionsai/teachback/schema/exercise.schema.json",
+  "title": "teachback exercises/<id>/exercise.json",
+  "description": "One step of the rebuild track. The reference solution lives in .reference/<starter> and is shown to the learner only on request, after the hint ladder.",
+  "type": "object",
+  "required": ["id", "title", "language", "starter", "tests"],
+  "additionalProperties": false,
+  "properties": {
+    "id": { "type": "string", "pattern": "^[a-z0-9][a-z0-9-]*$" },
+    "title": { "type": "string", "minLength": 1 },
+    "language": { "enum": ["python", "javascript"] },
+    "concepts": { "type": "array", "items": { "type": "string" } },
+    "starter": { "type": "string", "minLength": 1, "description": "File the learner edits, such as softmax.py." },
+    "tests": {
+      "type": ["string", "array"],
+      "items": { "type": "string", "minLength": 1 },
+      "description": "Test file or files: unittest modules for Python, node:test files for JavaScript."
+    },
+    "support": { "type": "array", "items": { "type": "string" }, "description": "Helper files the tests or starter import." },
+    "capstone": { "type": "boolean" },
+    "timeoutMs": { "type": "integer", "minimum": 500, "maximum": 300000 }
+  }
+}

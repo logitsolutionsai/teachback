@@ -1,0 +1,22 @@
+{
+  "name": "teachback",
+  "displayName": "teachback",
+  "version": "0.1.0",
+  "description": "Give it a paper. It tutors you Socratically, tracks what you actually know, and finishes when you can teach it back and rebuild it, with tests that prove it.",
+  "author": {
+    "name": "Logit Solutions AI",
+    "url": "https://github.com/logitsolutionsai"
+  },
+  "homepage": "https://github.com/logitsolutionsai/teachback",
+  "repository": "https://github.com/logitsolutionsai/teachback",
+  "license": "MIT",
+  "keywords": [
+    "tutor",
+    "socratic",
+    "learning",
+    "papers",
+    "spaced-repetition",
+    "knowledge-tracing",
+    "skill"
+  ]
+}

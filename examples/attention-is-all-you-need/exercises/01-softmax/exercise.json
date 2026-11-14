@@ -1,0 +1,10 @@
+{
+  "id": "01-softmax",
+  "title": "Softmax",
+  "language": "python",
+  "concepts": ["softmax"],
+  "starter": "softmax.py",
+  "tests": "test_softmax.py",
+  "capstone": false,
+  "timeoutMs": 15000
+}

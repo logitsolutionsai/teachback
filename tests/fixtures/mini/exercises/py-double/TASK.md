@@ -1,0 +1,3 @@
+# Double
+
+Write `double(x)`.

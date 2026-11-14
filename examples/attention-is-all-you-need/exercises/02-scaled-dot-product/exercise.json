@@ -1,0 +1,11 @@
+{
+  "id": "02-scaled-dot-product",
+  "title": "Scaled dot-product attention",
+  "language": "python",
+  "concepts": ["scaled-dot-product"],
+  "starter": "attention.py",
+  "tests": "test_attention.py",
+  "support": ["linalg.py"],
+  "capstone": false,
+  "timeoutMs": 15000
+}

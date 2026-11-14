@@ -1,0 +1,10 @@
+{
+  "id": "05-positional-encoding",
+  "title": "Sinusoidal positional encoding",
+  "language": "python",
+  "concepts": ["positional-encoding"],
+  "starter": "positional.py",
+  "tests": "test_positional.py",
+  "capstone": false,
+  "timeoutMs": 15000
+}

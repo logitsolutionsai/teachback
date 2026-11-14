@@ -1,0 +1,1 @@
+{ "id": "js-double", "title": "Double in JavaScript", "language": "javascript", "concepts": ["c"], "starter": "double.mjs", "tests": "double.test.mjs", "capstone": true, "timeoutMs": 10000 }

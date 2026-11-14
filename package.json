@@ -1,0 +1,45 @@
+{
+  "name": "teachback",
+  "version": "0.1.0",
+  "description": "Give it a paper. It tutors you Socratically, tracks what you actually know, and finishes when you can teach it back and rebuild it, with tests that prove it.",
+  "type": "module",
+  "license": "MIT",
+  "author": "Logit Solutions AI",
+  "homepage": "https://github.com/logitsolutionsai/teachback",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/logitsolutionsai/teachback.git"
+  },
+  "bin": {
+    "teachback": "scripts/teachback.mjs"
+  },
+  "files": [
+    "scripts/",
+    "src/",
+    "schema/",
+    "references/",
+    "examples/",
+    "SKILL.md",
+    ".claude-plugin/"
+  ],
+  "engines": {
+    "node": ">=20.11"
+  },
+  "scripts": {
+    "test": "node --test --test-concurrency=4 \"tests/*.test.mjs\"",
+    "test:e2e": "node --test --test-concurrency=1 \"tests/e2e/*.e2e.mjs\"",
+    "check:examples": "node scripts/teachback.mjs check examples/attention-is-all-you-need && node scripts/teachback.mjs check examples/bloom-filters"
+  },
+  "keywords": [
+    "agent-skill",
+    "claude-code",
+    "tutor",
+    "socratic",
+    "spaced-repetition",
+    "knowledge-tracing",
+    "papers"
+  ],
+  "devDependencies": {
+    "playwright-core": "1.56.1"
+  }
+}

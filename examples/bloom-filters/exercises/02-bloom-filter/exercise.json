@@ -1,0 +1,11 @@
+{
+  "id": "02-bloom-filter",
+  "title": "Insert and query",
+  "language": "javascript",
+  "concepts": ["insert-query"],
+  "starter": "bloom.mjs",
+  "tests": "bloom.test.mjs",
+  "support": ["bit-array.mjs", "hash.mjs"],
+  "capstone": false,
+  "timeoutMs": 15000
+}

@@ -1,0 +1,9 @@
+{
+  "schema": "teachback/course@1",
+  "slug": "mini",
+  "title": "Mini Course",
+  "source": { "title": "A tiny made-up source", "citation": "Test fixture, not a real source." },
+  "licence": "Test fixture written for teachback's own tests.",
+  "language": "python",
+  "track": ["py-double", "js-double"]
+}

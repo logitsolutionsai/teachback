@@ -1,0 +1,11 @@
+{
+  "id": "03-masking",
+  "title": "Masking future positions",
+  "language": "python",
+  "concepts": ["masking"],
+  "starter": "masking.py",
+  "tests": "test_masking.py",
+  "support": ["linalg.py"],
+  "capstone": false,
+  "timeoutMs": 15000
+}

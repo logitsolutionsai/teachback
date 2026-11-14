@@ -1,0 +1,19 @@
+node_modules/
+tests/output/
+evals/results/
+
+# Learner data: courses people are taking, their work and dashboards.
+.teachback/
+learner.json
+work/
+dashboard.html
+*-anki.csv
+
+# Python and editor clutter
+__pycache__/
+*.pyc
+.DS_Store
+Thumbs.db
+
+# Examples ship course content only; keep them, but never their learner data.
+!examples/

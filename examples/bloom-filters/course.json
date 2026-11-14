@@ -1,0 +1,16 @@
+{
+  "schema": "teachback/course@1",
+  "slug": "bloom-filters",
+  "title": "Bloom Filters",
+  "description": "A small course from a short original explainer: how a Bloom filter answers membership questions in a few bits per item, rebuilt in JavaScript.",
+  "source": {
+    "title": "Bloom Filters In Five Minutes",
+    "authors": ["Logit Solutions AI"],
+    "year": 2026,
+    "citation": "Bloom Filters In Five Minutes, an original explainer shipped with teachback (examples/bloom-filters/SOURCE.md)."
+  },
+  "licence": "Original writing, MIT licensed with the rest of teachback. The explainer is in SOURCE.md next to this file.",
+  "language": "javascript",
+  "track": ["01-bit-array", "02-bloom-filter", "03-sizing"],
+  "createdAt": "2026-11-14T00:00:00.000Z"
+}

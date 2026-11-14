@@ -1,0 +1,198 @@
+{
+  "schema": "teachback/items@1",
+  "items": [
+    {
+      "id": "a-mcq",
+      "concept": "a",
+      "type": "mcq",
+      "difficulty": 2,
+      "prompt": "Which is true of a?",
+      "options": [
+        {
+          "text": "Right",
+          "rationale": "Because it is right."
+        },
+        {
+          "text": "Wrong",
+          "rationale": "Because it is wrong."
+        },
+        {
+          "text": "Also wrong",
+          "rationale": "Also wrong."
+        }
+      ],
+      "answer": 0
+    },
+    {
+      "id": "a-num",
+      "concept": "a",
+      "type": "numeric",
+      "difficulty": 3,
+      "prompt": "What number goes with a?",
+      "answer": 2,
+      "tolerance": 0.01
+    },
+    {
+      "id": "a-tb",
+      "concept": "a",
+      "type": "teachback",
+      "difficulty": 3,
+      "prompt": "Explain a to a friend.",
+      "rubric": {
+        "required": [
+          {
+            "id": "core",
+            "idea": "The core of a",
+            "synonyms": [
+              "core of a",
+              "heart of a"
+            ]
+          }
+        ],
+        "misconceptions": [
+          {
+            "id": "a-wrong",
+            "description": "Mistake",
+            "synonyms": [
+              "a is magic"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "b-mcq",
+      "concept": "b",
+      "type": "mcq",
+      "difficulty": 2,
+      "prompt": "Which is true of b?",
+      "options": [
+        {
+          "text": "Right",
+          "rationale": "Because it is right."
+        },
+        {
+          "text": "Wrong",
+          "rationale": "Because it is wrong."
+        },
+        {
+          "text": "Also wrong",
+          "rationale": "Also wrong."
+        }
+      ],
+      "answer": 0
+    },
+    {
+      "id": "b-num",
+      "concept": "b",
+      "type": "numeric",
+      "difficulty": 3,
+      "prompt": "What number goes with b?",
+      "answer": 2,
+      "tolerance": 0.01
+    },
+    {
+      "id": "b-tb",
+      "concept": "b",
+      "type": "teachback",
+      "difficulty": 3,
+      "prompt": "Explain b to a friend.",
+      "rubric": {
+        "required": [
+          {
+            "id": "core",
+            "idea": "The core of b",
+            "synonyms": [
+              "core of b",
+              "heart of b"
+            ]
+          }
+        ],
+        "misconceptions": [
+          {
+            "id": "b-wrong",
+            "description": "Mistake",
+            "synonyms": [
+              "b is magic"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "c-mcq",
+      "concept": "c",
+      "type": "mcq",
+      "difficulty": 2,
+      "prompt": "Which is true of c?",
+      "options": [
+        {
+          "text": "Right",
+          "rationale": "Because it is right."
+        },
+        {
+          "text": "Wrong",
+          "rationale": "Because it is wrong."
+        },
+        {
+          "text": "Also wrong",
+          "rationale": "Also wrong."
+        }
+      ],
+      "answer": 0
+    },
+    {
+      "id": "c-num",
+      "concept": "c",
+      "type": "numeric",
+      "difficulty": 3,
+      "prompt": "What number goes with c?",
+      "answer": 2,
+      "tolerance": 0.01
+    },
+    {
+      "id": "c-tb",
+      "concept": "c",
+      "type": "teachback",
+      "difficulty": 3,
+      "prompt": "Explain c to a friend.",
+      "rubric": {
+        "required": [
+          {
+            "id": "core",
+            "idea": "The core of c",
+            "synonyms": [
+              "core of c",
+              "heart of c"
+            ]
+          }
+        ],
+        "misconceptions": [
+          {
+            "id": "c-wrong",
+            "description": "Mistake",
+            "synonyms": [
+              "c is magic"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "b-code",
+      "concept": "b",
+      "type": "code",
+      "difficulty": 2,
+      "prompt": "Write double in Python.",
+      "exercise": "py-double"
+    },
+    {
+      "id": "c-code",
+      "concept": "c",
+      "type": "code",
+      "difficulty": 3,
+      "prompt": "Write double in JavaScript.",
+      "exercise": "js-double"
+    }
+  ]
+}

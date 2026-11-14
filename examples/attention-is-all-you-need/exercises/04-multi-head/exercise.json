@@ -1,0 +1,11 @@
+{
+  "id": "04-multi-head",
+  "title": "Multi-head attention",
+  "language": "python",
+  "concepts": ["multi-head"],
+  "starter": "multihead.py",
+  "tests": "test_multihead.py",
+  "support": ["linalg.py", "attention.py"],
+  "capstone": false,
+  "timeoutMs": 15000
+}
