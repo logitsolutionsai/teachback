@@ -1,6 +1,6 @@
 {
   "name": "teachback",
-  "description": "teachback: a Socratic paper tutor with a learner model, spaced review and a rebuild track.",
+  "description": "teachback: a Socratic paper tutor for Claude Code that finishes when you can teach the paper back and rebuild it.",
   "owner": {
     "name": "Logit Solutions AI",
     "url": "https://github.com/logitsolutionsai"
@@ -9,9 +9,16 @@
     {
       "name": "teachback",
       "source": "./",
-      "description": "Give it a paper. It tutors you Socratically, tracks what you actually know, and finishes when you can teach it back and rebuild it, with tests that prove it.",
+      "description": "Learn a research paper with a Socratic tutor that finishes when you can teach it back and rebuild it. A Claude Code skill (agent skill) for Claude Code, Codex and Cursor.",
       "category": "learning",
-      "tags": ["tutor", "socratic", "papers", "spaced-repetition"]
+      "tags": [
+        "tutor",
+        "socratic",
+        "papers",
+        "spaced-repetition",
+        "knowledge-tracing",
+        "learning"
+      ]
     }
   ]
 }

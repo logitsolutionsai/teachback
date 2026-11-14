@@ -2,7 +2,7 @@
   "name": "teachback",
   "displayName": "teachback",
   "version": "0.1.0",
-  "description": "Give it a paper. It tutors you Socratically, tracks what you actually know, and finishes when you can teach it back and rebuild it, with tests that prove it.",
+  "description": "Learn a research paper with a Socratic tutor that finishes when you can teach it back and rebuild it. A Claude Code skill (agent skill) for Claude Code, Codex and Cursor.",
   "author": {
     "name": "Logit Solutions AI",
     "url": "https://github.com/logitsolutionsai"
@@ -11,12 +11,17 @@
   "repository": "https://github.com/logitsolutionsai/teachback",
   "license": "MIT",
   "keywords": [
+    "claude-code",
+    "claude-skill",
+    "agent-skills",
     "tutor",
     "socratic",
     "learning",
+    "research-papers",
     "papers",
     "spaced-repetition",
     "knowledge-tracing",
-    "skill"
+    "mastery-learning",
+    "teach-back"
   ]
 }

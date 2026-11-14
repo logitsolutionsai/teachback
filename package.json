@@ -1,7 +1,7 @@
 {
   "name": "teachback",
   "version": "0.1.0",
-  "description": "Give it a paper. It tutors you Socratically, tracks what you actually know, and finishes when you can teach it back and rebuild it, with tests that prove it.",
+  "description": "Learn a research paper with a Socratic tutor that finishes when you can teach it back and rebuild it. A Claude Code skill (agent skill) for Claude Code, Codex and Cursor.",
   "type": "module",
   "license": "MIT",
   "author": "Logit Solutions AI",
@@ -31,13 +31,23 @@
     "check:examples": "node scripts/teachback.mjs check examples/attention-is-all-you-need && node scripts/teachback.mjs check examples/bloom-filters"
   },
   "keywords": [
-    "agent-skill",
     "claude-code",
+    "claude-skill",
+    "claude-code-skill",
+    "agent-skills",
+    "agent-skill",
+    "codex",
+    "cursor",
     "tutor",
     "socratic",
+    "socratic-method",
     "spaced-repetition",
     "knowledge-tracing",
-    "papers"
+    "mastery-learning",
+    "research-papers",
+    "papers",
+    "learning",
+    "teach-back"
   ],
   "devDependencies": {
     "playwright-core": "1.56.1"

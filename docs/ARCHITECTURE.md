@@ -78,7 +78,7 @@ Light and dark themes are CSS custom properties switched by `prefers-color-schem
 ## Testing
 
 - `npm test` runs `tests/*.test.mjs`: the learner model with hand-computed values, `next` on a crafted map plus a property test over random histories, `check` against one breakage per error class, grading, the runner for both languages with timeouts, the shipped examples including exercise verification, the CLI, a simulated learner over three study days, the rubric paraphrase table, and the eval suite in `evals/` checked without a model (scaffolds and file and regex graders).
-- `claude plugin eval` runs the eval suite against a real model, with and without the plugin; the README section "Tested Behaviour" has the commands. It needs macOS, Linux or WSL2, because it refuses shell tools where there is no sandbox.
+- `claude plugin eval` runs the eval suite against a real model, with and without the plugin; the README section "Proof" has the commands. It needs macOS, Linux or WSL2, because it refuses shell tools where there is no sandbox.
 - `npm run test:e2e` renders the dashboard for the simulated learner in an installed Chrome, Edge or Chromium (`TEACHBACK_CHROME` overrides the path) with every request routed to abort, then checks for console errors, compares the numbers with `status --json`, checks layout at 1280×800 and 390×844 in both themes, and saves screenshots to `tests/output/`.
 
 ## Design Choices Worth Knowing

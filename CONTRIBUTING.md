@@ -49,7 +49,7 @@ npm test             # unit and integration tests
 npm run test:e2e     # dashboard in an installed Chrome, Edge or Chromium
 ```
 
-A change to `SKILL.md` or `references/tutoring-protocol.md` changes how the tutor behaves, which `npm test` cannot see. Run the behaviour evals in `evals/` before and after (README, "Tested Behaviour"), and report both scores in the pull request.
+A change to `SKILL.md` or `references/tutoring-protocol.md` changes how the tutor behaves, which `npm test` cannot see. Run the behaviour evals in `evals/` before and after (README, "Proof"), and report both scores in the pull request.
 
 - No runtime dependencies. Use the Node standard library.
 - Keep the learner model deterministic. Never read the real date outside `resolveNow()`; take `now` as a parameter.
