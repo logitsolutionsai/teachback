@@ -71,7 +71,7 @@ Python is found by trying `python3` and `python` (`python`, `py -3` and `python3
 
 ## The Dashboard
 
-`renderDashboard()` returns one HTML string with inline CSS and script and a content security policy of `default-src 'none'`, so the page cannot load anything from the network. The concept map is a layered layout computed in Node (longest-path layers, dummy nodes on long edges, barycentre ordering) and written as static SVG with one link per concept. The three small charts are drawn by an inline script at the width of their container and redrawn on resize and on a colour-scheme change. Every number also appears as static HTML, in stat tiles, lists and table views, so the page is readable without script and the end-to-end test can compare the page with `status --json`.
+`renderDashboard()` returns one HTML string with inline CSS and script and a content security policy of `default-src 'none'`, so the page cannot load anything from the network. The concept map is a layered layout computed in Node (longest-path layers, dummy nodes on long edges, barycentre ordering) and written as static SVG with one link per concept; selecting a concept opens a details popover anchored to its node, animated by the inlined spring helper `src/fluid.js`. The three small charts are drawn by an inline script at the width of their container and redrawn on resize and on a colour-scheme change. Every number also appears as static HTML, in stat tiles, lists and table views, so the page is readable without script and the end-to-end test can compare the page with `status --json`.
 
 Light and dark themes are CSS custom properties switched by `prefers-color-scheme`. The mastery colours are one blue ramp, ordered by mastery, with separate steps chosen for each theme.
 

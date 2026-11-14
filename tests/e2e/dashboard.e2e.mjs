@@ -203,11 +203,37 @@ for (const [label, days, extraSteps] of [
           } else {
             await page.screenshot({ path: path.join(OUT, `readme-${label}-phone-${colorScheme}.png`) });
           }
-          // Keyboard: the first Tab reaches the skip link; map nodes are focusable and show their tooltip.
+          // Keyboard: the first Tab reaches the skip link; map nodes are focusable, Enter opens
+          // their details anchored to the node, and Esc closes them and returns focus to the node.
           await page.keyboard.press('Tab');
           assert.equal(await page.evaluate(() => document.activeElement?.className), 'skip');
           await page.focus('a.node');
-          assert.equal(await page.evaluate(() => document.getElementById('tip').hidden), false, 'focusing a concept shows its details');
+          await page.keyboard.press('Enter');
+          await page.waitForTimeout(700);
+          const pop = await page.evaluate(() => {
+            const n = document.activeElement;
+            const p = document.getElementById('pop');
+            const nr = n.querySelector('.node-box').getBoundingClientRect();
+            const pr = p.getBoundingClientRect();
+            const id = n.getAttribute('data-node');
+            return {
+              hidden: p.hidden,
+              opacity: Number(getComputedStyle(p).opacity),
+              title: document.getElementById('pop-title')?.textContent,
+              name: document.querySelector('[data-concept="' + id + '"] .crow-title').textContent,
+              expanded: n.getAttribute('aria-expanded'),
+              gap: pr.top >= nr.bottom ? pr.top - nr.bottom : nr.top - pr.bottom
+            };
+          });
+          assert.equal(pop.hidden, false, 'Enter on a concept opens its details');
+          assert.ok(pop.opacity > 0.99, 'the details popover has finished opening');
+          assert.equal(pop.title, pop.name, 'the popover shows the selected concept');
+          assert.equal(pop.expanded, 'true');
+          assert.ok(pop.gap >= 0 && pop.gap <= 24, `the popover sits just below or above its node (gap ${pop.gap})`);
+          await page.keyboard.press('Escape');
+          await page.waitForTimeout(700);
+          assert.equal(await page.evaluate(() => document.getElementById('pop').hidden), true, 'Esc closes the details');
+          assert.equal(await page.evaluate(() => document.activeElement?.classList.contains('node')), true, 'focus returns to the node');
           await page.evaluate(() => document.activeElement.blur());
         } finally {
           await context.close();
@@ -216,3 +242,39 @@ for (const [label, days, extraSteps] of [
     }
   });
 }
+
+// Direct manipulation: pressing a concept gives feedback on pointer-down, before release.
+test('dashboard: a pointerdown on a concept node applies a transform within 50 ms', async () => {
+  const { html } = await buildScenario(2, 1);
+  const { context, page, problems } = await openPage({ html, viewport: VIEWPORTS[0] });
+  try {
+    await page.locator('a.node').nth(1).scrollIntoViewIfNeeded();
+    const box = await page.locator('a.node').nth(1).boundingBox();
+    await page.evaluate(() => {
+      const n = document.querySelectorAll('a.node')[1];
+      window.__press = { t0: 0, t1: 0 };
+      n.addEventListener('pointerdown', () => {
+        window.__press.t0 = performance.now();
+        (function poll() {
+          if (n.style.transform && n.style.transform !== 'none') window.__press.t1 = performance.now();
+          else requestAnimationFrame(poll);
+        })();
+      }, { capture: true });
+    });
+    await page.mouse.move(box.x + box.width / 2, box.y + box.height / 2);
+    await page.mouse.down();
+    await page.waitForTimeout(120);
+    const press = await page.evaluate(() => ({ ...window.__press, transform: getComputedStyle(document.querySelectorAll('a.node')[1]).transform }));
+    assert.ok(press.t0 > 0, 'pointerdown reached the node');
+    assert.ok(press.t1 > 0, 'a transform was applied while the pointer is still down');
+    assert.ok(press.t1 - press.t0 < 50, `transform applied ${Math.round(press.t1 - press.t0)} ms after pointerdown`);
+    assert.notEqual(press.transform, 'none');
+    await page.mouse.up();
+    await page.waitForTimeout(700);
+    assert.equal(await page.evaluate(() => document.getElementById('pop').hidden), false, 'release opens the details');
+    assert.equal(await page.evaluate(() => document.querySelectorAll('a.node')[1].style.transform), '', 'the node springs back to rest');
+    assert.deepEqual(problems, []);
+  } finally {
+    await context.close();
+  }
+});

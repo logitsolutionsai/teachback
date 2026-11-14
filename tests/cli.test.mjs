@@ -159,6 +159,15 @@ test('dashboard writes one self-contained file with no external resources', asyn
   assert.doesNotMatch(html, /<img[^>]+src="?https?:/i);
   assert.match(html, /prefers-color-scheme:dark/);
   assert.match(html, /data-stat="concepts-total">3</);
+  // Ink palette only: every colour in the stylesheet is a warm neutral, the one accent
+  // blue (with its pressed and soft forms) or the black of a floating layer's shadow.
+  const css = html.slice(html.indexOf('<style>'), html.indexOf('</style>'));
+  const INK = ['#f7f7f5', '#ffffff', '#f0f0ed', '#e3e3df', '#c9c9c3', '#111110', '#3a3a37', '#6f6f69', '#a3a39c', '#0e0e0d', '#171716', '#1f1f1d', '#2b2b29', '#3d3d3a', '#f4f4f2', '#d6d6d2', '#9a9a94', '#6a6a65', '#0065fd', '#0654c8', '#5b9cff', '#3f86ff'];
+  const hexes = [...css.matchAll(/#[0-9a-f]{3,8}\b/gi)].map((m) => m[0].toLowerCase());
+  assert.ok(hexes.length >= INK.length, 'the palette is in the stylesheet');
+  assert.deepEqual(hexes.filter((x) => !INK.includes(x)), [], 'no colour outside the Ink palette');
+  const rgbs = [...css.matchAll(/rgba?\(([^)]*)\)/g)].map((m) => m[1].replace(/\s/g, ''));
+  assert.deepEqual(rgbs.filter((x) => !/^0,0,0,/.test(x) && x !== '0,101,253,.10' && x !== '91,156,255,.14'), [], 'rgb colours are shadow black or the accent');
 });
 
 test('export --anki writes an importable CSV of every non-code item', async () => {

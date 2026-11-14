@@ -20,6 +20,14 @@
   </picture>
 </p>
 
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="docs/media/app-dark.webp">
+    <source media="(prefers-color-scheme: light)" srcset="docs/media/app-light.webp">
+    <img src="docs/media/app-light.webp" width="100%" alt="The teachback dashboard after the Attention Is All You Need course is Rebuilt: 12 of 12 concepts mastered, 6 of 6 exercises passed and the Rebuilt badge.">
+  </picture>
+</p>
+
 teachback is a Claude Code skill, and an agent skill that also runs in Codex and Cursor. Give it a paper. It tutors you Socratically, tracks what you actually know, and finishes when you can teach it back and rebuild it, with tests that prove it.
 
 ## Install
@@ -46,7 +54,7 @@ You need Node.js 20.11 or newer. For Python exercises you also need Python 3 (`p
 | Get stuck | A hint ladder instead of the answer. |
 | Finish a concept | A request to explain it back, checked against a rubric. Every result is recorded, with how sure you were. |
 | Come back days later | A learner model that tracks how likely it is that you know each concept, and knows what is due for review. |
-| `teachback dashboard` | One offline HTML page: the concept map coloured by mastery, progress over time, reviews coming up, how well your confidence matches your accuracy, and the exercise board. |
+| `teachback dashboard` | One offline HTML page: the concept map shaded by mastery level, progress over time, reviews coming up, how well your confidence matches your accuracy, and the exercise board. |
 | Every concept mastered and the capstone tests passing | **Rebuilt**: the course is done. |
 
 A ready-made course for *Attention Is All You Need* ships in `examples/`, along with a small JavaScript course on Bloom filters.
@@ -72,7 +80,7 @@ The full exchange, through the teach-back, the rubric check and the move to the 
 
 ## See It Work
 
-![The teachback dashboard for the Attention Is All You Need course, two study days in: 9 of 12 concepts mastered, the concept map coloured by mastery, and the next concept marked](docs/media/dashboard.png)
+![The teachback dashboard for the Attention Is All You Need course, two study days in: 9 of 12 concepts mastered, the concept map shaded by mastery level, and the next concept marked](docs/media/dashboard.png)
 
 The same dashboard on a phone, in the dark theme, after the course is Rebuilt:
 

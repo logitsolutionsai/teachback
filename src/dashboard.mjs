@@ -3,9 +3,13 @@
 // drawn here as static SVG; the three small charts are drawn by an inline
 // script at the width of their container, and every number also appears in
 // static HTML (stat tiles, lists and table views) so nothing depends on script.
+// Motion comes from fluid.js (a verbatim copy of the brand kit's helper), inlined.
+import fs from 'node:fs';
 import { escapeHtml as h, masteryPercent } from './util.mjs';
 import { layoutDag, edgePath } from './graph.mjs';
 import { STATE_LABEL } from './status.mjs';
+
+const FLUID = fs.readFileSync(new URL('./fluid.js', import.meta.url), 'utf8');
 
 const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
@@ -47,8 +51,7 @@ export function wrapText(text, maxChars, maxLines = 2) {
 const ICON = {
   check: '<svg class="ico" viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>',
   cross: '<svg class="ico" viewBox="0 0 16 16" aria-hidden="true"><path d="M4.5 4.5l7 7M11.5 4.5l-7 7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>',
-  clock: '<svg class="ico" viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="5.5" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M8 5v3.2l2 1.3" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>',
-  circle: '<svg class="ico" viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="5.5" fill="none" stroke="currentColor" stroke-width="1.6"/></svg>'
+  clock: '<svg class="ico" viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="5.5" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M8 5v3.2l2 1.3" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>'
 };
 
 function conceptMap(s) {
@@ -82,15 +85,15 @@ function conceptMap(s) {
       const isNext = c.id === nextId;
       const shown = masteryPercent(c.pL, c.mastered, s.masteryThreshold);
       const label = `${c.name}: ${STATE_LABEL[c.state]}, mastery estimate ${shown}%${isNext ? '. Next up' : ''}`;
-      const tip = `${c.name}|${STATE_LABEL[c.state]} · ${shown}%|${c.attempts} answer${c.attempts === 1 ? '' : 's'} (${c.correct} correct)${c.prerequisites.length ? `|After: ${c.prerequisites.map((p) => byId.get(p)?.name ?? p).join(', ')}` : ''}`;
       const textY = lines.length === 1 ? y + 26 : y + 20;
       const nameSvg = lines.map((ln, i) => `<tspan x="${x + 12}" y="${textY + i * 15}">${h(ln)}</tspan>`).join('');
-      const pctText = `${c.mastered ? '✓ ' : ''}${shown}%`;
-      return `<a class="node st-${c.state}${isNext ? ' is-next' : ''}" href="#c-${h(c.id)}" aria-label="${h(label)}" data-tip="${h(tip)}">
+      // Mastered carries a drawn check (a stroke, not a text glyph) at the bottom left.
+      const check = c.mastered ? `<path class="node-check" d="M${x + 12},${y + NODE_H - 14} l3.5,3.5 l6.5,-7.5"/>` : '';
+      return `<a class="node st-${c.state}${isNext ? ' is-next' : ''}" href="#c-${h(c.id)}" data-node="${h(c.id)}" data-state="${c.state}" aria-label="${h(label)}" aria-haspopup="dialog" aria-controls="pop" aria-expanded="false">
 <rect class="node-ring" x="${x - 4}" y="${y - 4}" width="${NODE_W + 8}" height="${NODE_H + 8}" rx="13"/>
 <rect class="node-box" x="${x}" y="${y}" width="${NODE_W}" height="${NODE_H}" rx="10"/>
 <text class="node-name">${nameSvg}</text>
-<text class="node-pct" x="${x + NODE_W - 12}" y="${y + NODE_H - 9}" text-anchor="end">${pctText}</text>
+${check}<text class="node-pct" x="${x + NODE_W - 12}" y="${y + NODE_H - 9}" text-anchor="end">${shown}%</text>
 ${isNext ? `<g class="next-tag"><rect x="${x + 10}" y="${y - 19}" width="40" height="17" rx="8.5"/><text x="${x + 30}" y="${y - 6.5}" text-anchor="middle">Next</text></g>` : ''}
 </a>`;
     })
@@ -105,6 +108,11 @@ ${isNext ? `<g class="next-tag"><rect x="${x + 10}" y="${y - 19}" width="40" hei
 <g class="edges">${edges}</g>
 <g class="nodes">${nodes}</g>
 </svg>`;
+}
+
+// The map's key: the same swatches as the summary legend, without counts.
+function mapKey() {
+  return `<ul class="legend map-key" aria-label="Key">${['mastered', 'almost', 'learning', 'not-started'].map((k) => `<li><span class="key st-${k}" aria-hidden="true"></span>${STATE_LABEL[k]}</li>`).join('')}</ul>`;
 }
 
 function masteryBar(s) {
@@ -151,17 +159,19 @@ function exerciseBoard(s) {
   if (!s.exercises.list.length) return '<p class="muted">This course has no rebuild track.</p>';
   const rows = s.exercises.list
     .map((e, i) => {
+      // Status by weight and shape: a muted check for a pass, an inverse (L3) chip for
+      // a failure or timeout, a dashed (L0) chip for not started.
       const st = {
-        passed: ['good', ICON.check, 'Passed'],
-        failing: ['serious', ICON.cross, 'Failing'],
-        timeout: ['serious', ICON.clock, 'Timed out'],
-        'not-started': ['idle', ICON.circle, 'Not started']
+        passed: ['pass', ICON.check, 'Passed'],
+        failing: ['chip lv3', ICON.cross, 'Failing'],
+        timeout: ['chip lv3', ICON.clock, 'Timed out'],
+        'not-started': ['chip lv0', '', 'Not started']
       }[e.status];
       const tests = e.runs ? `${e.lastPassed}/${e.lastTotal} tests on the last run, ${e.runs} run${e.runs === 1 ? '' : 's'}` : 'No runs yet';
       return `<li class="ex ex-${e.status}${e.capstone ? ' ex-capstone' : ''}" data-exercise="${h(e.id)}" data-status="${e.status}">
 <span class="ex-num" aria-hidden="true">${i + 1}</span>
 <div class="ex-body"><p class="ex-title">${h(e.title)}${e.capstone ? ' <span class="tag">Capstone</span>' : ''}</p><p class="ex-meta">${h(e.id)} · ${h(tests)}</p></div>
-<span class="status status-${st[0]}">${st[1]}${st[2]}</span>
+<span class="status ${st[0]}">${st[1]}${st[2]}</span>
 </li>`;
     })
     .join('');
@@ -186,7 +196,7 @@ function conceptRows(s) {
       const shown = masteryPercent(c.pL, c.mastered, s.masteryThreshold);
       return `<li class="crow" id="c-${h(c.id)}" data-concept="${h(c.id)}" data-pl="${pctOf(c.pL)}" tabindex="-1">
 <div class="crow-name"><p class="crow-title">${h(c.name)}</p><p class="crow-meta">Section ${h(c.sources.join(', ')) || 'n/a'}${c.prerequisites.length ? ` · after ${c.prerequisites.length} concept${c.prerequisites.length === 1 ? '' : 's'}` : ''}</p></div>
-<span class="chip st-${c.state}">${STATE_LABEL[c.state]}</span>
+<span class="chip st-${c.state}" data-state="${c.state}">${STATE_LABEL[c.state]}</span>
 <div class="meter" role="img" aria-label="Mastery estimate ${shown}%"><span class="meter-fill" style="width:${pctOf(c.pL)}%"></span><span class="meter-mark" aria-hidden="true" style="left:${pctOf(s.masteryThreshold)}%"></span></div>
 <span class="crow-pct">${shown}%</span>
 <p class="crow-ev">${c.attempts ? `${c.attempts} answer${c.attempts === 1 ? '' : 's'}: ${c.correct} right, ${c.partial} partly, ${c.wrong} wrong` : 'No answers yet'}${c.teachbackPassed ? ' · taught back' : ''}${cal ? ` ${cal}` : ''}</p>
@@ -219,171 +229,184 @@ function calibrationFlags(s) {
 const CSS = String.raw`
 :root{
   color-scheme:light;
-  --page:#f9f9f7;--surface:#fcfcfb;--ink:#0b0b0b;--ink-2:#52514e;--muted:#6f6e69;--axis:#898781;
-  --grid:#e1e0d9;--base:#c3c2b7;--border:rgba(11,11,11,.10);
-  --series:#2a78d6;--series-wash:rgba(42,120,214,.10);
-  --m-learning:#86b6ef;--m-learning-ink:#0b0b0b;
-  --m-almost:#2a78d6;--m-almost-ink:#ffffff;
-  --m-mastered:#104281;--m-mastered-ink:#ffffff;
-  --m-none:#fcfcfb;--m-none-ink:#0b0b0b;--m-none-line:#c3c2b7;
-  --edge:#cfcec7;--edge-strong:#7d8ea6;
-  --good:#0ca30c;--good-ink:#006300;--serious:#ec835a;--serious-ink:#a3401a;
-  --focus:#2a78d6;--tip-bg:#0b0b0b;--tip-ink:#f9f9f7;
+  --bg:#f7f7f5;--surface:#ffffff;--surface-2:#f0f0ed;--line:#e3e3df;--line-strong:#c9c9c3;
+  --ink:#111110;--ink-2:#3a3a37;--muted:#6f6f69;--faint:#a3a39c;
+  --accent:#0065FD;--accent-press:#0654c8;--accent-soft:rgba(0,101,253,.10);
+  --float-shadow:0 1px 2px rgba(0,0,0,.06),0 12px 32px rgba(0,0,0,.12);
 }
 @media (prefers-color-scheme:dark){
   :root{
     color-scheme:dark;
-    --page:#0d0d0d;--surface:#1a1a19;--ink:#f0efec;--ink-2:#c3c2b7;--muted:#a3a29b;--axis:#898781;
-    --grid:#2c2c2a;--base:#383835;--border:rgba(255,255,255,.10);
-    --series:#3987e5;--series-wash:rgba(57,135,229,.12);
-    --m-learning:#184f95;--m-learning-ink:#ffffff;
-    --m-almost:#2a78d6;--m-almost-ink:#ffffff;
-    --m-mastered:#86b6ef;--m-mastered-ink:#0b0b0b;
-    --m-none:#1a1a19;--m-none-ink:#f0efec;--m-none-line:#4a4a46;
-    --edge:#3c3c39;--edge-strong:#6c7f9c;
-    --good:#0ca30c;--good-ink:#0ca30c;--serious:#ec835a;--serious-ink:#ec835a;
-    --focus:#86b6ef;--tip-bg:#f0efec;--tip-ink:#0b0b0b;
+    --bg:#0e0e0d;--surface:#171716;--surface-2:#1f1f1d;--line:#2b2b29;--line-strong:#3d3d3a;
+    --ink:#f4f4f2;--ink-2:#d6d6d2;--muted:#9a9a94;--faint:#6a6a65;
+    --accent:#5b9cff;--accent-press:#3f86ff;--accent-soft:rgba(91,156,255,.14);
+    --float-shadow:0 1px 2px rgba(0,0,0,.5),0 12px 32px rgba(0,0,0,.5);
   }
 }
 *{box-sizing:border-box}
 html{-webkit-text-size-adjust:100%}
-body{margin:0;background:var(--page);color:var(--ink);font:14px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif}
-a{color:inherit}
+body{margin:0;background:var(--bg);color:var(--ink);font:14px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif}
+a{color:var(--accent);text-underline-offset:2px}
+a:active{color:var(--accent-press)}
 code{font:12.5px/1.4 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
 .wrap{max-width:1120px;margin:0 auto;padding-inline:16px}
-.skip{position:absolute;left:-999px;top:8px;background:var(--surface);padding:8px 12px;border-radius:8px;border:1px solid var(--border);z-index:5}
+.skip{position:absolute;left:-999px;top:8px;background:var(--surface);color:var(--ink);padding:8px 12px;border-radius:6px;border:1px solid var(--line);z-index:5}
 .skip:focus{left:16px}
-:focus-visible{outline:2px solid var(--focus);outline-offset:2px}
-.masthead{padding-block:28px 8px}
-.brand{margin:0 0 10px;font-size:12.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);font-weight:600}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.masthead{padding-block:32px 8px}
+.brand{margin:0 0 8px;font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);font-weight:600}
 h1{margin:0;font-size:clamp(22px,4.2vw,30px);line-height:1.2;font-weight:650;letter-spacing:-.01em;text-wrap:balance}
-.cite{margin:6px 0 0;color:var(--ink-2);max-width:72ch}
-.cite a{color:var(--ink-2);text-underline-offset:2px}
-.meta{margin:4px 0 0;color:var(--muted);font-size:13px}
-main{padding-block:12px 40px;display:grid;gap:16px}
-.card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:20px;min-width:0}
+.cite{margin:8px 0 0;color:var(--ink-2);max-width:72ch}
+.meta{margin:4px 0 0;color:var(--muted);font-size:13px;font-variant-numeric:tabular-nums}
+main{padding-block:16px 40px;display:grid;gap:24px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:24px;min-width:0}
 .card h2{margin:0;font-size:15.5px;font-weight:650;letter-spacing:-.005em}
-.card-head{display:flex;flex-wrap:wrap;gap:4px 16px;align-items:baseline;justify-content:space-between;margin-bottom:12px}
-.card-sub{margin:2px 0 0;color:var(--muted);font-size:13px}
+.card-head{display:flex;flex-wrap:wrap;gap:4px 16px;align-items:baseline;justify-content:space-between;margin-bottom:16px}
+.card-sub{margin:4px 0 0;color:var(--muted);font-size:13px}
 .eyebrow{margin:0 0 4px;font-size:12px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;color:var(--muted)}
 .muted{color:var(--muted)}
 .small{font-size:13px}
 .summary{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.6fr);gap:24px;align-items:start}
-.hero-figure{margin:0;font-size:56px;line-height:1;font-weight:650;letter-spacing:-.02em}
-.hero-figure .of{font-size:22px;font-weight:500;color:var(--ink-2);letter-spacing:0;margin-left:6px}
-.hero-label{margin:6px 0 14px;color:var(--ink-2)}
-.segbar{display:flex;gap:2px;height:10px;border-radius:5px;overflow:hidden;background:var(--grid)}
-.seg{display:block;min-width:4px}
-.seg.st-not-started{background:var(--grid)}
-.legend{list-style:none;margin:10px 0 0;padding:0;display:flex;flex-wrap:wrap;gap:4px 14px;font-size:12.5px;color:var(--ink-2)}
+.hero-figure{margin:0;font-size:56px;line-height:1;font-weight:650;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+.hero-figure .of{font-size:22px;font-weight:500;color:var(--ink-2);letter-spacing:0;margin-left:8px}
+.hero-label{margin:8px 0 16px;color:var(--ink-2)}
+/* Mastery levels by weight and shape, never by hue: L3 solid ink, L2 ink outline,
+   L1 grey fill, L0 dashed outline. The bar, the legend keys, the map and the chips agree. */
+.segbar{display:flex;gap:2px;height:10px}
+.seg{display:block;min-width:4px;border-radius:2px}
+.legend{list-style:none;margin:12px 0 0;padding:0;display:flex;flex-wrap:wrap;gap:4px 16px;font-size:12.5px;color:var(--ink-2)}
 .legend li{display:flex;align-items:center;gap:6px}
-.legend b{font-weight:600;color:var(--ink)}
+.legend b{font-weight:600;color:var(--ink);font-variant-numeric:tabular-nums}
 .key{display:inline-block;width:12px;height:12px;border-radius:3px}
-.st-mastered.key,.st-mastered.seg{background:var(--m-mastered)}
-.st-almost.key,.st-almost.seg{background:var(--m-almost)}
-.st-learning.key,.st-learning.seg{background:var(--m-learning)}
-.st-not-started.key{background:var(--m-none);box-shadow:inset 0 0 0 1.5px var(--m-none-line)}
-.rebuilt{display:inline-flex;align-items:center;gap:8px;margin-top:16px;padding:6px 12px 6px 8px;border-radius:999px;background:color-mix(in srgb,var(--good) 12%,transparent);color:var(--good-ink);font-weight:650}
-.rebuilt .ico{width:18px;height:18px;padding:2px;border-radius:50%;background:var(--good);color:#fff}
+.st-mastered.key,.st-mastered.seg{background:var(--ink)}
+.st-almost.key,.st-almost.seg{box-shadow:inset 0 0 0 1.5px var(--ink)}
+.st-learning.key,.st-learning.seg{background:var(--surface-2);box-shadow:inset 0 0 0 1px var(--line-strong)}
+.st-not-started.key,.st-not-started.seg{border:1px dashed var(--line-strong)}
+.chip{display:inline-flex;align-items:center;gap:4px;font-size:12px;font-weight:600;line-height:18px;padding:1px 8px;border:1px solid transparent;border-radius:999px;white-space:nowrap}
+.lv3{background:var(--ink);color:var(--bg)}
+.lv2,.chip.st-almost{box-shadow:inset 0 0 0 1.5px var(--ink);color:var(--ink)}
+.lv1{background:var(--surface-2);color:var(--ink-2)}
+.lv0,.chip.st-not-started{border:1px dashed var(--line-strong);color:var(--muted)}
+/* Concepts: mastered is settled and quiet (grey fill), work in progress carries the outline, and the
+   accent ring on "Next" is the loudest mark on the map. A finished course reads calm, not as a wall of ink. */
+.chip.st-mastered{background:var(--surface-2);color:var(--ink)}
+.chip.st-learning{box-shadow:inset 0 0 0 1px var(--line-strong);color:var(--ink-2)}
+.map-key .st-mastered.key{background:var(--surface-2);box-shadow:inset 0 0 0 1px var(--line-strong)}
+.map-key .st-learning.key{background:var(--surface);box-shadow:inset 0 0 0 1px var(--line-strong)}
+.rebuilt{display:inline-flex;align-items:center;gap:6px;margin:16px 0 0;padding:4px 12px 4px 8px;border-radius:999px;background:var(--ink);color:var(--bg);font-weight:650;font-size:13px}
+.rebuilt .ico{width:16px;height:16px}
 .tiles{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
-.tile{border:1px solid var(--border);border-radius:12px;padding:12px 14px;min-width:0}
+.tile{border:1px solid var(--line);border-radius:10px;padding:12px 16px;min-width:0}
 .tile-label{margin:0;color:var(--ink-2);font-size:13px}
-.tile-value{margin:2px 0 0;font-size:28px;line-height:1.15;font-weight:650}
+.tile-value{margin:4px 0 0;font-size:28px;line-height:1.15;font-weight:650;font-variant-numeric:tabular-nums}
 .tile-value .of{font-size:16px;color:var(--ink-2);font-weight:500}
 .tile-word{font-size:20px;line-height:1.4}
-.tile-sub{margin:2px 0 0;color:var(--muted);font-size:12.5px}
-.next h2{font-size:17px;margin-top:2px}
-.next p{margin:6px 0 0}
-.cmd code{background:color-mix(in srgb,var(--ink) 6%,transparent);padding:2px 6px;border-radius:6px}
-.map-scroll{overflow-x:auto;margin-inline:-4px;padding:4px;border-radius:8px}
-.map-hint{display:none;margin:0 0 6px;font-size:12.5px;color:var(--muted)}
+.tile-sub{margin:4px 0 0;color:var(--muted);font-size:12.5px;font-variant-numeric:tabular-nums}
+.next h2{font-size:17px;margin-top:4px}
+.next p{margin:8px 0 0}
+.cmd code{background:var(--surface-2);padding:2px 6px;border-radius:6px}
+.map-scroll{overflow-x:auto;margin-inline:-4px;padding:4px;border-radius:6px}
+.map-hint{display:none;margin:0 0 8px;font-size:12.5px;color:var(--muted)}
 .map-svg{display:block;width:100%;height:auto;margin-inline:auto}
-.edge{fill:none;stroke:var(--edge);stroke-width:1.5}
-.edge-strong{stroke:var(--edge-strong)}
-.arrow-head{fill:var(--edge)}
-.arrow-head-strong{fill:var(--edge-strong)}
-.node{cursor:pointer;text-decoration:none}
+.edge{fill:none;stroke:var(--line-strong);stroke-width:1.5}
+.edge-strong{stroke:var(--muted)}
+.arrow-head{fill:var(--line-strong)}
+.arrow-head-strong{fill:var(--muted)}
+/* Press feedback scales the node about its own centre (fluid.js sets the transform). */
+.node{cursor:pointer;text-decoration:none;transform-box:fill-box;transform-origin:center;-webkit-tap-highlight-color:transparent}
 .node-box{stroke:transparent;stroke-width:1.5}
 .node-ring{fill:none;stroke:transparent;stroke-width:2}
 .node:focus{outline:none}
-.node:focus-visible .node-ring,.node:hover .node-ring{stroke:var(--focus)}
-.node.is-next .node-ring{stroke:var(--ink)}
+.node:hover .node-ring{stroke:var(--line-strong)}
+.node.is-next .node-ring,.node.is-selected .node-ring,.node:focus-visible .node-ring{stroke:var(--accent)}
 .node-name{font-size:12.5px;font-weight:600}
 .node-pct{font-size:12px;font-variant-numeric:tabular-nums}
-.st-not-started .node-box{fill:var(--m-none);stroke:var(--m-none-line)}
-.st-not-started text{fill:var(--m-none-ink)}
-.st-not-started .node-pct{fill:var(--muted)}
-.st-learning .node-box{fill:var(--m-learning)}
-.st-learning text{fill:var(--m-learning-ink)}
-.st-almost .node-box{fill:var(--m-almost)}
-.st-almost text{fill:var(--m-almost-ink)}
-.st-mastered .node-box{fill:var(--m-mastered)}
-.st-mastered text{fill:var(--m-mastered-ink)}
-.next-tag rect{fill:var(--ink)}
+.node-check{fill:none;stroke-width:1.75;stroke-linecap:round;stroke-linejoin:round}
+.st-mastered .node-box{fill:var(--surface-2);stroke:var(--line-strong);stroke-width:1}
+.st-mastered text{fill:var(--ink)}
+.st-mastered .node-check{stroke:var(--ink)}
+.st-almost .node-box{fill:var(--surface);stroke:var(--ink)}
+.st-almost text{fill:var(--ink)}
+.st-learning .node-box{fill:var(--surface);stroke:var(--line-strong);stroke-width:1}
+.st-learning text{fill:var(--ink-2)}
+.st-not-started .node-box{fill:var(--surface);stroke:var(--line-strong);stroke-width:1;stroke-dasharray:4 3}
+.st-not-started text{fill:var(--muted)}
+.next-tag rect{fill:var(--accent)}
 .next-tag text{fill:var(--surface);font-size:11px;font-weight:650}
-.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:24px}
 .chart{position:relative;width:100%;min-height:200px}
 .chart svg{display:block;overflow:visible}
-.chart text{font-size:11.5px;fill:var(--axis);font-variant-numeric:tabular-nums}
+.chart text{font-size:11.5px;fill:var(--muted);font-variant-numeric:tabular-nums}
 .chart .lbl{fill:var(--ink-2);font-weight:600}
-.chart .gridline{stroke:var(--grid);stroke-width:1}
-.chart .baseline{stroke:var(--base);stroke-width:1}
-.chart .line{fill:none;stroke:var(--series);stroke-width:2;stroke-linejoin:round;stroke-linecap:round}
-.chart .area{fill:var(--series-wash)}
-.chart .dot{fill:var(--series);stroke:var(--surface);stroke-width:2}
-.chart .bar{fill:var(--series)}
-.chart .claim{stroke:var(--ink);stroke-width:2;stroke-linecap:round}
+.chart .gridline{stroke:var(--line);stroke-width:1}
+.chart .baseline{stroke:var(--line-strong);stroke-width:1}
+.chart .line{fill:none;stroke:var(--ink);stroke-width:2;stroke-linejoin:round;stroke-linecap:round}
+.chart .dot{fill:var(--ink);stroke:var(--surface);stroke-width:2}
+.chart .bar{fill:var(--ink-2)}
+.chart .col{fill:var(--line)}
+.chart .right{stroke:var(--ink);stroke-width:2.5;stroke-linecap:round}
+.chart .claim{stroke:var(--ink);stroke-width:1.5;stroke-dasharray:6 3}
 .chart .hit{fill:transparent}
 .chart .hit:focus{outline:none}
-.chart .hit:focus-visible{stroke:var(--focus);stroke-width:2}
-.chart .cross{stroke:var(--base);stroke-width:1}
+.chart .hit:focus-visible{stroke:var(--accent);stroke-width:2}
+.chart .cross{stroke:var(--line-strong);stroke-width:1}
 .chart-legend{list-style:none;margin:8px 0 0;padding:0;display:flex;flex-wrap:wrap;gap:4px 16px;font-size:12.5px;color:var(--ink-2)}
 .chart-legend li{display:flex;align-items:center;gap:6px}
-.sw-bar{width:10px;height:12px;border-radius:3px 3px 0 0;background:var(--series)}
-.sw-claim{width:14px;height:2px;border-radius:1px;background:var(--ink)}
-.tv{margin-top:10px;font-size:13px}
-.tv summary{cursor:pointer;color:var(--ink-2);width:max-content}
+.sw{width:16px;height:0;border-top:2.5px solid var(--ink)}
+.sw-claim{border-top:1.5px dashed var(--ink)}
+.tv{margin-top:12px;font-size:13px}
+.tv summary{cursor:pointer;color:var(--ink-2);width:max-content;border-radius:6px;-webkit-tap-highlight-color:transparent}
+.tv summary:hover{color:var(--ink)}
 .tv-scroll{overflow-x:auto}
 .tv table{border-collapse:collapse;margin-top:8px;font-variant-numeric:tabular-nums}
-.tv th,.tv td{text-align:left;padding:4px 14px 4px 0;border-bottom:1px solid var(--grid)}
+.tv th,.tv td{text-align:left;padding:4px 16px 4px 0;border-bottom:1px solid var(--line)}
 .tv th{font-weight:600;color:var(--ink-2)}
-.due,.flags{list-style:none;margin:10px 0 0;padding:0;display:grid;gap:4px;font-size:13px}
+.due,.flags{list-style:none;margin:12px 0 0;padding:0;display:grid;gap:4px;font-size:13px}
 .due code{font-size:12px}
-.flag{display:inline-block;font-size:11.5px;font-weight:600;padding:1px 8px;border-radius:999px;border:1px solid var(--base);color:var(--ink-2)}
+.flag{display:inline-block;font-size:11.5px;font-weight:600;line-height:16px;padding:1px 8px;border-radius:999px;background:var(--surface-2);color:var(--ink-2)}
+.map-key{margin:0;font-size:12px;color:var(--muted)}
+.map-key li{gap:6px}
 .board{list-style:none;margin:0;padding:0;display:grid;gap:8px}
-.ex{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:12px;align-items:center;border:1px solid var(--border);border-radius:12px;padding:10px 12px}
-.ex-capstone{border-color:color-mix(in srgb,var(--ink) 30%,transparent)}
-.ex-num{width:26px;height:26px;border-radius:50%;display:grid;place-items:center;font-size:12.5px;font-weight:650;background:color-mix(in srgb,var(--ink) 7%,transparent)}
-.ex-passed .ex-num{background:var(--good);color:#fff}
+.ex{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:12px;align-items:center;border:1px solid var(--line);border-radius:10px;padding:12px}
+.ex-capstone{border-color:var(--line-strong)}
+.ex-num{width:26px;height:26px;border-radius:50%;display:grid;place-items:center;font-size:12.5px;font-weight:650;color:var(--muted);box-shadow:inset 0 0 0 1px var(--line-strong);font-variant-numeric:tabular-nums}
+.ex-passed .ex-num{background:var(--ink);color:var(--bg);box-shadow:none}
 .ex-title{margin:0;font-weight:600}
-.ex-meta{margin:0;color:var(--muted);font-size:12.5px;overflow-wrap:anywhere}
-.tag{display:inline-block;margin-left:6px;font-size:11px;font-weight:650;padding:0 7px;border-radius:999px;border:1px solid var(--ink);vertical-align:1px}
-.status{display:inline-flex;align-items:center;gap:5px;font-size:12.5px;font-weight:600;white-space:nowrap}
+.ex-meta{margin:0;color:var(--muted);font-size:12.5px;overflow-wrap:anywhere;font-variant-numeric:tabular-nums}
+.tag{display:inline-block;margin-left:6px;font-size:11px;font-weight:650;line-height:16px;padding:0 7px;border-radius:999px;box-shadow:inset 0 0 0 1.5px var(--ink);vertical-align:1px}
+.status{display:inline-flex;align-items:center;gap:4px;font-size:12.5px;font-weight:600;white-space:nowrap}
+.status.chip{font-size:12px}
+.status.chip .ico{width:14px;height:14px}
 .ico{width:16px;height:16px;flex:none}
-.status-good{color:var(--good-ink)}
-.status-serious{color:var(--serious-ink)}
-.status-idle{color:var(--muted)}
+.pass{color:var(--muted)}
 .clist{list-style:none;margin:0;padding:0}
-.crow{display:grid;grid-template-columns:minmax(0,1.25fr) 112px minmax(120px,1fr) 44px;grid-template-areas:"name chip meter pct" "name ev ev ev";gap:2px 14px;align-items:center;padding:12px 0;border-top:1px solid var(--grid)}
+.crow{display:grid;grid-template-columns:minmax(0,1.25fr) 112px minmax(120px,1fr) 44px;grid-template-areas:"name chip meter pct" "name ev ev ev";gap:4px 16px;align-items:center;padding:12px 0;border-top:1px solid var(--line)}
 .crow:first-child{border-top:0}
-.crow:target{background:color-mix(in srgb,var(--series) 8%,transparent);border-radius:8px}
+.crow:target{background:var(--surface-2);border-radius:6px}
 .crow-name{grid-area:name}
 .crow-title{margin:0;font-weight:600}
 .crow-meta{margin:0;color:var(--muted);font-size:12.5px}
-.chip{grid-area:chip;justify-self:start;font-size:12px;font-weight:600;padding:2px 9px;border-radius:999px}
-.chip.st-mastered{background:var(--m-mastered);color:var(--m-mastered-ink)}
-.chip.st-almost{background:var(--m-almost);color:var(--m-almost-ink)}
-.chip.st-learning{background:var(--m-learning);color:var(--m-learning-ink)}
-.chip.st-not-started{box-shadow:inset 0 0 0 1px var(--m-none-line);color:var(--ink-2)}
-.meter{grid-area:meter;position:relative;height:8px;border-radius:4px;background:color-mix(in srgb,var(--series) 16%,transparent)}
-.meter-fill{position:absolute;inset:0 auto 0 0;border-radius:4px;background:var(--series)}
-.meter-mark{position:absolute;top:-3px;bottom:-3px;left:95%;width:2px;border-radius:1px;background:var(--ink-2)}
+.crow .chip{grid-area:chip;justify-self:start}
+.meter{grid-area:meter;position:relative;height:8px;border-radius:4px;background:var(--surface-2);box-shadow:inset 0 0 0 1px var(--line)}
+.meter-fill{position:absolute;inset:0 auto 0 0;border-radius:4px;background:var(--ink-2)}
+.meter-mark{position:absolute;top:-4px;bottom:-4px;left:95%;width:2px;border-radius:1px;background:var(--ink);box-shadow:0 0 0 1px var(--surface)}
 .crow-pct{grid-area:pct;text-align:right;font-variant-numeric:tabular-nums;font-weight:600}
 .crow-ev{grid-area:ev;margin:0;color:var(--muted);font-size:12.5px}
 footer{color:var(--muted);font-size:12.5px;padding-block:4px 24px}
 footer p{margin:4px 0}
-#tip{position:fixed;z-index:10;pointer-events:none;max-width:260px;background:var(--tip-bg);color:var(--tip-ink);padding:7px 10px;border-radius:8px;font-size:12.5px;line-height:1.4;box-shadow:0 4px 16px rgba(0,0,0,.18)}
-#tip b{display:block;font-weight:650}
+#tip{position:fixed;z-index:10;pointer-events:none;max-width:260px;background:var(--surface);color:var(--ink-2);border:1px solid var(--line);padding:8px 12px;border-radius:6px;font-size:12.5px;line-height:1.4;box-shadow:var(--float-shadow);font-variant-numeric:tabular-nums}
+#tip b{display:block;font-weight:650;color:var(--ink)}
+/* Concept details: a solid floating panel anchored to the selected node. Its
+   transform, opacity and blur are driven by springs in the script below. */
+.pop{position:absolute;left:0;top:0;z-index:9;width:280px;max-width:calc(100vw - 16px);background:var(--surface);color:var(--ink-2);border:1px solid var(--line);border-radius:10px;padding:16px;box-shadow:var(--float-shadow);will-change:transform,opacity}
+.pop h3{margin:0;padding-right:28px;font-size:14.5px;line-height:1.35;font-weight:650;color:var(--ink)}
+.pop p{margin:8px 0 0;font-size:13px}
+.pop .eyebrow{margin:0 0 4px}
+.pop-state{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.pop-pct{font-weight:650;color:var(--ink);font-variant-numeric:tabular-nums}
+.pop-ev{color:var(--muted);font-variant-numeric:tabular-nums}
+.pop-close{position:absolute;top:10px;right:10px;width:28px;height:28px;display:grid;place-items:center;padding:0;border:0;border-radius:6px;background:transparent;color:var(--muted);cursor:pointer;-webkit-tap-highlight-color:transparent}
+.pop-close:hover{background:var(--surface-2);color:var(--ink)}
 @media (max-width:860px){
   .summary{grid-template-columns:1fr}
   .grid{grid-template-columns:1fr}
@@ -392,16 +415,17 @@ footer p{margin:4px 0}
   .card{padding:16px}
   .hero-figure{font-size:48px}
   .tiles{gap:8px}
-  .tile{padding:10px 12px}
+  .tile{padding:12px}
   .tile-value{font-size:24px}
   .tile-word{font-size:17px}
   .map-hint{display:block}
-  .crow{grid-template-columns:minmax(0,1fr) 40px;grid-template-areas:"name name" "chip chip" "meter pct" "ev ev";gap:6px 10px}
+  .crow{grid-template-columns:minmax(0,1fr) 40px;grid-template-areas:"name name" "chip chip" "meter pct" "ev ev";gap:8px 12px}
 }
 @media (prefers-reduced-motion:no-preference){.crow:target{transition:background .3s}}
 `;
 
-// Inline chart script. Reads the embedded data and draws at container width.
+// Inline page script. Reads the embedded data, draws the charts at container width
+// and runs the concept details popover. Uses Fluid (inlined above it) for motion.
 const SCRIPT = String.raw`
 (function(){
   var data = JSON.parse(document.getElementById('tb-data').textContent);
@@ -430,13 +454,9 @@ const SCRIPT = String.raw`
     node.addEventListener('focus',function(){showTip(node,html);});
     node.addEventListener('blur',hideTip);
   }
-  // Concept map nodes carry their tooltip text in data-tip ("title|line|line").
-  Array.prototype.forEach.call(document.querySelectorAll('[data-tip]'),function(n){
-    var parts=n.getAttribute('data-tip').split('|');
-    bindTip(n,'<b>'+esc(parts[0])+'</b>'+parts.slice(1).map(esc).join('<br>'));
-  });
   function niceMax(v){ if(v<=4) return 4; var step=Math.pow(10,Math.floor(Math.log10(v))); var m=Math.ceil(v/step)*step; if(m/step>5 && step>=1){ m=Math.ceil(v/(step/2))*(step/2);} return m; }
   function frame(host, height){ host.innerHTML=''; var w=Math.max(260,host.clientWidth); var svg=el('svg',{width:w,height:height,viewBox:'0 0 '+w+' '+height,role:'img'},host); return {svg:svg,w:w,h:height}; }
+  function colPath(cx,bw,top,ih){ var r=Math.min(3,ih-top); return 'M'+(cx-bw/2)+','+ih+' V'+(top+r)+' Q'+(cx-bw/2)+','+top+' '+(cx-bw/2+r)+','+top+' H'+(cx+bw/2-r)+' Q'+(cx+bw/2)+','+top+' '+(cx+bw/2)+','+(top+r)+' V'+ih+' Z'; }
 
   function progress(){
     var host=document.getElementById('chart-progress'); if(!host) return;
@@ -451,11 +471,7 @@ const SCRIPT = String.raw`
     var t0=Date.parse(hist[0].day), t1=Date.parse(hist[hist.length-1].day), span=Math.max(1,t1-t0);
     function x(d){ return hist.length===1? iw/2 : ((Date.parse(d)-t0)/span)*iw; }
     var pts=hist.map(function(r){return [x(r.day),y(r.mastered)];});
-    if(pts.length>1){
-      var a='M'+pts[0][0]+','+ih+' '+pts.map(function(p){return 'L'+p[0]+','+p[1];}).join(' ')+' L'+pts[pts.length-1][0]+','+ih+'Z';
-      el('path',{d:a,'class':'area'},g);
-      el('path',{d:'M'+pts.map(function(p){return p[0]+','+p[1];}).join(' L'),'class':'line'},g);
-    }
+    if(pts.length>1) el('path',{d:'M'+pts.map(function(p){return p[0]+','+p[1];}).join(' L'),'class':'line'},g);
     var show=[0,hist.length-1]; if(hist.length>2) show.splice(1,0,Math.floor((hist.length-1)/2));
     // Days are placed by date, so two study days in a row sit close together: skip a
     // label that would overlap one already drawn (the first and last always show).
@@ -487,8 +503,8 @@ const SCRIPT = String.raw`
     var maxV=Math.max.apply(null,cols.map(function(c){return c.v;}));
     cols.forEach(function(c,i){
       var cx=band*i+band/2;
-      if(c.v>0){ var top=y(c.v), hgt=ih-top, r=Math.min(4,hgt);
-        el('path',{d:'M'+(cx-bw/2)+','+ih+' V'+(top+r)+' Q'+(cx-bw/2)+','+top+' '+(cx-bw/2+r)+','+top+' H'+(cx+bw/2-r)+' Q'+(cx+bw/2)+','+top+' '+(cx+bw/2)+','+(top+r)+' V'+ih+' Z','class':'bar'},g);
+      if(c.v>0){ var top=y(c.v);
+        el('path',{d:colPath(cx,bw,top,ih),'class':'bar'},g);
         if(c.v===maxV) txt(g,cx,top-6,String(c.v),{'text-anchor':'middle','class':'lbl'});
       }
       if(c.tick) txt(g,c.anchor==='start'?cx-bw/2:cx,ih+18,c.tick,{'text-anchor':c.anchor||'middle'});
@@ -504,6 +520,8 @@ const SCRIPT = String.raw`
     columns(host,cols,{label:'Reviews scheduled for each of the next 14 days; see the table view for values'});
   }
 
+  // Ink marks only: a quiet column up to the share answered right, a solid ink line at
+  // its top (right) and a dashed ink line at what the confidence level claims.
   function calibration(){
     var host=document.getElementById('chart-calibration'); if(!host) return;
     var lv=data.byLevel;
@@ -512,11 +530,12 @@ const SCRIPT = String.raw`
     var g=el('g',{transform:'translate('+m.l+','+m.t+')'},f.svg);
     function y(v){return ih-v*ih;}
     [0,0.5,1].forEach(function(t){ el('line',{x1:0,x2:iw,y1:y(t),y2:y(t),'class':t===0?'baseline':'gridline'},g); txt(g,-8,y(t)+4,Math.round(t*100)+'%',{'text-anchor':'end'}); });
-    var band=iw/lv.length, bw=Math.min(24,band*0.4);
+    var band=iw/lv.length, bw=Math.min(28,band*0.44);
     lv.forEach(function(l,i){
       var cx=band*i+band/2;
-      if(l.n>0 && l.accuracy>0){ var top=y(l.accuracy), hgt=ih-top, r=Math.min(4,hgt);
-        el('path',{d:'M'+(cx-bw/2)+','+ih+' V'+(top+r)+' Q'+(cx-bw/2)+','+top+' '+(cx-bw/2+r)+','+top+' H'+(cx+bw/2-r)+' Q'+(cx+bw/2)+','+top+' '+(cx+bw/2)+','+(top+r)+' V'+ih+' Z','class':'bar'},g); }
+      if(l.n>0 && l.accuracy>0){ var top=y(l.accuracy);
+        el('path',{d:colPath(cx,bw,top,ih),'class':'col'},g);
+        el('line',{x1:cx-bw/2,x2:cx+bw/2,y1:top,y2:top,'class':'right'},g); }
       el('line',{x1:cx-bw/2-6,x2:cx+bw/2+6,y1:y(l.expected),y2:y(l.expected),'class':'claim'},g);
       txt(g,cx,ih+16,l.label,{'text-anchor':'middle','class':'lbl'});
       txt(g,cx,ih+31,l.n+' answer'+(l.n===1?'':'s'),{'text-anchor':'middle'});
@@ -526,14 +545,102 @@ const SCRIPT = String.raw`
     });
   }
 
+  // Concept details popover. It opens from the node (transform-origin at the node's
+  // centre; scale .92 to 1, opacity and blur on one spring, damping .8, response .3),
+  // follows a new selection with a position spring (damping 1, response .4) and closes
+  // back into the node on the same spring. Every spring retargets from its live value
+  // and velocity, so a click mid-flight reverses smoothly. Reduced motion: a 120 ms
+  // opacity crossfade and nothing else.
+  var pop=document.getElementById('pop'), body=document.getElementById('pop-body');
+  var nodes=Array.prototype.slice.call(document.querySelectorAll('a.node'));
+  var info={}; data.concepts.forEach(function(c){info[c.id]=c;});
+  var cur=null, open=false, anchor=[0,0], fadeTimer=0;
+  function paint(){
+    var x=px.value, y=py.value, p=pp.value;
+    if(Fluid.reduce()){ pop.style.transform='translate('+x+'px,'+y+'px)'; pop.style.filter=''; return; }
+    var s=0.92+0.08*p, b=Math.max(0,6*(1-p));
+    pop.style.transformOrigin=(anchor[0]-x).toFixed(1)+'px '+(anchor[1]-y).toFixed(1)+'px';
+    pop.style.transform='translate('+x.toFixed(2)+'px,'+y.toFixed(2)+'px) scale('+Math.max(0.5,s).toFixed(4)+')';
+    pop.style.opacity=Math.max(0,Math.min(1,p)).toFixed(3);
+    pop.style.filter=b>0.05?'blur('+b.toFixed(2)+'px)':'';
+  }
+  var px=Fluid.spring({response:0.4,damping:1,onUpdate:paint});
+  var py=Fluid.spring({response:0.4,damping:1,onUpdate:paint});
+  var pp=Fluid.spring({response:0.3,damping:0.8,onUpdate:paint,onRest:function(v){ if(!open && v<=0) pop.hidden=true; }});
+  function fill(c){
+    var h='';
+    if(c.next) h+='<p class="eyebrow">Next up</p>';
+    h+='<h3 id="pop-title">'+esc(c.name)+'</h3>';
+    h+='<p class="pop-state"><span class="chip st-'+c.state+'" data-state="'+c.state+'">'+esc(c.label)+'</span><span><span class="pop-pct">'+c.shown+'%</span> mastery estimate</span></p>';
+    h+='<p class="pop-ev">'+(c.attempts?c.attempts+' answer'+(c.attempts===1?'':'s')+': '+c.correct+' right, '+c.partial+' partly, '+c.wrong+' wrong':'No answers yet')+(c.taught?' · taught back':'')+'</p>';
+    if(c.after.length) h+='<p>After: '+c.after.map(esc).join(', ')+'</p>';
+    h+='<p><a href="#c-'+esc(c.id)+'" data-pop-link>Show in the concept list</a></p>';
+    body.innerHTML=h;
+  }
+  // Below the node, or above it when there is no room; kept inside the viewport.
+  function place(n){
+    var svg=n.ownerSVGElement, vb=svg.viewBox.baseVal, sr=svg.getBoundingClientRect(), bb=n.querySelector('.node-box').getBBox();
+    var k=sr.width/vb.width, l=sr.left+bb.x*k, t=sr.top+bb.y*k, w=bb.width*k, hh=bb.height*k;
+    var pw=pop.offsetWidth, ph=pop.offsetHeight, vw=document.documentElement.clientWidth, vh=window.innerHeight;
+    var left=Math.min(vw-pw-8,Math.max(8,l+w/2-pw/2)), top=t+hh+10;
+    if(top+ph>vh-8 && t-10-ph>=8) top=t-10-ph;
+    anchor=[l+w/2+window.scrollX,t+hh/2+window.scrollY];
+    return [left+window.scrollX,top+window.scrollY];
+  }
+  function select(n){
+    if(cur===n && open){ close(false); return; }
+    var visible=!pop.hidden && pp.value>0.02;
+    if(cur){ cur.classList.remove('is-selected'); cur.setAttribute('aria-expanded','false'); }
+    cur=n; open=true; n.classList.add('is-selected'); n.setAttribute('aria-expanded','true');
+    fill(info[n.getAttribute('data-node')]);
+    clearTimeout(fadeTimer);
+    pop.hidden=false;
+    var p=place(n);
+    if(Fluid.reduce()){
+      px.set(p[0]); py.set(p[1]); pp.set(1);
+      // Start the crossfade from transparent: commit opacity 0 with no transition first.
+      if(!visible){ pop.style.transition='none'; pop.style.opacity='0'; void getComputedStyle(pop).opacity; }
+      pop.style.transition='opacity 120ms linear'; pop.style.opacity='1';
+      return;
+    }
+    pop.style.transition='';
+    if(visible){ px.to(p[0]); py.to(p[1]); }
+    else { px.set(p[0]); py.set(p[1]); if(pp.value<=0) pp.set(0); }
+    pp.to(1,{response:0.3,damping:0.8});
+  }
+  function close(focusNode){
+    if(!open) return;
+    open=false;
+    if(cur){ cur.classList.remove('is-selected'); cur.setAttribute('aria-expanded','false'); if(focusNode) cur.focus(); }
+    if(Fluid.reduce()){
+      pp.set(0); pop.style.transition='opacity 120ms linear'; pop.style.opacity='0';
+      fadeTimer=setTimeout(function(){ if(!open) pop.hidden=true; },130);
+      return;
+    }
+    if(cur) place(cur);
+    pp.to(0,{response:0.3,damping:0.8});
+  }
+  // Keep the popover on its node when the map scrolls sideways or the window changes:
+  // the scroll owns the position, so it is set directly rather than animated.
+  function follow(){ if(!open||!cur) return; var p=place(cur); px.set(p[0]); py.set(p[1]); }
+  nodes.forEach(function(n){
+    Fluid.pressable(n);
+    n.addEventListener('click',function(e){ e.preventDefault(); select(n); });
+  });
+  Array.prototype.forEach.call(document.querySelectorAll('.tv summary, .pop-close'),function(b){ Fluid.pressable(b,{scale:0.96}); });
+  document.getElementById('pop-close').addEventListener('click',function(){ close(true); });
+  pop.addEventListener('click',function(e){ if(e.target.closest('[data-pop-link]')) close(false); });
+  document.addEventListener('pointerdown',function(e){ if(open && !pop.contains(e.target) && !e.target.closest('a.node')) close(false); });
+  var scroller=document.querySelector('.map-scroll'); if(scroller) scroller.addEventListener('scroll',follow,{passive:true});
+
   function drawAll(){ progress(); reviews(); calibration(); }
   // On narrow screens the map scrolls sideways: start with the next concept in view.
   (function(){ var sc=document.querySelector('.map-scroll'), n=document.querySelector('a.node.is-next')||document.querySelector('a.node:not(.st-mastered)'); if(!sc||!n||sc.scrollWidth<=sc.clientWidth) return; var r=n.getBoundingClientRect(), sr=sc.getBoundingClientRect(); sc.scrollLeft=Math.max(0,sc.scrollLeft+(r.left+r.width/2)-(sr.left+sr.width/2)); })();
   drawAll();
   var last=window.innerWidth;
-  window.addEventListener('resize',function(){ if(Math.abs(window.innerWidth-last)>4){ last=window.innerWidth; hideTip(); drawAll(); } });
+  window.addEventListener('resize',function(){ if(Math.abs(window.innerWidth-last)>4){ last=window.innerWidth; hideTip(); drawAll(); } follow(); });
   if(window.matchMedia){ var mq=window.matchMedia('(prefers-color-scheme: dark)'); if(mq.addEventListener) mq.addEventListener('change',drawAll); }
-  document.addEventListener('keydown',function(e){ if(e.key==='Escape') hideTip(); });
+  document.addEventListener('keydown',function(e){ if(e.key==='Escape'){ hideTip(); close(true); } });
 })();
 `;
 
@@ -548,7 +655,22 @@ export function renderDashboard(courseData, s) {
     history: s.history,
     dueToday: s.reviews.dueToday,
     upcoming: s.reviews.upcoming,
-    byLevel: s.calibration.byLevel
+    byLevel: s.calibration.byLevel,
+    // For the concept details popover.
+    concepts: s.conceptList.map((c) => ({
+      id: c.id,
+      name: c.name,
+      state: c.state,
+      label: STATE_LABEL[c.state],
+      shown: masteryPercent(c.pL, c.mastered, s.masteryThreshold),
+      attempts: c.attempts,
+      correct: c.correct,
+      partial: c.partial,
+      wrong: c.wrong,
+      taught: Boolean(c.teachbackPassed),
+      after: c.prerequisites.map((p) => s.conceptList.find((x) => x.id === p)?.name ?? p),
+      next: s.next.kind === 'learn' && s.next.concept === c.id
+    }))
   };
   const json = JSON.stringify(embedded).replace(/</g, '\\u003c');
   const statusJson = JSON.stringify({
@@ -598,7 +720,7 @@ ${tiles(s)}
 </section>
 ${nextCard(s)}
 <section class="card" aria-labelledby="map-h">
-<div class="card-head"><div><h2 id="map-h">Concept map</h2><p class="card-sub">Arrows run from a prerequisite to the concept that builds on it. Colour shows the mastery estimate; select a concept for details.</p></div></div>
+<div class="card-head"><div><h2 id="map-h">Concept map</h2><p class="card-sub">Arrows run from a prerequisite to the concept that builds on it. Select a concept for details.</p></div>${mapKey()}</div>
 <p class="map-hint">Scroll sideways to see the whole map.</p>
 <div class="map-scroll" tabindex="0" aria-label="Concept map, scrolls sideways on small screens">${conceptMap(s)}</div>
 </section>
@@ -617,7 +739,7 @@ ${dueList(s)}
 <section class="card" aria-labelledby="cal-h">
 <div class="card-head"><div><h2 id="cal-h">Confidence calibration</h2><p class="card-sub">How often you were right at each confidence level</p></div></div>
 <div class="chart" id="chart-calibration"></div>
-<ul class="chart-legend"><li><span class="sw-bar" aria-hidden="true"></span>Right</li><li><span class="sw-claim" aria-hidden="true"></span>What the level claims</li></ul>
+<ul class="chart-legend"><li><span class="sw" aria-hidden="true"></span>Right</li><li><span class="sw sw-claim" aria-hidden="true"></span>What the level claims</li></ul>
 ${t.cal}
 ${calibrationFlags(s)}
 </section>
@@ -636,8 +758,10 @@ ${exerciseBoard(s)}
 </footer>
 </main>
 <div id="tip" role="tooltip" hidden></div>
+<div id="pop" class="pop" role="dialog" aria-modal="false" aria-labelledby="pop-title" hidden><button type="button" class="pop-close" id="pop-close" aria-label="Close details">${ICON.cross}</button><div id="pop-body"></div></div>
 <script type="application/json" id="tb-data">${json}</script>
 <script type="application/json" id="tb-status">${statusJson}</script>
+<script>${FLUID}</script>
 <script>${SCRIPT}</script>
 </body>
 </html>
