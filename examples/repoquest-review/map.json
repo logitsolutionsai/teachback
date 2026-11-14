@@ -1,0 +1,21 @@
+{
+  "schema": "teachback/map@1",
+  "concepts": [
+    {
+      "id": "eviction-invariant",
+      "name": "The eviction invariant",
+      "summary": "The change flips one comparison in evict. The invariant it restores: when the cache is full, the entry dropped is the one whose last use is oldest, so every key read more recently survives. The first test in the suite states exactly that invariant, which is why it fails before the change and passes after it.",
+      "sources": [{ "section": "src/cache/lru.js", "label": "LruCache.evict" }, { "section": "test/lru.test.js", "label": "first test" }],
+      "sourceRefs": [
+        { "fileId": "src-cache-lru-js", "startLine": 31, "endLine": 38, "needle": "entry.lastUsed < victim.lastUsed", "symbolId": "sym-src-cache-lru-js-lrucache-evict" },
+        { "fileId": "test-lru-test-js", "startLine": 14, "endLine": 23, "needle": "drops the least recently used key" }
+      ],
+      "prerequisites": [],
+      "difficulty": 2,
+      "misconceptions": [
+        { "id": "style-only", "description": "Reads the change as a style fix with no behaviour change." },
+        { "id": "tests-prove-all", "description": "Thinks the passing suite proves no other caller depended on the old order." }
+      ]
+    }
+  ]
+}

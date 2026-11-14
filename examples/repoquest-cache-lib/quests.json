@@ -1,0 +1,42 @@
+{
+  "schemaVersion": 1,
+  "courseKind": "repo-quest",
+  "sourceManifestDigest": "sha256:d04c996ba62c2c90a6fd2afd875699b746ce4dad7aae43a8db2d17b5d7ba13c6",
+  "quests": [
+    {
+      "id": "locate-eviction",
+      "kind": "navigate",
+      "title": "Find the eviction decision",
+      "prompt": "Which method decides which entry the cache drops when it is full? Give the file and the method.",
+      "prerequisites": ["recency"],
+      "sourceRefs": [{ "fileId": "src-cache-lru-js", "startLine": 31, "endLine": 38, "needle": "evict()", "symbolId": "sym-src-cache-lru-js-lrucache-evict" }],
+      "acceptance": { "kind": "source-location", "fileId": "src-cache-lru-js", "symbolId": "sym-src-cache-lru-js-lrucache-evict" },
+      "timeBudgetMin": 5
+    },
+    {
+      "id": "predict-eviction",
+      "kind": "predict",
+      "title": "Predict which key goes",
+      "prompt": "Before running anything, predict which key the current code drops in the first test, and why.",
+      "prerequisites": ["capacity-trigger", "locate-eviction"],
+      "sourceRefs": [{ "fileId": "src-cache-lru-js", "startLine": 31, "endLine": 38, "needle": "entry.lastUsed > victim.lastUsed" }],
+      "acceptance": { "kind": "item", "item": "vic-predict" },
+      "timeBudgetMin": 10
+    },
+    {
+      "id": "fix-eviction",
+      "kind": "patch",
+      "title": "Fix the eviction choice",
+      "prompt": "Make the first test pass by changing only src/cache/. Then explain why your change is right.",
+      "prerequisites": ["victim-choice", "predict-eviction"],
+      "sourceRefs": [{ "fileId": "test-lru-test-js", "startLine": 14, "endLine": 23, "needle": "drops the least recently used key" }],
+      "acceptance": { "kind": "tests" },
+      "workspace": { "strategy": "scratch-copy", "allowedPaths": ["src/cache/**"] },
+      "verification": { "runner": "node-test", "command": ["node", "--test", "test/lru.test.js"], "timeoutSec": 20, "network": "not-enforced", "expectedExitCode": 0 },
+      "requiresTeachback": true,
+      "teachbackItem": "vic-teachback",
+      "capstone": true,
+      "timeBudgetMin": 20
+    }
+  ]
+}

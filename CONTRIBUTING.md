@@ -57,6 +57,10 @@ A change to `SKILL.md` or `references/tutoring-protocol.md` changes how the tuto
 - New `check` problems get a code in `CODES`, a message that names the file and the item, and a fix hint.
 - Keep `SKILL.md` short; put detail in `references/`.
 
+## Contributing RepoQuest Courses And Scanners
+
+Templates for a new open-source course, a new language scanner and a counterexample fixture are in [docs/MAINTAINER-GUIDE.md](docs/MAINTAINER-GUIDE.md#templates). Tests never run git: install the stub from `tests/helpers/repoquest.mjs` (`guardGit()` or `stubGit()`) in any test that touches `src/repo/`.
+
 ## Writing Style For Docs
 
 Title Case headings. Plain words, short sentences, no contractions, no exclamation marks. Explain what the user sees, with an example, before the mechanism. No invented numbers or testimonials.

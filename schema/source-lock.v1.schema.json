@@ -1,0 +1,222 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/logitsolutionsai/teachback/schema/source-lock.v1.schema.json",
+  "title": "teachback source-lock.json",
+  "description": "Which files a repo course was written from: relative paths, content hashes, and the commit or a content digest. No absolute paths, no file content.",
+  "type": "object",
+  "required": [
+    "schemaVersion",
+    "sourceKind",
+    "repo",
+    "files",
+    "license",
+    "scannerVersion",
+    "manifestDigest"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "schemaVersion": {
+      "const": 1
+    },
+    "sourceKind": {
+      "enum": [
+        "git-repository",
+        "worktree"
+      ]
+    },
+    "repo": {
+      "type": "object",
+      "required": [
+        "name",
+        "ref",
+        "dirty",
+        "scope"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "publicUrl": {
+          "type": "string",
+          "pattern": "^https://github\\.com/[A-Za-z0-9][A-Za-z0-9-]{0,38}/[A-Za-z0-9._-]{1,100}$"
+        },
+        "ref": {
+          "anyOf": [
+            {
+              "type": "object",
+              "required": [
+                "kind",
+                "sha"
+              ],
+              "additionalProperties": false,
+              "properties": {
+                "kind": {
+                  "const": "git"
+                },
+                "sha": {
+                  "type": "string",
+                  "pattern": "^[0-9a-f]{40}([0-9a-f]{24})?$"
+                }
+              }
+            },
+            {
+              "type": "object",
+              "required": [
+                "kind",
+                "digest"
+              ],
+              "additionalProperties": false,
+              "properties": {
+                "kind": {
+                  "const": "worktree"
+                },
+                "digest": {
+                  "type": "string",
+                  "pattern": "^sha256:[0-9a-f]{64}$"
+                }
+              }
+            }
+          ],
+          "anyOfMessage": "must be {kind: git, sha} or {kind: worktree, digest}"
+        },
+        "dirty": {
+          "type": "boolean"
+        },
+        "dirtySource": {
+          "type": "boolean"
+        },
+        "contentDigest": {
+          "type": "string",
+          "pattern": "^sha256:[0-9a-f]{64}$"
+        },
+        "scope": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "provenance": {
+      "type": "string"
+    },
+    "files": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "path",
+          "sha256",
+          "role"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[a-z0-9][a-z0-9-]*$"
+          },
+          "path": {
+            "type": "string",
+            "minLength": 1
+          },
+          "sha256": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{64}$"
+          },
+          "language": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "lineCount": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "binary": {
+            "type": "boolean"
+          },
+          "role": {
+            "enum": [
+              "source",
+              "test",
+              "doc",
+              "config",
+              "license",
+              "other"
+            ]
+          },
+          "license": {
+            "type": "string"
+          },
+          "state": {
+            "enum": [
+              "committed",
+              "dirty",
+              "untracked",
+              "worktree"
+            ]
+          }
+        }
+      }
+    },
+    "languages": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "ignore": {
+      "type": "object"
+    },
+    "license": {
+      "type": "object",
+      "required": [
+        "files",
+        "detectedSpdx",
+        "verifiedByHuman"
+      ],
+      "properties": {
+        "files": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "detectedSpdx": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "declaredSpdx": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "detection": {
+          "type": "string"
+        },
+        "verifiedByHuman": {
+          "const": false,
+          "description": "Always false: a detected SPDX id is a best-effort guess, not legal permission."
+        }
+      }
+    },
+    "complete": {
+      "type": "boolean"
+    },
+    "scannerVersion": {
+      "type": "string"
+    },
+    "hashBasis": {
+      "type": "string"
+    },
+    "manifestDigest": {
+      "type": "string",
+      "pattern": "^sha256:[0-9a-f]{64}$"
+    }
+  }
+}

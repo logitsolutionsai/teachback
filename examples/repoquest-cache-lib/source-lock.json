@@ -1,0 +1,110 @@
+{
+  "schemaVersion": 1,
+  "sourceKind": "worktree",
+  "repo": {
+    "name": "cache-lib",
+    "ref": {
+      "kind": "worktree",
+      "digest": "sha256:e1da99909af561e11c446d23bc7dfe0c565275cb61a3d985538fcd6686df6189"
+    },
+    "dirty": false,
+    "scope": "."
+  },
+  "provenance": "content digest of a folder without git (lower provenance confidence)",
+  "files": [
+    {
+      "id": "license",
+      "path": "LICENSE",
+      "sha256": "4a4f80cb0d462736318eb7e1089e16b1f0616c839ab33ce754b71e2d53af14b5",
+      "language": null,
+      "role": "license",
+      "license": "license-text",
+      "state": "worktree",
+      "lineCount": 21
+    },
+    {
+      "id": "readme-md",
+      "path": "README.md",
+      "sha256": "3084eac1f5a5f2481bbb8f83e88218476b92f5935261194ff313025bdc9e8ad1",
+      "language": "markdown",
+      "role": "doc",
+      "license": "repo-license",
+      "state": "worktree",
+      "lineCount": 7
+    },
+    {
+      "id": "package-json",
+      "path": "package.json",
+      "sha256": "c11d9a9af5244c1abf2ff07a55b56bc2e732f9858bf6d8704c7fd26d90682684",
+      "language": "json",
+      "role": "config",
+      "license": "repo-license",
+      "state": "worktree",
+      "lineCount": 8
+    },
+    {
+      "id": "src-cache-entry-js",
+      "path": "src/cache/entry.js",
+      "sha256": "93327c77182702c0f0c58ac89131accd68f07e346a048e1b5d89efdb44b9eecd",
+      "language": "javascript",
+      "role": "source",
+      "license": "repo-license",
+      "state": "worktree",
+      "lineCount": 12
+    },
+    {
+      "id": "src-cache-lru-js",
+      "path": "src/cache/lru.js",
+      "sha256": "05c1cd2a7337356aaa0980d64360d2b75037871a9c0635bf9b5adbdb7cf2077c",
+      "language": "javascript",
+      "role": "source",
+      "license": "repo-license",
+      "state": "worktree",
+      "lineCount": 43
+    },
+    {
+      "id": "src-index-js",
+      "path": "src/index.js",
+      "sha256": "e5b82d366889af0a7e765f95bd024e38fa3116a75538cb1797eecb9c23da960b",
+      "language": "javascript",
+      "role": "source",
+      "license": "repo-license",
+      "state": "worktree",
+      "lineCount": 2
+    },
+    {
+      "id": "test-lru-test-js",
+      "path": "test/lru.test.js",
+      "sha256": "3a1f9538a55644aaa22e14b7153236e4a4c83108b5e696541048877d078c3314",
+      "language": "javascript",
+      "role": "test",
+      "license": "repo-license",
+      "state": "worktree",
+      "lineCount": 37
+    }
+  ],
+  "languages": [
+    "javascript",
+    "json",
+    "markdown"
+  ],
+  "ignore": {
+    "defaults": true,
+    "gitignore": true,
+    "include": [],
+    "exclude": []
+  },
+  "license": {
+    "files": [
+      "LICENSE"
+    ],
+    "detectedSpdx": "MIT",
+    "declaredSpdx": "MIT",
+    "detection": "keyword-heuristic",
+    "verifiedByHuman": false
+  },
+  "complete": true,
+  "scannerVersion": "1",
+  "hashBasis": "sha256 of the file with CRLF line endings read as LF (text); raw bytes (binary)",
+  "manifestDigest": "sha256:d04c996ba62c2c90a6fd2afd875699b746ce4dad7aae43a8db2d17b5d7ba13c6"
+}

@@ -1,0 +1,53 @@
+{
+  "schema": "teachback/items@1",
+  "items": [
+    {
+      "id": "inv-which",
+      "concept": "eviction-invariant",
+      "type": "mcq",
+      "difficulty": 1,
+      "prompt": "After this change, which entry does a full cache drop when a new key is added?",
+      "sourceRefs": [{ "fileId": "src-cache-lru-js", "startLine": 31, "endLine": 38, "needle": "entry.lastUsed < victim.lastUsed" }],
+      "options": [
+        { "text": "The entry used most recently", "rationale": "That was the behaviour before the change." },
+        { "text": "The entry whose last use is oldest", "rationale": "The loop now keeps the smallest lastUsed." },
+        { "text": "The entry inserted first", "rationale": "Insertion order is not consulted; recency is." },
+        { "text": "A random entry", "rationale": "The choice is deterministic for a given clock." }
+      ],
+      "answer": 1
+    },
+    {
+      "id": "review-what-breaks",
+      "concept": "eviction-invariant",
+      "type": "short",
+      "difficulty": 3,
+      "prompt": "What would break if this line were changed back, and which test would catch it?",
+      "rubric": {
+        "required": [
+          { "id": "drops-recent", "idea": "The cache would drop the entry just used", "synonyms": ["just used", "most recent", "recently used", "newest", "wrong entry", "wrong key"] },
+          { "id": "first-test", "idea": "The first test would fail", "synonyms": ["first test", "least recently used key", "lru test", "test fails", "test would fail"] }
+        ],
+        "minRequired": 2
+      },
+      "modelAnswer": "Changed back, the cache would drop the most recent entry instead of the oldest, and the first test (drops the least recently used key) would fail."
+    },
+    {
+      "id": "inv-teachback",
+      "concept": "eviction-invariant",
+      "type": "teachback",
+      "difficulty": 3,
+      "prompt": "Explain to another reviewer what this change guarantees, and one thing the passing tests do not prove.",
+      "rubric": {
+        "required": [
+          { "id": "oldest-dropped", "idea": "The oldest entry is dropped", "synonyms": ["oldest", "least recent", "smallest", "longest ago"] },
+          { "id": "limits", "idea": "Tests do not prove everything", "synonyms": ["not prove", "does not prove", "only covers", "other callers", "regression", "not guarantee"] }
+        ],
+        "misconceptions": [
+          { "id": "style-only", "description": "A style change only", "synonyms": ["just style", "only style", "cosmetic"] }
+        ],
+        "minRequired": 2
+      },
+      "modelAnswer": "It guarantees the oldest entry, the one used longest ago, is dropped when the cache is full. The tests do not prove that no other caller relied on the old order."
+    }
+  ]
+}

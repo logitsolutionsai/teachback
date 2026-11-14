@@ -1,0 +1,156 @@
+{
+  "schema": "teachback/items@1",
+  "items": [
+    {
+      "id": "rec-which-ops",
+      "concept": "recency",
+      "type": "mcq",
+      "difficulty": 1,
+      "prompt": "In cache-lib, which operations refresh an entry's last-use reading?",
+      "source": "src/cache/lru.js",
+      "sourceRefs": [{ "fileId": "src-cache-lru-js", "startLine": 12, "endLine": 28, "needle": "touch(this.clock())" }],
+      "options": [
+        { "text": "Only set, when it adds a new key", "rationale": "A new entry starts with a fresh reading, but reads refresh it too." },
+        { "text": "get, and set on a key that is already cached", "rationale": "Both call touch with the current clock reading." },
+        { "text": "Only get", "rationale": "Writing an existing key also calls touch." },
+        { "text": "None: the Map's insertion order tracks recency", "rationale": "The Map order is never changed after insertion; recency is the lastUsed field." }
+      ],
+      "answer": 1
+    },
+    {
+      "id": "rec-why-clock",
+      "concept": "recency",
+      "type": "short",
+      "difficulty": 2,
+      "prompt": "Why does LruCache take a clock function instead of calling Date.now() itself?",
+      "rubric": {
+        "required": [
+          { "id": "tests-control-time", "idea": "Tests can control time", "synonyms": ["test", "control time", "fake clock", "ticking clock", "deterministic", "predictable"] }
+        ],
+        "minRequired": 1
+      },
+      "modelAnswer": "So a test can pass a fake ticking clock and know every reading, which makes the results deterministic."
+    },
+    {
+      "id": "rec-teachback",
+      "concept": "recency",
+      "type": "teachback",
+      "difficulty": 2,
+      "prompt": "Explain to a new contributor how cache-lib knows which entry was used least recently.",
+      "rubric": {
+        "required": [
+          { "id": "stores-reading", "idea": "Each entry stores the clock reading of its last use", "synonyms": ["lastUsed", "last used", "last use", "timestamp", "clock reading", "time of use"] },
+          { "id": "reads-refresh", "idea": "Reads and writes refresh it", "synonyms": ["get", "touch", "read", "reading a key", "access"] }
+        ],
+        "misconceptions": [
+          { "id": "insertion-order", "description": "Map insertion order gives recency", "synonyms": ["insertion order", "order of the map", "order they were added"] }
+        ],
+        "minRequired": 2
+      },
+      "modelAnswer": "Each entry stores lastUsed, the clock reading of its last use, and get and set call touch to refresh it, so the smallest lastUsed belongs to the entry used longest ago."
+    },
+    {
+      "id": "cap-update-count",
+      "concept": "capacity-trigger",
+      "type": "numeric",
+      "difficulty": 1,
+      "prompt": "A cache with capacity 3 holds 3 keys. You set one of those keys to a new value. How many entries are dropped?",
+      "source": "src/cache/lru.js",
+      "answer": 0,
+      "explanation": "set returns early for a key it already holds; evict is only called before adding a new key."
+    },
+    {
+      "id": "cap-when",
+      "concept": "capacity-trigger",
+      "type": "mcq",
+      "difficulty": 2,
+      "prompt": "When does set call evict?",
+      "options": [
+        { "text": "On every set once the cache has ever been full", "rationale": "An update of an existing key returns before the capacity check." },
+        { "text": "Before adding a key it does not hold, when size has reached capacity", "rationale": "The check runs first, then the new entry goes in." },
+        { "text": "After inserting, when size is above capacity", "rationale": "The size never goes above capacity: the check runs before the insert." },
+        { "text": "On get, when the cache is full", "rationale": "get never drops anything; it only refreshes recency." }
+      ],
+      "answer": 1
+    },
+    {
+      "id": "cap-teachback",
+      "concept": "capacity-trigger",
+      "type": "teachback",
+      "difficulty": 2,
+      "prompt": "Explain when cache-lib drops an entry and when it does not.",
+      "rubric": {
+        "required": [
+          { "id": "new-key", "idea": "Only when adding a new key", "synonyms": ["new key", "key it does not hold", "not already cached", "adding a key", "insert a new"] },
+          { "id": "full", "idea": "And only when the cache is full", "synonyms": ["full", "capacity", "size reached", "at capacity"] }
+        ],
+        "misconceptions": [
+          { "id": "update-evicts", "description": "Updating an existing key drops an entry", "synonyms": ["updating evicts", "update drops", "overwriting evicts"] }
+        ],
+        "minRequired": 2
+      },
+      "modelAnswer": "It drops one entry only when you add a new key while the cache is already at capacity; updating a key it already holds just refreshes it."
+    },
+    {
+      "id": "vic-reading",
+      "concept": "victim-choice",
+      "type": "numeric",
+      "difficulty": 2,
+      "prompt": "Capacity 2, and the clock returns 1, 2, 3 and so on, one step per call. You set a, set b, get a, then set c. What lastUsed reading does the entry a correct LRU cache drops have?",
+      "answer": 2,
+      "explanation": "a is read at 3, b was last used at 2, so b (reading 2) is the least recently used."
+    },
+    {
+      "id": "vic-predict",
+      "concept": "victim-choice",
+      "type": "short",
+      "difficulty": 5,
+      "prompt": "Read LruCache.evict as it is written. With capacity 2: set a, set b, get a, set c. Which key does this code drop, and why?",
+      "sourceRefs": [{ "fileId": "src-cache-lru-js", "startLine": 31, "endLine": 38, "needle": "entry.lastUsed > victim.lastUsed" }],
+      "rubric": {
+        "required": [
+          { "id": "drops-a", "idea": "It drops a", "synonyms": ["drops a", "evicts a", "removes a", "a is dropped", "a gets evicted", "key a"] },
+          { "id": "keeps-largest", "idea": "Because it keeps the entry with the largest reading, the most recent one", "synonyms": ["largest", "most recent", "newest", "highest", "greater than", "biggest"] }
+        ],
+        "minRequired": 2
+      },
+      "modelAnswer": "It drops a, because the comparison keeps the entry with the largest lastUsed, which is the most recent one."
+    },
+    {
+      "id": "vic-rule-teachback",
+      "concept": "victim-choice",
+      "type": "teachback",
+      "difficulty": 2,
+      "prompt": "Explain to a friend which entry a least-recently-used cache should drop, and how evict can find it in one pass.",
+      "rubric": {
+        "required": [
+          { "id": "smallest", "idea": "The entry with the smallest last-use reading", "synonyms": ["smallest", "least recent", "oldest", "lowest", "longest ago"] },
+          { "id": "one-pass", "idea": "Keep the best candidate while walking every entry", "synonyms": ["loop", "walk", "every entry", "each entry", "one pass", "keep the"] }
+        ],
+        "misconceptions": [
+          { "id": "insertion-order", "description": "Map insertion order gives recency", "synonyms": ["insertion order", "first inserted", "order they were added"] }
+        ],
+        "minRequired": 2
+      },
+      "modelAnswer": "It should drop the entry with the smallest lastUsed, the one used longest ago. evict can loop over each entry once and keep the one with the smallest reading so far."
+    },
+    {
+      "id": "vic-teachback",
+      "concept": "victim-choice",
+      "type": "teachback",
+      "difficulty": 5,
+      "prompt": "Explain your fix to evict: what was wrong, and what would break if the comparison were flipped back?",
+      "rubric": {
+        "required": [
+          { "id": "smallest", "idea": "evict must keep the entry with the smallest reading", "synonyms": ["smallest", "least recent", "oldest", "lowest", "less than", "longest ago"] },
+          { "id": "breaks", "idea": "Flipped back, it drops the entry just used and the first test fails", "synonyms": ["test fails", "test would fail", "drops the wrong", "evicts the wrong", "just used", "most recent"] }
+        ],
+        "misconceptions": [
+          { "id": "drops-newest", "description": "Dropping the newest entry is correct", "synonyms": ["drop the newest", "evict the newest", "newest should go"] }
+        ],
+        "minRequired": 2
+      },
+      "modelAnswer": "evict kept the largest lastUsed; it must keep the smallest, the least recent entry. Flipped back, it drops the entry just used and the first test fails."
+    }
+  ]
+}

@@ -1,0 +1,18 @@
+{
+  "schemaVersion": 1,
+  "courseKind": "review",
+  "sourceManifestDigest": "sha256:047d88b42dd1c298068ba1320d0f5e51c0830d841cd978945549cba325fddd3c",
+  "quests": [
+    {
+      "id": "review-changed-invariant",
+      "kind": "review",
+      "title": "Name the invariant and a counterexample",
+      "prompt": "Read the diff in diff-summary.json and the lines it touches. Which invariant does it change, and what input shows the difference?",
+      "prerequisites": ["eviction-invariant"],
+      "sourceRefs": [{ "fileId": "src-cache-lru-js", "startLine": 31, "endLine": 38, "needle": "entry.lastUsed < victim.lastUsed", "symbolId": "sym-src-cache-lru-js-lrucache-evict" }],
+      "acceptance": { "kind": "item", "item": "review-what-breaks" },
+      "diff": "diff-summary.json",
+      "timeBudgetMin": 15
+    }
+  ]
+}

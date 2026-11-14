@@ -1,0 +1,230 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/logitsolutionsai/teachback/schema/quests.v1.schema.json",
+  "title": "teachback quests.json",
+  "description": "Repo quests: tasks on a pinned repository, linked to the concept map. Quest and concept ids share one namespace and one prerequisite DAG.",
+  "type": "object",
+  "required": [
+    "schemaVersion",
+    "courseKind",
+    "sourceManifestDigest",
+    "quests"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "schemaVersion": {
+      "const": 1
+    },
+    "courseKind": {
+      "enum": [
+        "repo-quest",
+        "review"
+      ]
+    },
+    "sourceManifestDigest": {
+      "type": "string",
+      "pattern": "^sha256:[0-9a-f]{64}$"
+    },
+    "quests": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/quest"
+      }
+    }
+  },
+  "$defs": {
+    "sourceRef": {
+      "type": "object",
+      "required": [
+        "fileId",
+        "startLine",
+        "endLine"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "fileId": {
+          "type": "string",
+          "pattern": "^[a-z0-9][a-z0-9-]*$"
+        },
+        "startLine": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "endLine": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "needle": {
+          "type": "string",
+          "minLength": 1,
+          "description": "An exact short string (an identifier or a few words) that must appear inside the line range. At most 200 characters."
+        },
+        "symbolId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "evidenceKind": {
+          "enum": [
+            "quoted",
+            "inferred"
+          ],
+          "description": "inferred: a teaching inference drawn from these lines, shown as such."
+        },
+        "note": {
+          "type": "string"
+        }
+      }
+    },
+    "quest": {
+      "type": "object",
+      "required": [
+        "id",
+        "kind",
+        "title",
+        "prerequisites"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z0-9][a-z0-9-]*$"
+        },
+        "kind": {
+          "enum": [
+            "navigate",
+            "predict",
+            "reproduce",
+            "patch",
+            "review"
+          ]
+        },
+        "title": {
+          "type": "string",
+          "minLength": 1
+        },
+        "prompt": {
+          "type": "string",
+          "minLength": 1
+        },
+        "prerequisites": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "sourceRefs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/sourceRef"
+          }
+        },
+        "acceptance": {
+          "type": "object",
+          "required": [
+            "kind"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "kind": {
+              "enum": [
+                "source-location",
+                "item",
+                "tests"
+              ]
+            },
+            "fileId": {
+              "type": "string"
+            },
+            "symbolId": {
+              "type": "string"
+            },
+            "item": {
+              "type": "string"
+            }
+          }
+        },
+        "workspace": {
+          "type": "object",
+          "required": [
+            "strategy",
+            "allowedPaths"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "strategy": {
+              "enum": [
+                "scratch-copy",
+                "scratch-worktree"
+              ]
+            },
+            "allowedPaths": {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "type": "string",
+                "minLength": 1
+              }
+            }
+          }
+        },
+        "verification": {
+          "type": "object",
+          "required": [
+            "runner",
+            "command",
+            "expectedExitCode"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "runner": {
+              "type": "string"
+            },
+            "command": {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "type": "string",
+                "minLength": 1
+              },
+              "description": "argv array: no shell, no pipes, redirections, globs, substitution or environment variables."
+            },
+            "timeoutSec": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 120
+            },
+            "network": {
+              "enum": [
+                "disallowed",
+                "not-enforced"
+              ]
+            },
+            "expectedExitCode": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 255
+            }
+          }
+        },
+        "timeBudgetMin": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 480
+        },
+        "requiresTeachback": {
+          "type": "boolean"
+        },
+        "teachbackItem": {
+          "type": "string"
+        },
+        "capstone": {
+          "type": "boolean"
+        },
+        "diff": {
+          "type": "string"
+        }
+      }
+    }
+  }
+}

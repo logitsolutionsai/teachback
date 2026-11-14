@@ -1,0 +1,4 @@
+schema_version: "1.1"
+name: certificate-without-capstone
+context:
+  scaffold_script: scaffold.sh

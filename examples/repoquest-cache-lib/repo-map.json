@@ -1,0 +1,134 @@
+{
+  "schemaVersion": 1,
+  "sourceManifestDigest": "sha256:d04c996ba62c2c90a6fd2afd875699b746ce4dad7aae43a8db2d17b5d7ba13c6",
+  "scannerVersion": "1",
+  "complete": true,
+  "symbols": [
+    {
+      "id": "sym-src-cache-entry-js-entry",
+      "fileId": "src-cache-entry-js",
+      "name": "Entry",
+      "kind": "class",
+      "startLine": 2,
+      "endLine": 12,
+      "exported": true,
+      "certainty": "lexically_detected"
+    },
+    {
+      "id": "sym-src-cache-entry-js-entry-constructor",
+      "fileId": "src-cache-entry-js",
+      "name": "Entry.constructor",
+      "kind": "method",
+      "startLine": 3,
+      "endLine": 7,
+      "exported": false,
+      "certainty": "lexically_detected"
+    },
+    {
+      "id": "sym-src-cache-entry-js-entry-touch",
+      "fileId": "src-cache-entry-js",
+      "name": "Entry.touch",
+      "kind": "method",
+      "startLine": 9,
+      "endLine": 11,
+      "exported": false,
+      "certainty": "lexically_detected"
+    },
+    {
+      "id": "sym-src-cache-lru-js-lrucache",
+      "fileId": "src-cache-lru-js",
+      "name": "LruCache",
+      "kind": "class",
+      "startLine": 4,
+      "endLine": 43,
+      "exported": true,
+      "certainty": "lexically_detected"
+    },
+    {
+      "id": "sym-src-cache-lru-js-lrucache-get",
+      "fileId": "src-cache-lru-js",
+      "name": "LruCache.get",
+      "kind": "method",
+      "startLine": 12,
+      "endLine": 17,
+      "exported": false,
+      "certainty": "lexically_detected"
+    },
+    {
+      "id": "sym-src-cache-lru-js-lrucache-set",
+      "fileId": "src-cache-lru-js",
+      "name": "LruCache.set",
+      "kind": "method",
+      "startLine": 19,
+      "endLine": 28,
+      "exported": false,
+      "certainty": "lexically_detected"
+    },
+    {
+      "id": "sym-src-cache-lru-js-lrucache-evict",
+      "fileId": "src-cache-lru-js",
+      "name": "LruCache.evict",
+      "kind": "method",
+      "startLine": 31,
+      "endLine": 38,
+      "exported": false,
+      "certainty": "lexically_detected"
+    },
+    {
+      "id": "sym-src-cache-lru-js-lrucache-size",
+      "fileId": "src-cache-lru-js",
+      "name": "LruCache.size",
+      "kind": "method",
+      "startLine": 40,
+      "endLine": 42,
+      "exported": false,
+      "certainty": "lexically_detected"
+    },
+    {
+      "id": "sym-test-lru-test-js-tickingclock",
+      "fileId": "test-lru-test-js",
+      "name": "tickingClock",
+      "kind": "function",
+      "startLine": 6,
+      "endLine": 12,
+      "exported": false,
+      "certainty": "lexically_detected"
+    }
+  ],
+  "links": [
+    {
+      "from": "src-cache-lru-js",
+      "to": "src-cache-entry-js",
+      "kind": "imports",
+      "basis": "import-path",
+      "certainty": "direct",
+      "line": 1
+    },
+    {
+      "from": "src-index-js",
+      "to": "src-cache-entry-js",
+      "kind": "imports",
+      "basis": "import-path",
+      "certainty": "direct",
+      "line": 2
+    },
+    {
+      "from": "src-index-js",
+      "to": "src-cache-lru-js",
+      "kind": "imports",
+      "basis": "import-path",
+      "certainty": "direct",
+      "line": 1
+    },
+    {
+      "from": "test-lru-test-js",
+      "to": "src-cache-lru-js",
+      "kind": "tests",
+      "basis": "import-path",
+      "certainty": "direct",
+      "line": 3
+    }
+  ],
+  "warnings": [],
+  "note": "Symbols and links come from lexical patterns (certainty lexically_detected, candidate or unknown), not from a parser. There is no call graph."
+}

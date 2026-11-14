@@ -1,0 +1,89 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/logitsolutionsai/teachback/schema/quest-pack.v1.schema.json",
+  "title": "teachback quest-pack.json",
+  "description": "The manifest of a Contributor Quest Pack: course definitions and source pointers only. No learner data, no repository code, no hidden reference solutions.",
+  "type": "object",
+  "required": [
+    "schemaVersion",
+    "kind",
+    "slug",
+    "title",
+    "sourceManifestDigest",
+    "files",
+    "packDigest"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "schemaVersion": {
+      "const": 1
+    },
+    "kind": {
+      "const": "teachback-quest-pack"
+    },
+    "slug": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9-]*$"
+    },
+    "title": {
+      "type": "string",
+      "minLength": 1
+    },
+    "repo": {
+      "type": "object"
+    },
+    "sourceManifestDigest": {
+      "type": "string",
+      "pattern": "^sha256:[0-9a-f]{64}$"
+    },
+    "license": {
+      "type": "object"
+    },
+    "private": {
+      "type": "boolean"
+    },
+    "teachbackVersion": {
+      "type": "string"
+    },
+    "files": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": [
+          "path",
+          "sha256",
+          "bytes"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "path": {
+            "type": "string",
+            "minLength": 1
+          },
+          "sha256": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{64}$"
+          },
+          "bytes": {
+            "type": "integer",
+            "minimum": 0
+          }
+        }
+      }
+    },
+    "excluded": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "notice": {
+      "type": "string"
+    },
+    "packDigest": {
+      "type": "string",
+      "pattern": "^sha256:[0-9a-f]{64}$"
+    }
+  }
+}

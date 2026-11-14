@@ -35,6 +35,7 @@ Authored content (`course.json`, `map.json`, `items.json`, `exercises/`) is sepa
 | `language` | no | `python`, `javascript` or `none`: the language of the rebuild track |
 | `track` | no | Exercise ids in the order to rebuild them; the capstone goes last |
 | `model` | no | Overrides for the learner model: `{ "bkt": {...}, "schedule": {...} }` |
+| `kind` | no | `paper` (the default when absent), `repo-quest` or `review`. Repo courses add `source-lock.json`, `repo-map.json` and `quests.json`, and concepts, misconceptions and items may carry `sourceRefs`; see [repoquest.md](repoquest.md). |
 
 Never put the source text in the course. Summaries and questions are your own writing and cite sections, tables, figures or equations.
 

@@ -1,0 +1,51 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/logitsolutionsai/teachback/schema/trusted-commands.v1.schema.json",
+  "title": "teachback .teachback/trusted-commands.json",
+  "description": "Commands this machine allows repo quests to run, written by the maintainer or the learner. Never part of a pack.",
+  "type": "object",
+  "required": [
+    "schemaVersion",
+    "commands"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "schemaVersion": {
+      "const": 1
+    },
+    "commands": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "argv"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[a-z0-9][a-z0-9-]*$"
+          },
+          "argv": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": "string",
+              "minLength": 1
+            },
+            "description": "argv array: no shell, no pipes, redirections, globs, substitution or environment variables."
+          },
+          "timeoutSec": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 120
+          },
+          "note": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+}

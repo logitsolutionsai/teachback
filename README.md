@@ -106,6 +106,20 @@ Each exercise has a `TASK.md`, a starter file, tests and a reference solution. `
 
 `next` offers the capstone once every other concept is mastered. You can run it earlier for practice; until every concept is mastered, `run` notes that a pass is kept but does not make the course Rebuilt yet. The course is Rebuilt when every concept is mastered and the capstone passes, in either order.
 
+### Learning A Repository: RepoQuest
+
+The same engine can teach a local code repository. Instead of reading 300 source files at random, you work through a few concepts, one failing test, one proven patch and a teach-back, and every claim the tutor makes points at locked lines of the source.
+
+```
+teachback repo scan cache-lib                 # read-only: files, hashes, lexical symbols, test links
+teachback repo init cache --repo cache-lib    # source lock and repo map; Claude then writes the course
+teachback quest answer locate-eviction --path src/cache/lru.js --symbol evict
+teachback quest run fix-eviction --trust-local   # only an allowlisted command, only with the flag
+teachback pack export cache --out cache.teachback-pack.zip   # course definitions only, no code, no learner data
+```
+
+The example in [examples/repoquest-cache-lib/](examples/repoquest-cache-lib/) is wholly synthetic: a tiny MIT-licensed cache with one deliberate bug, and a three-concept course with a navigate quest, a predict quest and a patch capstone. Every source reference is checked against the locked file hash, line range and quoted text; when the code moves on, the course says which claims are suspended and proposes a rebase instead of rewriting anything. Quest commands run only from your own allowlist and only with `--trust-local` on that run, with a timeout and no secrets in their environment; they still run with your permissions, which is not a sandbox. The certificate it writes says what it is: self-reported local evidence, not a credential or a merged contribution. Details: [docs/REPOQUEST.md](docs/REPOQUEST.md), [docs/SECURITY-EXECUTION.md](docs/SECURITY-EXECUTION.md) and, for maintainers who want to publish a quest pack, [docs/MAINTAINER-GUIDE.md](docs/MAINTAINER-GUIDE.md).
+
 ## Proof
 
 **Every exercise is checked before it is used.** `teachback check` runs every reference solution (it must pass) and every starter (it must fail), alongside the structure, prerequisite and item-format checks. `npm test` runs it on both shipped courses, exercises included. `npm test` and `npm run test:e2e` also cover grading, the learner model, scheduling, the exercise runner and the dashboard.
@@ -124,6 +138,8 @@ Each exercise has a `TASK.md`, a starter file, tests and a reference solution. `
 | short-answer-own-judgement | credit a correct paraphrase the rubric misses, recording `correct` |
 | end-session-summary | write the dashboard and give a short summary with the next review date and the dashboard path |
 | build-course-from-source | build a course from a short original text in the project and run `check` until it passes |
+
+**RepoQuest has twelve more cases** in [evals/repoquest/](evals/repoquest/): no repository supplied, a docs-only repository, a local pinned repository, a pull request diff, a poisoned README, an unknown licence, stale source, an imported malicious runner, a citation mismatch, an answer requested early, failed patch tests, and a certificate without a verified capstone. They have not been run either, for the same reason. `tests/evals-repoquest.test.mjs` checks them without a model.
 
 **Results: not run yet.** The suite was written on 2026-11-14 with Claude Code 2.1.325 on Windows, where `claude plugin eval` refuses every run that grants a shell tool, because native Windows has no sandbox backend, and every case needs the shell to run the CLI. No scores are published until the suite has run on macOS, Linux or WSL2. Without a model, `tests/evals.test.mjs` checks that every case loads, every scaffold builds the state its case expects, and every file and regex grader passes on a right tutor action and fails on a wrong one.
 
@@ -145,6 +161,9 @@ Each case runs three times with the plugin and three times without. Add `--model
 - **Python and JavaScript only** for the rebuild track.
 - **On a phone, the concept map scrolls sideways**; the concept list below it shows the same information in one column.
 - **The tutoring evals have not been run yet** (see [Proof](#proof)).
+- **RepoQuest reads code by patterns, not by parsing.** Symbols for JavaScript and TypeScript, Python, Go and Rust are lexical matches with a certainty label; there is no call graph. Other languages are listed and hashed only.
+- **RepoQuest's git paths have not run against real git.** The test suite stubs every git call; the synthetic examples are plain folders locked by content digest. See [docs/REPOQUEST.md](docs/REPOQUEST.md).
+- **There is no container runner.** Quest commands run locally with your permissions once you allowlist them and pass `--trust-local`.
 
 ### Your Data Stays Local
 

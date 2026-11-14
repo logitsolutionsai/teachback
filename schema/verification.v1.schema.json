@@ -1,0 +1,100 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/logitsolutionsai/teachback/schema/verification.v1.schema.json",
+  "title": "teachback quest verification record",
+  "description": "What happened when a quest was checked. Status is not_run, blocked, failed or passed; never an optimistic verified.",
+  "type": "object",
+  "required": [
+    "schemaVersion",
+    "questId",
+    "status",
+    "sourceManifestDigest",
+    "checks"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": 1
+    },
+    "questId": {
+      "type": "string"
+    },
+    "status": {
+      "enum": [
+        "not_run",
+        "blocked",
+        "failed",
+        "passed"
+      ]
+    },
+    "reason": {
+      "type": "string"
+    },
+    "sourceManifestDigest": {
+      "type": "string",
+      "pattern": "^sha256:[0-9a-f]{64}$"
+    },
+    "workspaceDigest": {
+      "type": "string",
+      "pattern": "^sha256:[0-9a-f]{64}$"
+    },
+    "at": {
+      "type": "string"
+    },
+    "checks": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "commandDigest",
+          "exitCode",
+          "timeout"
+        ],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "commandDigest": {
+            "type": "string",
+            "pattern": "^sha256:[0-9a-f]{64}$"
+          },
+          "exitCode": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "durationMs": {
+            "type": "integer"
+          },
+          "stdoutDigest": {
+            "type": "string",
+            "pattern": "^sha256:[0-9a-f]{64}$"
+          },
+          "stderrDigest": {
+            "type": "string",
+            "pattern": "^sha256:[0-9a-f]{64}$"
+          },
+          "stdoutBytes": {
+            "type": "integer"
+          },
+          "stderrBytes": {
+            "type": "integer"
+          },
+          "truncated": {
+            "type": "boolean"
+          },
+          "timeout": {
+            "type": "boolean"
+          }
+        }
+      }
+    },
+    "environment": {
+      "type": "object"
+    },
+    "teachback": {
+      "type": "object"
+    }
+  }
+}

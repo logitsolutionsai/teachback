@@ -1,0 +1,55 @@
+{
+  "schema": "teachback/map@1",
+  "concepts": [
+    {
+      "id": "recency",
+      "name": "Recency stamps",
+      "summary": "Every cached value lives in an Entry that remembers the clock reading of its last use. Both reading a key and writing an existing key refresh that reading, so the entry with the smallest reading is the one used longest ago. The clock is passed in, which lets a test tick it one step per call and know exactly what each entry holds.",
+      "sources": [{ "section": "src/cache/entry.js", "label": "Entry" }, { "section": "src/cache/lru.js", "label": "LruCache.get" }],
+      "sourceRefs": [
+        { "fileId": "src-cache-entry-js", "startLine": 2, "endLine": 12, "needle": "this.lastUsed = now", "symbolId": "sym-src-cache-entry-js-entry" },
+        { "fileId": "src-cache-lru-js", "startLine": 12, "endLine": 17, "needle": "entry.touch(this.clock())", "symbolId": "sym-src-cache-lru-js-lrucache-get" }
+      ],
+      "prerequisites": [],
+      "difficulty": 1,
+      "misconceptions": [
+        {
+          "id": "only-writes-count",
+          "description": "Thinks only set counts as a use, so reading a key leaves it looking old.",
+          "sourceRefs": [{ "fileId": "src-cache-lru-js", "startLine": 12, "endLine": 17, "needle": "entry.touch", "evidenceKind": "inferred" }]
+        }
+      ]
+    },
+    {
+      "id": "capacity-trigger",
+      "name": "When eviction happens",
+      "summary": "The cache drops an entry only while adding a key it does not hold yet and it is already at capacity; the check happens before the new entry goes in. Writing a key that is already cached updates the value and its recency and drops nothing.",
+      "sources": [{ "section": "src/cache/lru.js", "label": "LruCache.set" }],
+      "sourceRefs": [
+        { "fileId": "src-cache-lru-js", "startLine": 19, "endLine": 28, "needle": "this.entries.size >= this.capacity", "symbolId": "sym-src-cache-lru-js-lrucache-set" }
+      ],
+      "prerequisites": ["recency"],
+      "difficulty": 2,
+      "misconceptions": [
+        { "id": "update-evicts", "description": "Thinks writing an existing key on a full cache also drops an entry." },
+        { "id": "evict-after-insert", "description": "Thinks the new entry is inserted first and the cache then trims itself back to capacity." }
+      ]
+    },
+    {
+      "id": "victim-choice",
+      "name": "Choosing the victim",
+      "summary": "To drop the least recently used entry, evict has to keep the entry with the smallest last-use reading while it walks the map. The comparison in that loop decides everything: flip it and the cache throws away the entry it just used, which is the opposite of what callers rely on.",
+      "sources": [{ "section": "src/cache/lru.js", "label": "LruCache.evict" }, { "section": "test/lru.test.js", "label": "first test" }],
+      "sourceRefs": [
+        { "fileId": "src-cache-lru-js", "startLine": 31, "endLine": 38, "needle": "victim.lastUsed", "symbolId": "sym-src-cache-lru-js-lrucache-evict" },
+        { "fileId": "test-lru-test-js", "startLine": 14, "endLine": 23, "needle": "drops the least recently used key" }
+      ],
+      "prerequisites": ["recency", "capacity-trigger"],
+      "difficulty": 3,
+      "misconceptions": [
+        { "id": "insertion-order", "description": "Thinks the Map's insertion order already gives recency, so the loop does not matter." },
+        { "id": "drops-newest", "description": "Thinks dropping the most recently used entry is what an LRU cache does." }
+      ]
+    }
+  ]
+}

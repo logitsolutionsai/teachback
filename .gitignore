@@ -17,3 +17,6 @@ Thumbs.db
 
 # Examples ship course content only; keep them, but never their learner data.
 !examples/
+
+# launch videos made with /brag (kept out of the repo)
+brag-output*/

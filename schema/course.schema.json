@@ -4,23 +4,67 @@
   "title": "teachback course.json",
   "description": "What the course is about and where the source lives. Cite the source; never copy it in bulk.",
   "type": "object",
-  "required": ["schema", "slug", "title", "source", "licence"],
+  "required": [
+    "schema",
+    "slug",
+    "title",
+    "source",
+    "licence"
+  ],
   "properties": {
-    "schema": { "const": "teachback/course@1" },
-    "slug": { "type": "string", "pattern": "^[a-z0-9][a-z0-9-]*$" },
-    "title": { "type": "string", "minLength": 1 },
-    "description": { "type": "string" },
+    "schema": {
+      "const": "teachback/course@1"
+    },
+    "slug": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9-]*$"
+    },
+    "title": {
+      "type": "string",
+      "minLength": 1
+    },
+    "description": {
+      "type": "string"
+    },
     "source": {
       "type": "object",
-      "anyOf": [{ "required": ["url"] }, { "required": ["citation"] }],
+      "anyOf": [
+        {
+          "required": [
+            "url"
+          ]
+        },
+        {
+          "required": [
+            "citation"
+          ]
+        }
+      ],
       "anyOfMessage": "needs a url or a citation",
       "properties": {
-        "title": { "type": "string" },
-        "authors": { "type": "array", "items": { "type": "string" } },
-        "year": { "type": "integer" },
-        "venue": { "type": "string" },
-        "url": { "type": "string", "minLength": 1 },
-        "citation": { "type": "string", "minLength": 1 }
+        "title": {
+          "type": "string"
+        },
+        "authors": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "year": {
+          "type": "integer"
+        },
+        "venue": {
+          "type": "string"
+        },
+        "url": {
+          "type": "string",
+          "minLength": 1
+        },
+        "citation": {
+          "type": "string",
+          "minLength": 1
+        }
       }
     },
     "licence": {
@@ -28,20 +72,43 @@
       "minLength": 1,
       "description": "How the source may be used, and a note that the course cites sections rather than copying text."
     },
-    "language": { "enum": ["python", "javascript", "none"] },
+    "language": {
+      "enum": [
+        "python",
+        "javascript",
+        "none"
+      ]
+    },
     "track": {
       "type": "array",
       "description": "Exercise ids in the order the learner should rebuild them. The last one is usually the capstone.",
-      "items": { "type": "string", "minLength": 1 }
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
     },
-    "createdAt": { "type": "string" },
+    "createdAt": {
+      "type": "string"
+    },
     "model": {
       "type": "object",
       "description": "Optional overrides for the learner model.",
       "properties": {
-        "bkt": { "type": "object" },
-        "schedule": { "type": "object" }
+        "bkt": {
+          "type": "object"
+        },
+        "schedule": {
+          "type": "object"
+        }
       }
+    },
+    "kind": {
+      "enum": [
+        "paper",
+        "repo-quest",
+        "review"
+      ],
+      "description": "Absent or paper: the original paper course. repo-quest or review: a RepoQuest course with source-lock.json and quests.json."
     }
   }
 }

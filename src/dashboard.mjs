@@ -139,6 +139,9 @@ function nextCard(s) {
   if (n.kind === 'review') title = `Review ${s.reviews.dueToday} item${s.reviews.dueToday === 1 ? '' : 's'}, starting with ${n.conceptName ?? n.concept}`;
   else if (n.kind === 'learn') title = `${n.activity === 'teachback' ? 'Teach back' : n.activity === 'exercise' ? 'Rebuild in code' : 'Learn'}: ${n.conceptName}`;
   else if (n.kind === 'exercise') title = `Rebuild: exercise ${n.exercise}`;
+  else if (n.kind === 'quest') title = `Quest: ${n.questTitle ?? n.quest}`;
+  else if (n.kind === 'rehearsed') title = 'Rehearsed';
+  else if (n.kind === 'quests-blocked') title = 'Quests remain';
   else title = n.kind === 'rebuilt' ? 'Rebuilt' : 'Complete';
   return `<section class="card next" aria-labelledby="next-h"><p class="eyebrow">Next session</p><h2 id="next-h">${h(title)}</h2><p class="muted">${h(n.reason)}</p><p class="cmd"><code>teachback next</code></p></section>`;
 }
@@ -176,6 +179,41 @@ function exerciseBoard(s) {
     })
     .join('');
   return `<ol class="board">${rows}</ol>`;
+}
+
+// Repo courses only: the source trust state and the quest checklist, in the
+// same chips as the rebuild track (status by weight, never by hue).
+const QUEST_STATUS = {
+  passed: ['pass', 'check', 'Passed'],
+  failed: ['chip lv3', 'cross', 'Failing'],
+  suspended: ['chip lv3', '', 'Suspended: source changed'],
+  blocked: ['chip lv2', '', 'Blocked'],
+  needs_teachback: ['chip lv2', '', 'Teach-back needed'],
+  attempted: ['chip lv1', '', 'Attempted'],
+  not_run: ['chip lv0', '', 'Not started']
+};
+
+function repoQuestCard(rq) {
+  const src =
+    rq.source.status === 'current'
+      ? `<span class="status pass" data-source="current">${ICON.check}Source matches the lock</span>`
+      : rq.source.status === 'source_stale'
+        ? `<span class="status chip lv3" data-source="source_stale">Source changed: ${h(rq.source.changed.join(', '))}</span>`
+        : `<span class="status chip lv0" data-source="${h(rq.source.status)}">Source not checked on this machine</span>`;
+  const rows = rq.quests
+    .map((q, i) => {
+      const st = QUEST_STATUS[q.status] ?? QUEST_STATUS.not_run;
+      return `<li class="ex ex-${h(q.status)}${q.capstone ? ' ex-capstone' : ''}" data-quest="${h(q.id)}" data-status="${h(q.status)}">
+<span class="ex-num" aria-hidden="true">${i + 1}</span>
+<div class="ex-body"><p class="ex-title">${h(q.title)}${q.capstone ? ' <span class="tag">Capstone</span>' : ''}</p><p class="ex-meta">${h(q.id)} · ${h(q.kind)}${q.ready ? ' · ready now' : ''}</p></div>
+<span class="status ${st[0]}">${st[1] ? ICON[st[1]] : ''}${st[2]}</span>
+</li>`;
+    })
+    .join('');
+  return `<section class="card" aria-labelledby="quest-h" data-repoquest>
+<div class="card-head"><div><h2 id="quest-h">Source and quests</h2><p class="card-sub">Locked ${h(rq.lock)}. Quest tests run only when allowlisted and run with --trust-local; they run with your permissions, not in a sandbox.</p></div>${src}</div>
+<ol class="board">${rows}</ol>
+</section>`;
 }
 
 function dueList(s) {
@@ -724,6 +762,7 @@ ${nextCard(s)}
 <p class="map-hint">Scroll sideways to see the whole map.</p>
 <div class="map-scroll" tabindex="0" aria-label="Concept map, scrolls sideways on small screens">${conceptMap(s)}</div>
 </section>
+${s.repoQuest ? repoQuestCard(s.repoQuest) : ''}
 <div class="grid">
 <section class="card" aria-labelledby="prog-h">
 <div class="card-head"><div><h2 id="prog-h">Mastered concepts over time</h2><p class="card-sub">Count at the end of each study day</p></div></div>

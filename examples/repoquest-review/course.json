@@ -1,0 +1,15 @@
+{
+  "schema": "teachback/course@1",
+  "slug": "pr-review",
+  "kind": "review",
+  "title": "Review: Fix The Eviction Choice",
+  "description": "A synthetic RepoQuest review path: learn a one-line pull request (change.patch) on cache-lib before reviewing it.",
+  "source": {
+    "title": "cache-lib with the proposed change applied (synthetic example repository in repo/)",
+    "citation": "Synthetic repository examples/repoquest-review/repo and the unified diff change.patch, written for teachback; locked by content digest in source-lock.json"
+  },
+  "licence": "The example repository is MIT licensed (repo/LICENSE). The course points at files by path, line and hash and does not copy repository code.",
+  "language": "none",
+  "track": [],
+  "createdAt": "2026-11-14T09:00:00.000Z"
+}

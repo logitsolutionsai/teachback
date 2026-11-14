@@ -1,0 +1,8 @@
+{
+  "name": "cache-lib",
+  "version": "0.0.1",
+  "description": "A tiny synthetic least-recently-used cache, written for the teachback RepoQuest example. It has one deliberate bug.",
+  "type": "module",
+  "license": "MIT",
+  "private": true
+}

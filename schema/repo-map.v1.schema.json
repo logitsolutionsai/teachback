@@ -1,0 +1,131 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/logitsolutionsai/teachback/schema/repo-map.v1.schema.json",
+  "title": "teachback repo-map.json",
+  "description": "Symbols and links found by lexical patterns. Never a call graph, never verified AST semantics.",
+  "type": "object",
+  "required": [
+    "schemaVersion",
+    "sourceManifestDigest",
+    "complete",
+    "symbols",
+    "links",
+    "warnings"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": 1
+    },
+    "sourceManifestDigest": {
+      "type": "string",
+      "pattern": "^sha256:[0-9a-f]{64}$"
+    },
+    "scannerVersion": {
+      "type": "string"
+    },
+    "complete": {
+      "type": "boolean"
+    },
+    "note": {
+      "type": "string"
+    },
+    "symbols": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "fileId",
+          "name",
+          "kind",
+          "startLine",
+          "certainty"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "fileId": {
+            "type": "string",
+            "minLength": 1
+          },
+          "name": {
+            "type": "string",
+            "minLength": 1
+          },
+          "kind": {
+            "type": "string"
+          },
+          "startLine": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "endLine": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "exported": {
+            "type": "boolean"
+          },
+          "certainty": {
+            "enum": [
+              "lexically_detected",
+              "unknown"
+            ]
+          }
+        }
+      }
+    },
+    "links": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "from",
+          "to",
+          "kind",
+          "basis",
+          "certainty"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "from": {
+            "type": "string"
+          },
+          "to": {
+            "type": "string"
+          },
+          "kind": {
+            "enum": [
+              "tests",
+              "imports",
+              "tests_candidate"
+            ]
+          },
+          "basis": {
+            "enum": [
+              "import-path",
+              "name-convention"
+            ]
+          },
+          "certainty": {
+            "enum": [
+              "direct",
+              "candidate"
+            ]
+          },
+          "line": {
+            "type": "integer"
+          }
+        }
+      }
+    },
+    "warnings": {
+      "type": "array"
+    }
+  }
+}

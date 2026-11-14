@@ -1,0 +1,45 @@
+{
+  "schemaVersion": 1,
+  "sourceManifestDigest": "sha256:047d88b42dd1c298068ba1320d0f5e51c0830d841cd978945549cba325fddd3c",
+  "files": [
+    {
+      "path": "src/cache/lru.js",
+      "status": "modified",
+      "fileId": "src-cache-lru-js",
+      "inScan": true,
+      "linesAdded": 1,
+      "linesRemoved": 1,
+      "hunks": [
+        {
+          "newStart": 31,
+          "newLines": 7
+        }
+      ]
+    }
+  ],
+  "changedSymbols": [
+    {
+      "symbolId": "sym-src-cache-lru-js-lrucache-evict",
+      "name": "LruCache.evict",
+      "fileId": "src-cache-lru-js",
+      "path": "src/cache/lru.js",
+      "startLine": 31,
+      "endLine": 38,
+      "certainty": "lexically_detected",
+      "changedLines": [
+        34
+      ],
+      "basis": "diff hunk lines inside the symbol range"
+    }
+  ],
+  "relatedTests": [
+    {
+      "path": "test/lru.test.js",
+      "fileId": "test-lru-test-js",
+      "covers": "src/cache/lru.js",
+      "basis": "import-path",
+      "certainty": "direct"
+    }
+  ],
+  "note": "From a unified diff and lexical symbols. Nothing in the diff was applied or run. Symbols are matched by line ranges, not by parsing."
+}

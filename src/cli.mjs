@@ -14,6 +14,8 @@ import { runExercise, formatRun } from './runner.mjs';
 import { computeStatus, formatStatus } from './status.mjs';
 import { renderDashboard } from './dashboard.mjs';
 import { exportAnki } from './export.mjs';
+import { REPOQUEST_HELP, repoQuestCommand } from './repoquest-cli.mjs';
+import { planWithQuests, questContext, addRepoQuestStatus } from './quest/next.mjs';
 
 const VERSION = '0.1.0';
 
@@ -65,7 +67,8 @@ const HELP_DATA = {
         ['dashboard', 'dashboard [course] [--out FILE]', 'Write a standalone offline HTML dashboard'],
         ['export', 'export --anki [--out FILE]', 'Export the question bank as CSV for Anki']
       ]
-    }
+    },
+    ...REPOQUEST_HELP
   ].map((sec) => ({ title: sec.title, commands: sec.commands.map(([command, usage, description]) => ({ command, usage, description })) })),
   globalOptions: [
     ['--course, -c <slug|path>', 'Which course (default: current folder, "use", or the only one)'],
@@ -395,7 +398,7 @@ async function cmdNext(argv) {
   const learner = loadLearner(courseData, now);
   const derived = replay(courseData, learner);
   const today = dayKey(now, learner.settings.utcOffsetMinutes);
-  const plan = planNext(courseData, derived, today);
+  const plan = planWithQuests(courseData, derived, today, questContext(courseData));
   plan.dueReviews = plan.dueReviews.map((d) => ({ ...d, prompt: courseData.itemById.get(d.item)?.prompt }));
   plan.courseDir = courseData.dir;
   out(args, plan, () => {
@@ -413,9 +416,16 @@ async function cmdNext(argv) {
       if (plan.exercise) lines.push(`  Exercise ${plan.exercise.id}: read ${plan.exercise.task}, edit ${plan.exercise.workFile}, then: teachback run ${plan.exercise.id}`);
     } else if (plan.kind === 'exercise') {
       lines.push(`Rebuild: exercise ${plan.exercise.id}, "${plan.exercise.title}"${plan.exercise.capstone ? ' (capstone)' : ''}.`, `  Read ${plan.exercise.task}, edit ${plan.exercise.workFile}, then: teachback run ${plan.exercise.id}`);
+    } else if (plan.kind === 'quest') {
+      lines.push(`Quest ${plan.quest.id} (${plan.quest.kind}${plan.quest.capstone ? ', capstone' : ''}): "${plan.quest.title}".`, `  Show it: teachback quest show ${plan.quest.id}`);
+    } else if (plan.kind === 'rehearsed') {
+      lines.push('Rehearsed. Every concept is mastered and every quest passes on the current source.');
+    } else if (plan.kind === 'quests-blocked') {
+      lines.push('Concepts mastered; quests remain.');
     } else {
       lines.push(plan.kind === 'rebuilt' ? 'Rebuilt. Nothing new to learn.' : 'Complete. Nothing new to learn.');
     }
+    if (plan.sourceWarning) lines.push(`  Warning: ${plan.sourceWarning}`);
     lines.push(`  Why: ${plan.reason}`);
     if (plan.nextReviewDay) lines.push(`  Next review after today: ${plan.nextReviewDay}`);
     return lines.join('\n');
@@ -571,7 +581,7 @@ async function cmdStatus(argv) {
   const courseData = courseFrom(args, args._[0]);
   const now = resolveNow(args.now);
   const learner = loadLearner(courseData, now);
-  const s = computeStatus(courseData, learner, now);
+  const s = addRepoQuestStatus(courseData, replay(courseData, learner), dayKey(now, learner.settings.utcOffsetMinutes), computeStatus(courseData, learner, now));
   out(args, s, () => formatStatus(s));
 }
 
@@ -580,7 +590,7 @@ async function cmdDashboard(argv) {
   const courseData = courseFrom(args, args._[0]);
   const now = resolveNow(args.now);
   const learner = loadLearner(courseData, now);
-  const s = computeStatus(courseData, learner, now);
+  const s = addRepoQuestStatus(courseData, replay(courseData, learner), dayKey(now, learner.settings.utcOffsetMinutes), computeStatus(courseData, learner, now));
   const html = renderDashboard(courseData, s);
   const file = path.resolve(args.out ?? path.join(courseData.dir, 'dashboard.html'));
   fs.mkdirSync(path.dirname(file), { recursive: true });
@@ -612,8 +622,14 @@ const COMMANDS = {
   run: cmdRun,
   status: cmdStatus,
   dashboard: cmdDashboard,
-  export: cmdExport
+  export: cmdExport,
+  repo: (argv) => repoQuestCommand('repo', argv, RQ),
+  quest: (argv) => repoQuestCommand('quest', argv, RQ),
+  pack: (argv) => repoQuestCommand('pack', argv, RQ)
 };
+
+// What the RepoQuest commands share with the original ones.
+const RQ = { parse, out: (args, json, text) => out(args, json, text), setExit: (code) => (EXIT = code), io: () => IO };
 
 export async function main(argv, io) {
   IO = io ?? DEFAULT_IO;
@@ -643,7 +659,7 @@ export async function main(argv, io) {
     const hint = err instanceof TeachbackError ? err.hint : isUsage ? 'Run "teachback help" for the options.' : 'This is a bug; please report it with the command you ran.';
     if (wantsJson) IO.out(`${JSON.stringify({ error: { code, message: err.message, hint } }, null, 2)}\n`);
     else IO.err(`error ${code}: ${err.message}\n${hint ? `  fix: ${hint}\n` : ''}${code === 'E999' && process.env.TEACHBACK_DEBUG ? err.stack + '\n' : ''}`);
-    EXIT = isUsage ? 2 : 1;
+    EXIT = isUsage ? 2 : (err.exit ?? 1);
   }
   return EXIT;
 }

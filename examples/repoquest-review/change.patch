@@ -1,0 +1,12 @@
+diff --git a/src/cache/lru.js b/src/cache/lru.js
+--- a/src/cache/lru.js
++++ b/src/cache/lru.js
+@@ -31,7 +31,7 @@ export class LruCache {
+   evict() {
+     let victim = null;
+     for (const entry of this.entries.values()) {
+-      if (victim === null || entry.lastUsed > victim.lastUsed) victim = entry;
++      if (victim === null || entry.lastUsed < victim.lastUsed) victim = entry;
+     }
+     if (victim) this.entries.delete(victim.key);
+     return victim ? victim.key : undefined;

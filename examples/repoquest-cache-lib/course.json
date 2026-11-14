@@ -1,0 +1,15 @@
+{
+  "schema": "teachback/course@1",
+  "slug": "cache-onboarding",
+  "kind": "repo-quest",
+  "title": "Cache-lib Contributor Path",
+  "description": "A synthetic RepoQuest example: three concepts, a navigate quest, a predict quest and a patch capstone on a tiny cache with one deliberate bug.",
+  "source": {
+    "title": "cache-lib (synthetic example repository in repo/)",
+    "citation": "Synthetic repository examples/repoquest-cache-lib/repo, written for teachback; locked by content digest in source-lock.json"
+  },
+  "licence": "The example repository is MIT licensed (repo/LICENSE). The course points at files by path, line and hash and does not copy repository code.",
+  "language": "none",
+  "track": [],
+  "createdAt": "2026-11-14T09:00:00.000Z"
+}

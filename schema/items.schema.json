@@ -4,33 +4,80 @@
   "title": "teachback items.json",
   "description": "The question bank. Each item practises one concept.",
   "type": "object",
-  "required": ["schema", "items"],
+  "required": [
+    "schema",
+    "items"
+  ],
   "properties": {
-    "schema": { "const": "teachback/items@1" },
-    "items": { "type": "array", "items": { "$ref": "#/$defs/item" } }
+    "schema": {
+      "const": "teachback/items@1"
+    },
+    "items": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/item"
+      }
+    }
   },
   "$defs": {
     "item": {
       "type": "object",
-      "required": ["id", "concept", "type", "prompt"],
+      "required": [
+        "id",
+        "concept",
+        "type",
+        "prompt"
+      ],
       "additionalProperties": false,
       "properties": {
-        "id": { "type": "string", "pattern": "^[a-z0-9][a-z0-9-]*$" },
-        "concept": { "type": "string", "minLength": 1 },
-        "type": { "enum": ["mcq", "numeric", "short", "teachback", "code"] },
-        "difficulty": { "type": "integer", "minimum": 1, "maximum": 5 },
-        "prompt": { "type": "string", "minLength": 1 },
-        "source": { "type": "string", "description": "Section of the source this item draws on." },
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z0-9][a-z0-9-]*$"
+        },
+        "concept": {
+          "type": "string",
+          "minLength": 1
+        },
+        "type": {
+          "enum": [
+            "mcq",
+            "numeric",
+            "short",
+            "teachback",
+            "code"
+          ]
+        },
+        "difficulty": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 5
+        },
+        "prompt": {
+          "type": "string",
+          "minLength": 1
+        },
+        "source": {
+          "type": "string",
+          "description": "Section of the source this item draws on."
+        },
         "options": {
           "type": "array",
           "description": "mcq only. Every option carries a rationale shown after the learner answers.",
           "items": {
             "type": "object",
-            "required": ["text", "rationale"],
+            "required": [
+              "text",
+              "rationale"
+            ],
             "additionalProperties": false,
             "properties": {
-              "text": { "type": "string", "minLength": 1 },
-              "rationale": { "type": "string" }
+              "text": {
+                "type": "string",
+                "minLength": 1
+              },
+              "rationale": {
+                "type": "string"
+              }
             }
           }
         },
@@ -38,32 +85,87 @@
           "type": "number",
           "description": "mcq: 0-based index of the correct option. numeric: the expected value."
         },
-        "tolerance": { "type": "number", "minimum": 0, "description": "numeric only. Absolute tolerance." },
-        "unit": { "type": "string" },
-        "explanation": { "type": "string" },
-        "rubric": { "$ref": "#/$defs/rubric" },
-        "modelAnswer": { "type": "string", "description": "short and teachback: a good answer in plain words, for the tutor." },
-        "exercise": { "type": "string", "description": "code only. The exercise id." },
-        "pSlip": { "type": "number", "minimum": 0, "maximum": 0.5 },
-        "pGuess": { "type": "number", "minimum": 0, "maximum": 0.9 }
+        "tolerance": {
+          "type": "number",
+          "minimum": 0,
+          "description": "numeric only. Absolute tolerance."
+        },
+        "unit": {
+          "type": "string"
+        },
+        "explanation": {
+          "type": "string"
+        },
+        "rubric": {
+          "$ref": "#/$defs/rubric"
+        },
+        "modelAnswer": {
+          "type": "string",
+          "description": "short and teachback: a good answer in plain words, for the tutor."
+        },
+        "exercise": {
+          "type": "string",
+          "description": "code only. The exercise id."
+        },
+        "pSlip": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 0.5
+        },
+        "pGuess": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 0.9
+        },
+        "sourceRefs": {
+          "type": "array",
+          "description": "Repo courses: file and line pointers into the locked source.",
+          "items": {
+            "$ref": "#/$defs/sourceRef"
+          }
+        }
       }
     },
     "rubric": {
       "type": "object",
-      "required": ["required"],
+      "required": [
+        "required"
+      ],
       "additionalProperties": false,
       "properties": {
         "required": {
           "type": "array",
           "items": {
             "type": "object",
-            "required": ["id", "idea", "synonyms"],
+            "required": [
+              "id",
+              "idea",
+              "synonyms"
+            ],
             "additionalProperties": false,
             "properties": {
-              "id": { "type": "string", "minLength": 1 },
-              "idea": { "type": "string", "minLength": 1 },
-              "synonyms": { "type": "array", "items": { "type": "string", "minLength": 1 } },
-              "polarity": { "enum": ["positive", "negative"], "description": "negative: the idea is a negative statement, so a negation next to a match is expected and not flagged" }
+              "id": {
+                "type": "string",
+                "minLength": 1
+              },
+              "idea": {
+                "type": "string",
+                "minLength": 1
+              },
+              "synonyms": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              },
+              "polarity": {
+                "enum": [
+                  "positive",
+                  "negative"
+                ],
+                "description": "negative: the idea is a negative statement, so a negation next to a match is expected and not flagged"
+              }
             }
           }
         },
@@ -71,17 +173,84 @@
           "type": "array",
           "items": {
             "type": "object",
-            "required": ["id", "description", "synonyms"],
+            "required": [
+              "id",
+              "description",
+              "synonyms"
+            ],
             "additionalProperties": false,
             "properties": {
-              "id": { "type": "string", "minLength": 1 },
-              "description": { "type": "string", "minLength": 1 },
-              "synonyms": { "type": "array", "items": { "type": "string", "minLength": 1 } },
-              "polarity": { "enum": ["positive", "negative"], "description": "negative: the idea is a negative statement, so a negation next to a match is expected and not flagged" }
+              "id": {
+                "type": "string",
+                "minLength": 1
+              },
+              "description": {
+                "type": "string",
+                "minLength": 1
+              },
+              "synonyms": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              },
+              "polarity": {
+                "enum": [
+                  "positive",
+                  "negative"
+                ],
+                "description": "negative: the idea is a negative statement, so a negation next to a match is expected and not flagged"
+              }
             }
           }
         },
-        "minRequired": { "type": "integer", "minimum": 1 }
+        "minRequired": {
+          "type": "integer",
+          "minimum": 1
+        }
+      }
+    },
+    "sourceRef": {
+      "type": "object",
+      "required": [
+        "fileId",
+        "startLine",
+        "endLine"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "fileId": {
+          "type": "string",
+          "pattern": "^[a-z0-9][a-z0-9-]*$"
+        },
+        "startLine": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "endLine": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "needle": {
+          "type": "string",
+          "minLength": 1,
+          "description": "An exact short string (an identifier or a few words) that must appear inside the line range. At most 200 characters."
+        },
+        "symbolId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "evidenceKind": {
+          "enum": [
+            "quoted",
+            "inferred"
+          ],
+          "description": "inferred: a teaching inference drawn from these lines, shown as such."
+        },
+        "note": {
+          "type": "string"
+        }
       }
     }
   }

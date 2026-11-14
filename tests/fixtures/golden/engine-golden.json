@@ -1,0 +1,1336 @@
+{
+  "capturedBefore": "RepoQuest (2026-11-14), from the unmodified engine",
+  "courses": {
+    "attention-is-all-you-need": {
+      "course": "attention-is-all-you-need",
+      "events": 81,
+      "mastery": {
+        "softmax": {
+          "pL": 0.99,
+          "mastered": true,
+          "attempts": 8,
+          "correct": 6,
+          "partial": 1,
+          "wrong": 1,
+          "lastSeen": "2026-03-09T10:03:00.000Z",
+          "firstMasteredAt": "2026-03-02T09:00:00.000Z",
+          "teachbackPassed": true
+        },
+        "qkv-attention": {
+          "pL": 0.99,
+          "mastered": true,
+          "attempts": 5,
+          "correct": 4,
+          "partial": 0,
+          "wrong": 1,
+          "lastSeen": "2026-03-09T10:04:00.000Z",
+          "firstMasteredAt": "2026-03-02T09:08:00.000Z",
+          "teachbackPassed": true
+        },
+        "scaled-dot-product": {
+          "pL": 0.99,
+          "mastered": true,
+          "attempts": 8,
+          "correct": 6,
+          "partial": 1,
+          "wrong": 1,
+          "lastSeen": "2026-03-09T10:06:00.000Z",
+          "firstMasteredAt": "2026-03-02T09:10:00.000Z",
+          "teachbackPassed": true
+        },
+        "masking": {
+          "pL": 0.925576,
+          "mastered": false,
+          "attempts": 7,
+          "correct": 5,
+          "partial": 0,
+          "wrong": 2,
+          "lastSeen": "2026-03-09T10:08:00.000Z",
+          "firstMasteredAt": "2026-03-02T09:17:00.000Z",
+          "teachbackPassed": true
+        },
+        "multi-head": {
+          "pL": 0.99,
+          "mastered": true,
+          "attempts": 5,
+          "correct": 5,
+          "partial": 0,
+          "wrong": 0,
+          "lastSeen": "2026-03-09T10:09:00.000Z",
+          "firstMasteredAt": "2026-03-03T09:20:00.000Z",
+          "teachbackPassed": true
+        },
+        "why-self-attention": {
+          "pL": 0.925576,
+          "mastered": false,
+          "attempts": 7,
+          "correct": 4,
+          "partial": 1,
+          "wrong": 2,
+          "lastSeen": "2026-03-09T10:11:00.000Z",
+          "firstMasteredAt": "2026-03-03T09:23:00.000Z",
+          "teachbackPassed": true
+        },
+        "embeddings": {
+          "pL": 0.99,
+          "mastered": true,
+          "attempts": 4,
+          "correct": 4,
+          "partial": 0,
+          "wrong": 0,
+          "lastSeen": "2026-03-09T10:12:00.000Z",
+          "firstMasteredAt": "2026-03-03T09:28:00.000Z",
+          "teachbackPassed": true
+        },
+        "positional-encoding": {
+          "pL": 0.927966,
+          "mastered": false,
+          "attempts": 9,
+          "correct": 6,
+          "partial": 1,
+          "wrong": 2,
+          "lastSeen": "2026-03-09T10:14:00.000Z",
+          "firstMasteredAt": "2026-03-03T09:31:00.000Z",
+          "teachbackPassed": true
+        },
+        "ffn": {
+          "pL": 0.99,
+          "mastered": true,
+          "attempts": 6,
+          "correct": 6,
+          "partial": 0,
+          "wrong": 0,
+          "lastSeen": "2026-03-09T10:16:00.000Z",
+          "firstMasteredAt": "2026-03-05T09:37:00.000Z",
+          "teachbackPassed": true
+        },
+        "residual-norm": {
+          "pL": 0.86617,
+          "mastered": false,
+          "attempts": 6,
+          "correct": 4,
+          "partial": 1,
+          "wrong": 1,
+          "lastSeen": "2026-03-09T10:17:00.000Z",
+          "firstMasteredAt": "2026-03-05T09:40:00.000Z",
+          "teachbackPassed": true
+        },
+        "encoder-decoder": {
+          "pL": 0.99,
+          "mastered": true,
+          "attempts": 7,
+          "correct": 6,
+          "partial": 0,
+          "wrong": 1,
+          "lastSeen": "2026-03-09T10:19:00.000Z",
+          "firstMasteredAt": "2026-03-05T09:44:00.000Z",
+          "teachbackPassed": true
+        },
+        "training": {
+          "pL": 0.925576,
+          "mastered": false,
+          "attempts": 5,
+          "correct": 3,
+          "partial": 1,
+          "wrong": 1,
+          "lastSeen": "2026-03-09T10:20:00.000Z",
+          "firstMasteredAt": "2026-03-05T09:47:00.000Z",
+          "teachbackPassed": true
+        }
+      },
+      "reviews": {
+        "softmax-weights": {
+          "attempts": 3,
+          "lastResult": "wrong",
+          "lastSeen": "2026-03-09T10:02:00.000Z",
+          "reps": 0,
+          "ease": 2.4,
+          "interval": 1,
+          "lapses": 1,
+          "dueDay": "2026-03-10",
+          "lastDay": "2026-03-09"
+        },
+        "softmax-scale": {
+          "attempts": 1,
+          "lastResult": "correct",
+          "lastSeen": "2026-03-02T09:02:00.000Z",
+          "reps": 1,
+          "ease": 2.5,
+          "interval": 1,
+          "lapses": 0,
+          "dueDay": "2026-03-03",
+          "lastDay": "2026-03-02"
+        },
+        "softmax-teachback": {
+          "attempts": 3,
+          "lastResult": "correct",
+          "lastSeen": "2026-03-09T10:03:00.000Z",
+          "reps": 1,
+          "ease": 2.45,
+          "interval": 1,
+          "lapses": 0,
+          "dueDay": "2026-03-10",
+          "lastDay": "2026-03-09"
+        },
+        "qkv-output": {
+          "attempts": 1,
+          "lastResult": "correct",
+          "lastSeen": "2026-03-02T09:05:00.000Z",
+          "reps": 1,
+          "ease": 2.6,
+          "interval": 1,
+          "lapses": 0,
+          "dueDay": "2026-03-03",
+          "lastDay": "2026-03-02"
+        },
+        "qkv-roles": {
+          "attempts": 3,
+          "lastResult": "correct",
+          "lastSeen": "2026-03-09T10:04:00.000Z",
+          "reps": 1,
+          "ease": 2.4,
+          "interval": 1,
+          "lapses": 0,
+          "dueDay": "2026-03-10",
+          "lastDay": "2026-03-09"
+        },
+        "qkv-teachback": {
+          "attempts": 1,
+          "lastResult": "correct",
+          "lastSeen": "2026-03-02T09:08:00.000Z",
+          "reps": 1,
+          "ease": 2.5,
+          "interval": 1,
+          "lapses": 0,
+          "dueDay": "2026-03-03",
+          "lastDay": "2026-03-02"
+        },
+        "sdpa-formula": {
+          "attempts": 2,
+          "lastResult": "wrong",
+          "lastSeen": "2026-03-09T10:05:00.000Z",
+          "reps": 0,
+          "ease": 2.4,
+          "interval": 1,
+          "lapses": 1,
+          "dueDay": "2026-03-10",
+          "lastDay": "2026-03-09"
+        },
+        "sdpa-variance": {
+          "attempts": 1,
+          "lastResult": "correct",
+          "lastSeen": "2026-03-02T09:10:00.000Z",
+          "reps": 1,
+          "ease": 2.6,
+          "interval": 1,
+          "lapses": 0,
+          "dueDay": "2026-03-03",
+          "lastDay": "2026-03-02"
+        },
+        "sdpa-why-scale": {
+          "attempts": 2,
+          "lastResult": "correct",
+          "lastSeen": "2026-03-09T10:06:00.000Z",
+          "reps": 2,
+          "ease": 2.6,
+          "interval": 3,
+          "lapses": 0,
+          "dueDay": "2026-03-12",
+          "lastDay": "2026-03-09"
+        },
+        "sdpa-teachback": {
+          "attempts": 2,
+          "lastResult": "correct",
+          "lastSeen": "2026-03-02T09:13:00.000Z",
+          "reps": 0,
+          "ease": 2.35,
+          "interval": 1,
+          "lapses": 0,
+          "dueDay": "2026-03-03",
+          "lastDay": "2026-03-02"
+        },
+        "mask-how": {
+          "attempts": 2,
+          "lastResult": "correct",
+          "lastSeen": "2026-03-09T10:07:00.000Z",
+          "reps": 2,
+          "ease": 2.7,
+          "interval": 3,
+          "lapses": 0,
+          "dueDay": "2026-03-12",
+          "lastDay": "2026-03-09"
+        },
+        "mask-count": {
+          "attempts": 2,
+          "lastResult": "correct",
+          "lastSeen": "2026-03-02T09:16:00.000Z",
+          "reps": 0,
+          "ease": 2.3,
+          "interval": 1,
+          "lapses": 0,
+          "dueDay": "2026-03-03",
+          "lastDay": "2026-03-02"
+        },
+        "mask-teachback": {
+          "attempts": 2,
+          "lastResult": "wrong",
+          "lastSeen": "2026-03-09T10:08:00.000Z",
+          "reps": 0,
+          "ease": 2.3,
+          "interval": 1,
+          "lapses": 1,
+          "dueDay": "2026-03-10",
+          "lastDay": "2026-03-09"
+        },
+        "mh-dk": {
+          "attempts": 1,
+          "lastResult": "correct",
+          "lastSeen": "2026-03-03T09:18:00.000Z",
+          "reps": 1,
+          "ease": 2.5,
+          "interval": 1,
+          "lapses": 0,
+          "dueDay": "2026-03-04",
+          "lastDay": "2026-03-03"
+        },
+        "mh-why": {
+          "attempts": 2,
+          "lastResult": "correct",
+          "lastSeen": "2026-03-09T10:09:00.000Z",
+          "reps": 2,
+          "ease": 2.7,
+          "interval": 3,
+          "lapses": 0,
+          "dueDay": "2026-03-12",
+          "lastDay": "2026-03-09"
+        },
+        "mh-teachback": {
+          "attempts": 1,
+          "lastResult": "correct",
+          "lastSeen": "2026-03-03T09:20:00.000Z",
+          "reps": 1,
+          "ease": 2.6,
+          "interval": 1,
+          "lapses": 0,
+          "dueDay": "2026-03-04",
+          "lastDay": "2026-03-03"
+        },
+        "why-path": {
+          "attempts": 3,
+          "lastResult": "correct",
+          "lastSeen": "2026-03-09T10:10:00.000Z",
+          "reps": 1,
+          "ease": 2.45,
+          "interval": 1,
+          "lapses": 0,
+          "dueDay": "2026-03-10",
+          "lastDay": "2026-03-09"
+        },
+        "why-ratio": {
+          "attempts": 1,
+          "lastResult": "correct",
+          "lastSeen": "2026-03-03T09:23:00.000Z",
+          "reps": 1,
+          "ease": 2.5,
+          "interval": 1,
+          "lapses": 0,
+          "dueDay": "2026-03-04",
+          "lastDay": "2026-03-03"
+        },
+        "why-teachback": {
+          "attempts": 3,
+          "lastResult": "wrong",
+          "lastSeen": "2026-03-09T10:11:00.000Z",
+          "reps": 0,
+          "ease": 2.1,
+          "interval": 1,
+          "lapses": 0,
+          "dueDay": "2026-03-10",
+          "lastDay": "2026-03-09"
+        },
+        "emb-dmodel": {
+          "attempts": 1,
+          "lastResult": "correct",
+          "lastSeen": "2026-03-03T09:26:00.000Z",
+          "reps": 1,
+          "ease": 2.6,
+          "interval": 1,
+          "lapses": 0,
+          "dueDay": "2026-03-04",
+          "lastDay": "2026-03-03"
+        },
+        "emb-shared": {
+          "attempts": 2,
+          "lastResult": "correct",
+          "lastSeen": "2026-03-09T10:12:00.000Z",
+          "reps": 2,
+          "ease": 2.6,
+          "interval": 3,
+          "lapses": 0,
+          "dueDay": "2026-03-12",
+          "lastDay": "2026-03-09"
+        },
+        "emb-teachback": {
+          "attempts": 1,
+          "lastResult": "correct",
+          "lastSeen": "2026-03-03T09:28:00.000Z",
+          "reps": 1,
+          "ease": 2.5,
+          "interval": 1,
+          "lapses": 0,
+          "dueDay": "2026-03-04",
+          "lastDay": "2026-03-03"
+        },
+        "pe-why": {
+          "attempts": 2,
+          "lastResult": "correct",
+          "lastSeen": "2026-03-09T10:13:00.000Z",
+          "reps": 2,
+          "ease": 2.7,
+          "interval": 3,
+          "lapses": 0,
+          "dueDay": "2026-03-12",
+          "lastDay": "2026-03-09"
+        },
+        "pe-value": {
+          "attempts": 2,
+          "lastResult": "correct",
+          "lastSeen": "2026-03-03T09:31:00.000Z",
+          "reps": 0,
+          "ease": 2.35,
+          "interval": 1,
+          "lapses": 0,
+          "dueDay": "2026-03-04",
+          "lastDay": "2026-03-03"
+        },
+        "pe-learned": {
+          "attempts": 2,
+          "lastResult": "wrong",
+          "lastSeen": "2026-03-09T10:14:00.000Z",
+          "reps": 0,
+          "ease": 2.3,
+          "interval": 1,
+          "lapses": 1,
+          "dueDay": "2026-03-10",
+          "lastDay": "2026-03-09"
+        },
+        "pe-teachback": {
+          "attempts": 2,
+          "lastResult": "correct",
+          "lastSeen": "2026-03-03T09:34:00.000Z",
+          "reps": 0,
+          "ease": 2.3,
+          "interval": 1,
+          "lapses": 0,
+          "dueDay": "2026-03-04",
+          "lastDay": "2026-03-03"
+        },
+        "ffn-dff": {
+          "attempts": 2,
+          "lastResult": "correct",
+          "lastSeen": "2026-03-09T10:15:00.000Z",
+          "reps": 2,
+          "ease": 2.7,
+          "interval": 3,
+          "lapses": 0,
+          "dueDay": "2026-03-12",
+          "lastDay": "2026-03-09"
+        },
+        "ffn-positions": {
+          "attempts": 1,
+          "lastResult": "correct",
+          "lastSeen": "2026-03-05T09:36:00.000Z",
+          "reps": 1,
+          "ease": 2.6,
+          "interval": 1,
+          "lapses": 0,
+          "dueDay": "2026-03-06",
+          "lastDay": "2026-03-05"
+        },
+        "ffn-teachback": {
+          "attempts": 2,
+          "lastResult": "correct",
+          "lastSeen": "2026-03-09T10:16:00.000Z",
+          "reps": 2,
+          "ease": 2.6,
+          "interval": 3,
+          "lapses": 0,
+          "dueDay": "2026-03-12",
+          "lastDay": "2026-03-09"
+        },
+        "res-formula": {
+          "attempts": 1,
+          "lastResult": "correct",
+          "lastSeen": "2026-03-05T09:38:00.000Z",
+          "reps": 1,
+          "ease": 2.5,
+          "interval": 1,
+          "lapses": 0,
+          "dueDay": "2026-03-06",
+          "lastDay": "2026-03-05"
+        },
+        "res-dropout": {
+          "attempts": 3,
+          "lastResult": "wrong",
+          "lastSeen": "2026-03-09T10:17:00.000Z",
+          "reps": 0,
+          "ease": 2.15,
+          "interval": 1,
+          "lapses": 0,
+          "dueDay": "2026-03-10",
+          "lastDay": "2026-03-09"
+        },
+        "res-teachback": {
+          "attempts": 1,
+          "lastResult": "correct",
+          "lastSeen": "2026-03-05T09:41:00.000Z",
+          "reps": 1,
+          "ease": 2.6,
+          "interval": 1,
+          "lapses": 0,
+          "dueDay": "2026-03-06",
+          "lastDay": "2026-03-05"
+        },
+        "ed-qkv": {
+          "attempts": 3,
+          "lastResult": "correct",
+          "lastSeen": "2026-03-09T10:18:00.000Z",
+          "reps": 1,
+          "ease": 2.4,
+          "interval": 1,
+          "lapses": 0,
+          "dueDay": "2026-03-10",
+          "lastDay": "2026-03-09"
+        },
+        "ed-sublayers": {
+          "attempts": 1,
+          "lastResult": "correct",
+          "lastSeen": "2026-03-05T09:44:00.000Z",
+          "reps": 1,
+          "ease": 2.5,
+          "interval": 1,
+          "lapses": 0,
+          "dueDay": "2026-03-06",
+          "lastDay": "2026-03-05"
+        },
+        "ed-teachback": {
+          "attempts": 2,
+          "lastResult": "correct",
+          "lastSeen": "2026-03-09T10:19:00.000Z",
+          "reps": 2,
+          "ease": 2.7,
+          "interval": 3,
+          "lapses": 0,
+          "dueDay": "2026-03-12",
+          "lastDay": "2026-03-09"
+        },
+        "train-ls": {
+          "attempts": 1,
+          "lastResult": "correct",
+          "lastSeen": "2026-03-05T09:46:00.000Z",
+          "reps": 1,
+          "ease": 2.6,
+          "interval": 1,
+          "lapses": 0,
+          "dueDay": "2026-03-06",
+          "lastDay": "2026-03-05"
+        },
+        "train-peak": {
+          "attempts": 2,
+          "lastResult": "wrong",
+          "lastSeen": "2026-03-09T10:20:00.000Z",
+          "reps": 0,
+          "ease": 2.3,
+          "interval": 1,
+          "lapses": 1,
+          "dueDay": "2026-03-10",
+          "lastDay": "2026-03-09"
+        },
+        "train-teachback": {
+          "attempts": 2,
+          "lastResult": "correct",
+          "lastSeen": "2026-03-05T09:49:00.000Z",
+          "reps": 0,
+          "ease": 2.35,
+          "interval": 1,
+          "lapses": 0,
+          "dueDay": "2026-03-06",
+          "lastDay": "2026-03-05"
+        },
+        "softmax-code": {
+          "attempts": 1,
+          "lastResult": "correct",
+          "lastSeen": "2026-03-05T09:51:00.000Z"
+        },
+        "sdpa-code": {
+          "attempts": 1,
+          "lastResult": "correct",
+          "lastSeen": "2026-03-05T09:53:00.000Z"
+        },
+        "mask-code": {
+          "attempts": 1,
+          "lastResult": "correct",
+          "lastSeen": "2026-03-05T09:55:00.000Z"
+        },
+        "mh-code": {
+          "attempts": 1,
+          "lastResult": "correct",
+          "lastSeen": "2026-03-05T09:57:00.000Z"
+        },
+        "pe-code": {
+          "attempts": 1,
+          "lastResult": "correct",
+          "lastSeen": "2026-03-05T09:59:00.000Z"
+        },
+        "ffn-code": {
+          "attempts": 1,
+          "lastResult": "correct",
+          "lastSeen": "2026-03-05T10:01:00.000Z"
+        },
+        "res-code": {
+          "attempts": 1,
+          "lastResult": "correct",
+          "lastSeen": "2026-03-05T10:01:00.000Z"
+        },
+        "ed-code": {
+          "attempts": 1,
+          "lastResult": "correct",
+          "lastSeen": "2026-03-05T10:01:00.000Z"
+        }
+      },
+      "exercises": {
+        "01-softmax": {
+          "runs": 2,
+          "passed": true,
+          "lastStatus": "passed",
+          "lastPassed": 1,
+          "lastTotal": 1,
+          "lastRunAt": "2026-03-05T09:51:00.000Z",
+          "firstPassedAt": "2026-03-05T09:51:00.000Z"
+        },
+        "02-scaled-dot-product": {
+          "runs": 2,
+          "passed": true,
+          "lastStatus": "passed",
+          "lastPassed": 1,
+          "lastTotal": 1,
+          "lastRunAt": "2026-03-05T09:53:00.000Z",
+          "firstPassedAt": "2026-03-05T09:53:00.000Z"
+        },
+        "03-masking": {
+          "runs": 2,
+          "passed": true,
+          "lastStatus": "passed",
+          "lastPassed": 1,
+          "lastTotal": 1,
+          "lastRunAt": "2026-03-05T09:55:00.000Z",
+          "firstPassedAt": "2026-03-05T09:55:00.000Z"
+        },
+        "04-multi-head": {
+          "runs": 2,
+          "passed": true,
+          "lastStatus": "passed",
+          "lastPassed": 1,
+          "lastTotal": 1,
+          "lastRunAt": "2026-03-05T09:57:00.000Z",
+          "firstPassedAt": "2026-03-05T09:57:00.000Z"
+        },
+        "05-positional-encoding": {
+          "runs": 2,
+          "passed": true,
+          "lastStatus": "passed",
+          "lastPassed": 1,
+          "lastTotal": 1,
+          "lastRunAt": "2026-03-05T09:59:00.000Z",
+          "firstPassedAt": "2026-03-05T09:59:00.000Z"
+        },
+        "06-encoder-layer": {
+          "runs": 2,
+          "passed": true,
+          "lastStatus": "passed",
+          "lastPassed": 1,
+          "lastTotal": 1,
+          "lastRunAt": "2026-03-05T10:01:00.000Z",
+          "firstPassedAt": "2026-03-05T10:01:00.000Z"
+        }
+      },
+      "history": [
+        {
+          "day": "2026-03-02",
+          "mastered": 4,
+          "meanMastery": 0.4623
+        },
+        {
+          "day": "2026-03-03",
+          "mastered": 8,
+          "meanMastery": 0.7257
+        },
+        {
+          "day": "2026-03-05",
+          "mastered": 12,
+          "meanMastery": 0.989
+        },
+        {
+          "day": "2026-03-09",
+          "mastered": 7,
+          "meanMastery": 0.9584
+        }
+      ],
+      "rebuiltAt": "2026-03-05T10:01:00.000Z",
+      "plans": {
+        "2026-03-02": {
+          "kind": "learn",
+          "activity": "item",
+          "concept": "masking",
+          "item": "mask-teachback",
+          "exercise": null,
+          "due": 0,
+          "nextReviewDay": "2026-03-03"
+        },
+        "2026-03-03": {
+          "kind": "review",
+          "activity": "review",
+          "concept": "softmax",
+          "item": "softmax-scale",
+          "exercise": null,
+          "due": 6,
+          "nextReviewDay": "2026-03-04"
+        },
+        "2026-03-05": {
+          "kind": "review",
+          "activity": "review",
+          "concept": "softmax",
+          "item": "softmax-scale",
+          "exercise": null,
+          "due": 13,
+          "nextReviewDay": "2026-03-06"
+        },
+        "2026-03-09": {
+          "kind": "review",
+          "activity": "review",
+          "concept": "softmax",
+          "item": "softmax-scale",
+          "exercise": null,
+          "due": 19,
+          "nextReviewDay": "2026-03-10"
+        },
+        "2026-03-20": {
+          "kind": "review",
+          "activity": "review",
+          "concept": "softmax",
+          "item": "softmax-scale",
+          "exercise": null,
+          "due": 38,
+          "nextReviewDay": null
+        }
+      },
+      "midMastery": {
+        "softmax": {
+          "pL": 0.99,
+          "mastered": true,
+          "attempts": 5,
+          "correct": 4,
+          "partial": 1,
+          "wrong": 0,
+          "lastSeen": "2026-03-02T09:04:00.000Z",
+          "firstMasteredAt": "2026-03-02T09:00:00.000Z",
+          "teachbackPassed": true
+        },
+        "qkv-attention": {
+          "pL": 0.97782,
+          "mastered": true,
+          "attempts": 4,
+          "correct": 3,
+          "partial": 0,
+          "wrong": 1,
+          "lastSeen": "2026-03-02T09:08:00.000Z",
+          "firstMasteredAt": "2026-03-02T09:08:00.000Z",
+          "teachbackPassed": true
+        },
+        "scaled-dot-product": {
+          "pL": 0.99,
+          "mastered": true,
+          "attempts": 5,
+          "correct": 4,
+          "partial": 1,
+          "wrong": 0,
+          "lastSeen": "2026-03-02T09:13:00.000Z",
+          "firstMasteredAt": "2026-03-02T09:10:00.000Z",
+          "teachbackPassed": true
+        },
+        "masking": {
+          "pL": 0.99,
+          "mastered": true,
+          "attempts": 4,
+          "correct": 3,
+          "partial": 0,
+          "wrong": 1,
+          "lastSeen": "2026-03-02T09:17:00.000Z",
+          "firstMasteredAt": "2026-03-02T09:17:00.000Z",
+          "teachbackPassed": true
+        },
+        "multi-head": {
+          "pL": 0.99,
+          "mastered": true,
+          "attempts": 3,
+          "correct": 3,
+          "partial": 0,
+          "wrong": 0,
+          "lastSeen": "2026-03-03T09:20:00.000Z",
+          "firstMasteredAt": "2026-03-03T09:20:00.000Z",
+          "teachbackPassed": true
+        },
+        "why-self-attention": {
+          "pL": 0.99,
+          "mastered": true,
+          "attempts": 5,
+          "correct": 3,
+          "partial": 1,
+          "wrong": 1,
+          "lastSeen": "2026-03-03T09:25:00.000Z",
+          "firstMasteredAt": "2026-03-03T09:23:00.000Z",
+          "teachbackPassed": true
+        },
+        "embeddings": {
+          "pL": 0.99,
+          "mastered": true,
+          "attempts": 3,
+          "correct": 3,
+          "partial": 0,
+          "wrong": 0,
+          "lastSeen": "2026-03-03T09:28:00.000Z",
+          "firstMasteredAt": "2026-03-03T09:28:00.000Z",
+          "teachbackPassed": true
+        },
+        "positional-encoding": {
+          "pL": 0.99,
+          "mastered": true,
+          "attempts": 6,
+          "correct": 4,
+          "partial": 1,
+          "wrong": 1,
+          "lastSeen": "2026-03-03T09:34:00.000Z",
+          "firstMasteredAt": "2026-03-03T09:31:00.000Z",
+          "teachbackPassed": true
+        },
+        "ffn": {
+          "pL": 0.99,
+          "mastered": true,
+          "attempts": 3,
+          "correct": 3,
+          "partial": 0,
+          "wrong": 0,
+          "lastSeen": "2026-03-05T09:37:00.000Z",
+          "firstMasteredAt": "2026-03-05T09:37:00.000Z",
+          "teachbackPassed": true
+        },
+        "residual-norm": {
+          "pL": 0.567968,
+          "mastered": false,
+          "attempts": 2,
+          "correct": 1,
+          "partial": 1,
+          "wrong": 0,
+          "lastSeen": "2026-03-05T09:39:00.000Z",
+          "firstMasteredAt": null,
+          "teachbackPassed": false
+        },
+        "encoder-decoder": {
+          "pL": 0.2,
+          "mastered": false,
+          "attempts": 0,
+          "correct": 0,
+          "partial": 0,
+          "wrong": 0,
+          "lastSeen": null,
+          "firstMasteredAt": null,
+          "teachbackPassed": false
+        },
+        "training": {
+          "pL": 0.2,
+          "mastered": false,
+          "attempts": 0,
+          "correct": 0,
+          "partial": 0,
+          "wrong": 0,
+          "lastSeen": null,
+          "firstMasteredAt": null,
+          "teachbackPassed": false
+        }
+      },
+      "midPlan": {
+        "kind": "review",
+        "activity": "review",
+        "concept": "softmax",
+        "item": "softmax-scale",
+        "exercise": null
+      }
+    },
+    "bloom-filters": {
+      "course": "bloom-filters",
+      "events": 39,
+      "mastery": {
+        "membership": {
+          "pL": 0.99,
+          "mastered": true,
+          "attempts": 7,
+          "correct": 5,
+          "partial": 1,
+          "wrong": 1,
+          "lastSeen": "2026-03-09T09:31:00.000Z",
+          "firstMasteredAt": "2026-03-02T09:00:00.000Z",
+          "teachbackPassed": true
+        },
+        "hashing": {
+          "pL": 0.99,
+          "mastered": true,
+          "attempts": 5,
+          "correct": 4,
+          "partial": 0,
+          "wrong": 1,
+          "lastSeen": "2026-03-09T09:32:00.000Z",
+          "firstMasteredAt": "2026-03-02T09:08:00.000Z",
+          "teachbackPassed": true
+        },
+        "insert-query": {
+          "pL": 0.99,
+          "mastered": true,
+          "attempts": 7,
+          "correct": 6,
+          "partial": 0,
+          "wrong": 1,
+          "lastSeen": "2026-03-09T09:34:00.000Z",
+          "firstMasteredAt": "2026-03-03T09:11:00.000Z",
+          "teachbackPassed": true
+        },
+        "false-positives": {
+          "pL": 0.99,
+          "mastered": true,
+          "attempts": 7,
+          "correct": 5,
+          "partial": 1,
+          "wrong": 1,
+          "lastSeen": "2026-03-09T09:35:00.000Z",
+          "firstMasteredAt": "2026-03-03T09:13:00.000Z",
+          "teachbackPassed": true
+        },
+        "sizing": {
+          "pL": 0.99,
+          "mastered": true,
+          "attempts": 6,
+          "correct": 5,
+          "partial": 0,
+          "wrong": 1,
+          "lastSeen": "2026-03-09T09:37:00.000Z",
+          "firstMasteredAt": "2026-03-05T09:18:00.000Z",
+          "teachbackPassed": true
+        },
+        "deletion": {
+          "pL": 0.99,
+          "mastered": true,
+          "attempts": 5,
+          "correct": 4,
+          "partial": 1,
+          "wrong": 0,
+          "lastSeen": "2026-03-09T09:38:00.000Z",
+          "firstMasteredAt": "2026-03-05T09:23:00.000Z",
+          "teachbackPassed": true
+        }
+      },
+      "reviews": {
+        "mem-cost": {
+          "attempts": 3,
+          "lastResult": "wrong",
+          "lastSeen": "2026-03-09T09:30:00.000Z",
+          "reps": 0,
+          "ease": 2.4,
+          "interval": 1,
+          "lapses": 1,
+          "dueDay": "2026-03-10",
+          "lastDay": "2026-03-09"
+        },
+        "mem-items": {
+          "attempts": 1,
+          "lastResult": "correct",
+          "lastSeen": "2026-03-02T09:02:00.000Z",
+          "reps": 1,
+          "ease": 2.5,
+          "interval": 1,
+          "lapses": 0,
+          "dueDay": "2026-03-03",
+          "lastDay": "2026-03-02"
+        },
+        "mem-teachback": {
+          "attempts": 3,
+          "lastResult": "correct",
+          "lastSeen": "2026-03-09T09:31:00.000Z",
+          "reps": 1,
+          "ease": 2.45,
+          "interval": 1,
+          "lapses": 0,
+          "dueDay": "2026-03-10",
+          "lastDay": "2026-03-09"
+        },
+        "hash-same": {
+          "attempts": 1,
+          "lastResult": "correct",
+          "lastSeen": "2026-03-02T09:05:00.000Z",
+          "reps": 1,
+          "ease": 2.6,
+          "interval": 1,
+          "lapses": 0,
+          "dueDay": "2026-03-03",
+          "lastDay": "2026-03-02"
+        },
+        "hash-double": {
+          "attempts": 3,
+          "lastResult": "correct",
+          "lastSeen": "2026-03-09T09:32:00.000Z",
+          "reps": 1,
+          "ease": 2.4,
+          "interval": 1,
+          "lapses": 0,
+          "dueDay": "2026-03-10",
+          "lastDay": "2026-03-09"
+        },
+        "hash-teachback": {
+          "attempts": 1,
+          "lastResult": "correct",
+          "lastSeen": "2026-03-02T09:08:00.000Z",
+          "reps": 1,
+          "ease": 2.5,
+          "interval": 1,
+          "lapses": 0,
+          "dueDay": "2026-03-03",
+          "lastDay": "2026-03-02"
+        },
+        "iq-negatives": {
+          "attempts": 2,
+          "lastResult": "wrong",
+          "lastSeen": "2026-03-09T09:33:00.000Z",
+          "reps": 0,
+          "ease": 2.4,
+          "interval": 1,
+          "lapses": 1,
+          "dueDay": "2026-03-10",
+          "lastDay": "2026-03-09"
+        },
+        "iq-bits": {
+          "attempts": 1,
+          "lastResult": "correct",
+          "lastSeen": "2026-03-03T09:10:00.000Z",
+          "reps": 1,
+          "ease": 2.6,
+          "interval": 1,
+          "lapses": 0,
+          "dueDay": "2026-03-04",
+          "lastDay": "2026-03-03"
+        },
+        "iq-teachback": {
+          "attempts": 2,
+          "lastResult": "correct",
+          "lastSeen": "2026-03-09T09:34:00.000Z",
+          "reps": 2,
+          "ease": 2.6,
+          "interval": 3,
+          "lapses": 0,
+          "dueDay": "2026-03-12",
+          "lastDay": "2026-03-09"
+        },
+        "fp-rate": {
+          "attempts": 2,
+          "lastResult": "correct",
+          "lastSeen": "2026-03-03T09:13:00.000Z",
+          "reps": 0,
+          "ease": 2.35,
+          "interval": 1,
+          "lapses": 0,
+          "dueDay": "2026-03-04",
+          "lastDay": "2026-03-03"
+        },
+        "fp-fill": {
+          "attempts": 2,
+          "lastResult": "correct",
+          "lastSeen": "2026-03-09T09:35:00.000Z",
+          "reps": 2,
+          "ease": 2.7,
+          "interval": 3,
+          "lapses": 0,
+          "dueDay": "2026-03-12",
+          "lastDay": "2026-03-09"
+        },
+        "fp-teachback": {
+          "attempts": 2,
+          "lastResult": "correct",
+          "lastSeen": "2026-03-03T09:16:00.000Z",
+          "reps": 0,
+          "ease": 2.3,
+          "interval": 1,
+          "lapses": 0,
+          "dueDay": "2026-03-04",
+          "lastDay": "2026-03-03"
+        },
+        "size-k": {
+          "attempts": 2,
+          "lastResult": "wrong",
+          "lastSeen": "2026-03-09T09:36:00.000Z",
+          "reps": 0,
+          "ease": 2.3,
+          "interval": 1,
+          "lapses": 1,
+          "dueDay": "2026-03-10",
+          "lastDay": "2026-03-09"
+        },
+        "size-more-k": {
+          "attempts": 1,
+          "lastResult": "correct",
+          "lastSeen": "2026-03-05T09:18:00.000Z",
+          "reps": 1,
+          "ease": 2.5,
+          "interval": 1,
+          "lapses": 0,
+          "dueDay": "2026-03-06",
+          "lastDay": "2026-03-05"
+        },
+        "size-teachback": {
+          "attempts": 2,
+          "lastResult": "correct",
+          "lastSeen": "2026-03-09T09:37:00.000Z",
+          "reps": 2,
+          "ease": 2.7,
+          "interval": 3,
+          "lapses": 0,
+          "dueDay": "2026-03-12",
+          "lastDay": "2026-03-09"
+        },
+        "del-why": {
+          "attempts": 1,
+          "lastResult": "correct",
+          "lastSeen": "2026-03-05T09:20:00.000Z",
+          "reps": 1,
+          "ease": 2.6,
+          "interval": 1,
+          "lapses": 0,
+          "dueDay": "2026-03-06",
+          "lastDay": "2026-03-05"
+        },
+        "del-counting": {
+          "attempts": 3,
+          "lastResult": "correct",
+          "lastSeen": "2026-03-09T09:38:00.000Z",
+          "reps": 1,
+          "ease": 2.45,
+          "interval": 1,
+          "lapses": 0,
+          "dueDay": "2026-03-10",
+          "lastDay": "2026-03-09"
+        },
+        "del-teachback": {
+          "attempts": 1,
+          "lastResult": "correct",
+          "lastSeen": "2026-03-05T09:23:00.000Z",
+          "reps": 1,
+          "ease": 2.5,
+          "interval": 1,
+          "lapses": 0,
+          "dueDay": "2026-03-06",
+          "lastDay": "2026-03-05"
+        },
+        "iq-code-bits": {
+          "attempts": 1,
+          "lastResult": "correct",
+          "lastSeen": "2026-03-05T09:25:00.000Z"
+        },
+        "iq-code-filter": {
+          "attempts": 1,
+          "lastResult": "correct",
+          "lastSeen": "2026-03-05T09:27:00.000Z"
+        },
+        "fp-code": {
+          "attempts": 1,
+          "lastResult": "correct",
+          "lastSeen": "2026-03-05T09:29:00.000Z"
+        },
+        "size-code": {
+          "attempts": 1,
+          "lastResult": "correct",
+          "lastSeen": "2026-03-05T09:29:00.000Z"
+        }
+      },
+      "exercises": {
+        "01-bit-array": {
+          "runs": 2,
+          "passed": true,
+          "lastStatus": "passed",
+          "lastPassed": 1,
+          "lastTotal": 1,
+          "lastRunAt": "2026-03-05T09:25:00.000Z",
+          "firstPassedAt": "2026-03-05T09:25:00.000Z"
+        },
+        "02-bloom-filter": {
+          "runs": 2,
+          "passed": true,
+          "lastStatus": "passed",
+          "lastPassed": 1,
+          "lastTotal": 1,
+          "lastRunAt": "2026-03-05T09:27:00.000Z",
+          "firstPassedAt": "2026-03-05T09:27:00.000Z"
+        },
+        "03-sizing": {
+          "runs": 2,
+          "passed": true,
+          "lastStatus": "passed",
+          "lastPassed": 1,
+          "lastTotal": 1,
+          "lastRunAt": "2026-03-05T09:29:00.000Z",
+          "firstPassedAt": "2026-03-05T09:29:00.000Z"
+        }
+      },
+      "history": [
+        {
+          "day": "2026-03-02",
+          "mastered": 2,
+          "meanMastery": 0.463
+        },
+        {
+          "day": "2026-03-03",
+          "mastered": 4,
+          "meanMastery": 0.7264
+        },
+        {
+          "day": "2026-03-05",
+          "mastered": 6,
+          "meanMastery": 0.9897
+        },
+        {
+          "day": "2026-03-09",
+          "mastered": 6,
+          "meanMastery": 0.99
+        }
+      ],
+      "rebuiltAt": "2026-03-05T09:29:00.000Z",
+      "plans": {
+        "2026-03-02": {
+          "kind": "rebuilt",
+          "activity": "none",
+          "concept": null,
+          "item": null,
+          "exercise": null,
+          "due": 0,
+          "nextReviewDay": "2026-03-03"
+        },
+        "2026-03-03": {
+          "kind": "review",
+          "activity": "review",
+          "concept": "membership",
+          "item": "mem-items",
+          "exercise": null,
+          "due": 3,
+          "nextReviewDay": "2026-03-04"
+        },
+        "2026-03-05": {
+          "kind": "review",
+          "activity": "review",
+          "concept": "membership",
+          "item": "mem-items",
+          "exercise": null,
+          "due": 6,
+          "nextReviewDay": "2026-03-06"
+        },
+        "2026-03-09": {
+          "kind": "review",
+          "activity": "review",
+          "concept": "membership",
+          "item": "mem-items",
+          "exercise": null,
+          "due": 9,
+          "nextReviewDay": "2026-03-10"
+        },
+        "2026-03-20": {
+          "kind": "review",
+          "activity": "review",
+          "concept": "membership",
+          "item": "mem-items",
+          "exercise": null,
+          "due": 18,
+          "nextReviewDay": null
+        }
+      },
+      "midMastery": {
+        "membership": {
+          "pL": 0.99,
+          "mastered": true,
+          "attempts": 5,
+          "correct": 4,
+          "partial": 1,
+          "wrong": 0,
+          "lastSeen": "2026-03-02T09:04:00.000Z",
+          "firstMasteredAt": "2026-03-02T09:00:00.000Z",
+          "teachbackPassed": true
+        },
+        "hashing": {
+          "pL": 0.988102,
+          "mastered": true,
+          "attempts": 4,
+          "correct": 3,
+          "partial": 0,
+          "wrong": 1,
+          "lastSeen": "2026-03-02T09:08:00.000Z",
+          "firstMasteredAt": "2026-03-02T09:08:00.000Z",
+          "teachbackPassed": true
+        },
+        "insert-query": {
+          "pL": 0.99,
+          "mastered": true,
+          "attempts": 3,
+          "correct": 3,
+          "partial": 0,
+          "wrong": 0,
+          "lastSeen": "2026-03-03T09:11:00.000Z",
+          "firstMasteredAt": "2026-03-03T09:11:00.000Z",
+          "teachbackPassed": true
+        },
+        "false-positives": {
+          "pL": 0.99,
+          "mastered": true,
+          "attempts": 5,
+          "correct": 3,
+          "partial": 1,
+          "wrong": 1,
+          "lastSeen": "2026-03-03T09:16:00.000Z",
+          "firstMasteredAt": "2026-03-03T09:13:00.000Z",
+          "teachbackPassed": true
+        },
+        "sizing": {
+          "pL": 0.950884,
+          "mastered": true,
+          "attempts": 2,
+          "correct": 2,
+          "partial": 0,
+          "wrong": 0,
+          "lastSeen": "2026-03-05T09:18:00.000Z",
+          "firstMasteredAt": "2026-03-05T09:18:00.000Z",
+          "teachbackPassed": false
+        },
+        "deletion": {
+          "pL": 0.2,
+          "mastered": false,
+          "attempts": 0,
+          "correct": 0,
+          "partial": 0,
+          "wrong": 0,
+          "lastSeen": null,
+          "firstMasteredAt": null,
+          "teachbackPassed": false
+        }
+      },
+      "midPlan": {
+        "kind": "review",
+        "activity": "review",
+        "concept": "membership",
+        "item": "mem-cost",
+        "exercise": null
+      }
+    }
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "schemaVersion": 1,
+  "commands": [
+    {
+      "id": "cache-lib-tests",
+      "argv": ["node", "--test", "test/lru.test.js"],
+      "timeoutSec": 20,
+      "note": "Copy this file to .teachback/trusted-commands.json only after reading test/lru.test.js. It runs locally with your permissions."
+    }
+  ]
+}

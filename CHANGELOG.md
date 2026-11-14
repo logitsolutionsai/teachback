@@ -1,5 +1,27 @@
 # Changelog
 
+## Unreleased: RepoQuest
+
+Learn a local code repository, or a pull request, until you can make and explain a verified local change. Added beside the paper engine; the learner model, `learner.json`, review scheduling, "Rebuilt" and the shipped courses are unchanged (a golden test replays fixed histories on both shipped courses and compares mastery, review dates, Rebuilt and `next` with values captured before RepoQuest).
+
+### Commands
+
+- `repo scan`: a read-only, bounded inventory (20,000 files by default, 200,000 hard cap, 25 MiB total, 512 KiB per file) with default exclusions for secrets, dependencies, build output, generated files and datasets, `.gitignore` support, `--include` and `--exclude`, symlinks not followed, CRLF-insensitive hashes, lexical symbols for JavaScript and TypeScript, Python, Go and Rust with certainty labels, import and name-convention test links, and a licence guess that is never marked verified.
+- `repo init`: the source lock (a git commit, or a content digest for a plain folder), the repo map, a course skeleton with `kind: repo-quest` or `review`, and an authoring plan. Refuses an incomplete scan and, without `--allow-dirty`, a dirty checkout.
+- `repo verify`: checks every source reference (locked hash, line range, exact needle, symbol overlap), the quest file and the course structure; reports `verified`, `source_stale`, `unverified` or `invalid` with fix hints.
+- `repo rebase --dry-run` and `--apply <proposal> --confirm`: a reviewed migration after the source changes, with a migration log and a list of evidence to re-check.
+- `quest show`, `quest answer`, `quest start`, `quest run`, `quest certificate`: navigate, predict, review, reproduce and patch quests linked to the concept DAG; scratch-copy workspaces; commands only from `.teachback/trusted-commands.json` and only with `--trust-local`, with a timeout, an output cap, digests and a secret-free environment; an offline evidence card.
+- `pack export`, `pack check`, `pack import`: deterministic Contributor Quest Packs without learner data, local paths, reference solutions or repository code, and a reader that refuses zip-slip, symlinks, archive bombs, duplicates, bad checksums and duplicate JSON keys.
+- `next` offers a quest when its prerequisites are met (after due reviews, before new material); a course without quests gets the original plan. `status` and the dashboard add a "Source and quests" card for repo courses.
+- Review mode from a unified diff file: `repo scan --diff` and `repo init --mode review --diff`.
+- Exit codes for the new commands: 0, 1 (did not pass), 2 (invalid or stale), 3 (blocked), 4 (environment). The original commands keep theirs.
+
+### Not Done
+
+- No container runner: quest commands run locally with the learner's permissions after explicit opt-in.
+- The git code paths are tested only with a stubbed runner; they have not run against real git.
+- The twelve RepoQuest behaviour evals have not been run (native Windows refuses shell tools in `claude plugin eval`).
+
 ## 0.1.0 (2026-11-14)
 
 First release.

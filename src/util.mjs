@@ -3,10 +3,13 @@ import fs from 'node:fs';
 import path from 'node:path';
 
 export class TeachbackError extends Error {
-  constructor(code, message, hint) {
+  // exit: the process exit code for this error. The original commands leave it
+  // out (they exit 1); the RepoQuest commands set 2, 3 or 4 (see docs/REPOQUEST.md).
+  constructor(code, message, hint, exit) {
     super(message);
     this.code = code;
     this.hint = hint;
+    if (exit !== undefined) this.exit = exit;
   }
 }
 

@@ -4,47 +4,161 @@
   "title": "teachback map.json",
   "description": "The concept map: concepts with prerequisites, forming a directed acyclic graph.",
   "type": "object",
-  "required": ["schema", "concepts"],
+  "required": [
+    "schema",
+    "concepts"
+  ],
   "properties": {
-    "schema": { "const": "teachback/map@1" },
-    "concepts": { "type": "array", "items": { "$ref": "#/$defs/concept" } }
+    "schema": {
+      "const": "teachback/map@1"
+    },
+    "concepts": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/concept"
+      }
+    }
   },
   "$defs": {
     "concept": {
       "type": "object",
-      "required": ["id", "name", "summary", "sources", "prerequisites"],
+      "required": [
+        "id",
+        "name",
+        "summary",
+        "sources",
+        "prerequisites"
+      ],
       "additionalProperties": false,
       "properties": {
-        "id": { "type": "string", "pattern": "^[a-z0-9][a-z0-9-]*$" },
-        "name": { "type": "string", "minLength": 1 },
-        "summary": { "type": "string", "minLength": 1, "description": "One paragraph in your own words." },
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z0-9][a-z0-9-]*$"
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "summary": {
+          "type": "string",
+          "minLength": 1,
+          "description": "One paragraph in your own words."
+        },
         "sources": {
           "type": "array",
           "items": {
             "type": "object",
-            "required": ["section"],
+            "required": [
+              "section"
+            ],
             "additionalProperties": false,
             "properties": {
-              "section": { "type": "string", "minLength": 1, "description": "Section, figure, table or equation in the source, such as \"3.2.1\" or \"Table 1\"." },
-              "label": { "type": "string" },
-              "page": { "type": "integer", "minimum": 1 }
+              "section": {
+                "type": "string",
+                "minLength": 1,
+                "description": "Section, figure, table or equation in the source, such as \"3.2.1\" or \"Table 1\"."
+              },
+              "label": {
+                "type": "string"
+              },
+              "page": {
+                "type": "integer",
+                "minimum": 1
+              }
             }
           }
         },
-        "prerequisites": { "type": "array", "items": { "type": "string" } },
-        "difficulty": { "type": "integer", "minimum": 1, "maximum": 5 },
-        "pInit": { "type": "number", "minimum": 0, "maximum": 1 },
+        "prerequisites": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "difficulty": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 5
+        },
+        "pInit": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
         "misconceptions": {
           "type": "array",
           "items": {
             "type": "object",
-            "required": ["id", "description"],
+            "required": [
+              "id",
+              "description"
+            ],
             "additionalProperties": false,
             "properties": {
-              "id": { "type": "string", "minLength": 1 },
-              "description": { "type": "string", "minLength": 1 }
+              "id": {
+                "type": "string",
+                "minLength": 1
+              },
+              "description": {
+                "type": "string",
+                "minLength": 1
+              },
+              "sourceRefs": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/$defs/sourceRef"
+                }
+              }
             }
           }
+        },
+        "sourceRefs": {
+          "type": "array",
+          "description": "Repo courses: file and line pointers into the locked source (see references/repoquest.md).",
+          "items": {
+            "$ref": "#/$defs/sourceRef"
+          }
+        }
+      }
+    },
+    "sourceRef": {
+      "type": "object",
+      "required": [
+        "fileId",
+        "startLine",
+        "endLine"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "fileId": {
+          "type": "string",
+          "pattern": "^[a-z0-9][a-z0-9-]*$"
+        },
+        "startLine": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "endLine": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "needle": {
+          "type": "string",
+          "minLength": 1,
+          "description": "An exact short string (an identifier or a few words) that must appear inside the line range. At most 200 characters."
+        },
+        "symbolId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "evidenceKind": {
+          "enum": [
+            "quoted",
+            "inferred"
+          ],
+          "description": "inferred: a teaching inference drawn from these lines, shown as such."
+        },
+        "note": {
+          "type": "string"
         }
       }
     }

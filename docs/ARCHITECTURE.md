@@ -30,11 +30,35 @@ src/
   dashboard.mjs          the standalone HTML dashboard
   export.mjs             Anki CSV export
   util.mjs               errors, the injectable clock, JSON files, text helpers
+  fluid.js               spring motion helper (brand kit), inlined into the dashboard and certificate
+  repoquest-cli.mjs      the repo, quest and pack commands (RepoQuest; see docs/REPOQUEST.md)
+  repo/
+    git.mjs              the only git access, behind a replaceable runner (tests stub it)
+    paths.mjs            relative-path rules for locks, refs, quests and pack entries
+    ignore.mjs           default exclusions and .gitignore-style patterns
+    symbols.mjs          lexical symbols and imports for JS/TS, Python, Go and Rust
+    scan.mjs             the bounded scan, hashing, roles, links and licence guess
+    source-lock.mjs      source-lock.json and .local-source.json
+    verify.mjs           checking every sourceRef against the locked source
+    rebase.mjs           drift proposals and confirmed application
+    diff.mjs             unified diff parsing for review mode
+  quest/
+    schema.mjs           quests.json rules, the shared DAG, the argv command check
+    state.mjs            quest-state.json, source state, suspended claims
+    next.mjs             next with quests (wraps model/next.mjs, which is unchanged)
+    workspace.mjs        scratch copies (and the optional git worktree)
+    runner.mjs           the allowlist, --trust-local, timeout, output cap, environment
+    commands.mjs         quest show, start, answer and run
+    certificate.mjs      the evidence card
+  pack/
+    zip.mjs              deterministic ZIP writer and defensive reader (Node core only)
+    pack.mjs             pack export, check and import
 schema/                  JSON Schemas for course, map, items, exercise and learner files
 references/              documents the skill loads when it needs them
 examples/                shipped courses
 tests/                   node:test suites; tests/e2e/ for the browser test
 evals/                   behaviour cases for `claude plugin eval`: scaffolds, scripted learner turns, graders
+evals/repoquest/         RepoQuest behaviour cases (same format; not run yet)
 ```
 
 ## Data Flow
